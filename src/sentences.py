@@ -1,7 +1,13 @@
+import os
 import random
+import json
 
 import requests
 from bs4 import BeautifulSoup
+
+sentences_file = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "sentences.json"
+)
 
 
 def _from_oxford(word):
@@ -18,8 +24,19 @@ def _from_oxford(word):
 
 
 def get_sentence(word):
-    sentences = _from_oxford(word)
+    if not os.path.exists(sentences_file):
+        with open(sentences_file, "w", encoding="utf-8") as f:
+            f.write("{}\n")
+    with open(sentences_file, "r", encoding="utf-8") as f:
+        local_db = json.load(f)
+    sentences = local_db.get(word, [])
+    if len(sentences) <= 0:
+        sentences = _from_oxford(word)
+        local_db[word] = sentences
+        with open(sentences_file, "w", encoding="utf-8") as f:
+            json.dump(local_db, f, ensure_ascii=False, indent=4)
     if len(sentences) > 0:
-        return random.choice(sentences)
+        sentence = random.choice(sentences)
+        return sentence
     else:
         return ""
