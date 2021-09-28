@@ -10,7 +10,7 @@ sentences_file = os.path.join(
 )
 
 
-def _from_oxford(word):
+def _from_oxford(word: str):
     try:
         res = requests.get(f"https://www.lexico.com/definition/{word}?locale=en")
     except:
@@ -23,7 +23,9 @@ def _from_oxford(word):
     return sentences
 
 
-def get_sentence(word):
+def get_sentence(word: str):
+    if not word.strip():
+        return ""
     if not os.path.exists(sentences_file):
         with open(sentences_file, "w", encoding="utf-8") as f:
             f.write("{}\n")
