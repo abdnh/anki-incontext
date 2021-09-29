@@ -1,4 +1,5 @@
 {
     "name": "InContext - Shows Random Example Sentences",
-    "package": "incontext"
+    "package": "incontext",
+    "homepage": "https://github.com/abdnh/anki-incontext"
 }
