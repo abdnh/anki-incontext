@@ -10,7 +10,7 @@ def add_filter(
     filter_name: str,
     ctx: TemplateRenderContext,
 ) -> str:
-    if not filter_name.startswith("incontext"):
+    if not filter_name.lower().startswith("incontext"):
         return field_text
 
     return get_sentence(field_text)
