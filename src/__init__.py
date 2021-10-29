@@ -4,7 +4,7 @@ from anki.template import TemplateRenderContext
 from .sentences import get_sentence
 
 
-def add_filter(
+def incontext_filter(
     field_text: str,
     field_name: str,
     filter_name: str,
@@ -16,4 +16,4 @@ def add_filter(
     return get_sentence(field_text)
 
 
-hooks.field_filter.append(add_filter)
+hooks.field_filter.append(incontext_filter)
