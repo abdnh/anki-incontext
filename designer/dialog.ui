@@ -70,7 +70,7 @@
      <item row="9" column="1">
       <widget class="QPushButton" name="sync_sentences_button">
        <property name="toolTip">
-        <string>Fetch sentences for selected word from online providers, overriding any sentences added manually</string>
+        <string>Fetch sentences for selected words from online providers, overriding any sentences added manually</string>
        </property>
        <property name="text">
         <string>Sync</string>
