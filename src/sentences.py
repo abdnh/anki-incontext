@@ -1,6 +1,7 @@
 import os
 import random
 import json
+from typing import Dict, List
 
 import requests
 from bs4 import BeautifulSoup
@@ -8,6 +9,20 @@ from bs4 import BeautifulSoup
 sentences_file = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "sentences.json"
 )
+
+
+def read_sentences_db() -> Dict[str, List[str]]:
+    if not os.path.exists(sentences_file):
+        with open(sentences_file, "w", encoding="utf-8") as f:
+            f.write("{}\n")
+    with open(sentences_file, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def update_sentences_db(db: Dict[str, List[str]]):
+    with open(sentences_file, "w", encoding="utf-8") as f:
+        json.dump(db, f, ensure_ascii=False, indent=4)
+
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
@@ -48,7 +63,7 @@ def _from_oxford_learner(word: str):
     return sentences
 
 
-def fetch_sentences(word: str):
+def fetch_sentences(word: str) -> List[str]:
     providers = [_from_oxford, _from_oxford_learner]
     sentences = []
     for provider in providers:
@@ -56,20 +71,15 @@ def fetch_sentences(word: str):
     return sentences
 
 
-def get_sentence(word: str):
+def get_sentence(word: str) -> str:
     if not word.strip():
         return ""
-    if not os.path.exists(sentences_file):
-        with open(sentences_file, "w", encoding="utf-8") as f:
-            f.write("{}\n")
-    with open(sentences_file, "r", encoding="utf-8") as f:
-        local_db = json.load(f)
+    local_db = read_sentences_db()
     sentences = local_db.get(word, [])
     if len(sentences) <= 0:
         sentences = fetch_sentences(word)
         local_db[word] = sentences
-        with open(sentences_file, "w", encoding="utf-8") as f:
-            json.dump(local_db, f, ensure_ascii=False, indent=4)
+        update_sentences_db(local_db)
     if len(sentences) > 0:
         sentence = random.choice(sentences)
         return sentence

@@ -13,6 +13,11 @@ incontext.ankiaddon: src/*
 	rm -rf src/__pycache__
 	( cd src/; zip -r ../$@ * )
 
+forms: src/dialog.py
+
+src/dialog.py: designer/dialog.ui
+	pyuic5 $^ > $@
+
 clean:
 	rm -f *.pyc
 	rm -f src/*.pyc
