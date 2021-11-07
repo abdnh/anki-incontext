@@ -1,6 +1,5 @@
 from typing import List
 
-from PyQt5 import QtCore
 from aqt.qt import *
 from aqt.utils import getOnlyText, getFile
 
@@ -34,9 +33,7 @@ class InContextDialog(QDialog):
         return item.text() if item else ""
 
     def select_word(self, word: str):
-        item = self.form.words_list.findItems(
-            word, QtCore.Qt.MatchFlag.MatchFixedString
-        )[0]
+        item = self.form.words_list.findItems(word, Qt.MatchFlag.MatchFixedString)[0]
         self.form.words_list.setCurrentItem(item)
 
     def populate_words(self):
