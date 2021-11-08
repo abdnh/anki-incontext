@@ -72,14 +72,17 @@ def fetch_sentences(word: str) -> List[str]:
 
 
 def get_sentence(word: str) -> str:
-    if not word.strip():
-        return ""
+    word = word.strip()
     local_db = read_sentences_db()
-    sentences = local_db.get(word, [])
-    if len(sentences) <= 0:
-        sentences = fetch_sentences(word)
-        local_db[word] = sentences
-        update_sentences_db(local_db)
+    if not word:
+        # choose a sentence from all sentences in the DB if an empty word is given
+        sentences = [s for l in local_db.values() for s in l]
+    else:
+        sentences = local_db.get(word, [])
+        if len(sentences) <= 0:
+            sentences = fetch_sentences(word)
+            local_db[word] = sentences
+            update_sentences_db(local_db)
     if len(sentences) > 0:
         sentence = random.choice(sentences)
         return sentence
