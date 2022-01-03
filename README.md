@@ -11,6 +11,6 @@ Here the add-on will show a random example sentence containing the word in the `
 Currently, example sentences are fetched from the [Oxford English Dictionaries](https://www.lexico.com/) and the [Oxford Learner's Dictionaries](https://www.oxfordlearnersdictionaries.com/).
 More sites and languages may be supported in the future.
 
-Fetched sentences are saved locally in the `sentences.json` file and used in subsequent reviews of the same card.
+Fetched sentences are saved locally in the `user_files/sentences.json` file and used in subsequent reviews of the same card.
 
 Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Era5ksSa59xjB3ZbVQsdoTbQEigzh6Bi/view?usp=sharing

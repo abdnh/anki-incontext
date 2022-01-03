@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 sentences_file = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), "sentences.json"
+    os.path.dirname(os.path.realpath(__file__)), "user_files/sentences.json"
 )
 
 
