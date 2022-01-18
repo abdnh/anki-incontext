@@ -3,4 +3,3 @@ aqt
 anki
 black
 beautifulsoup4
-pyuic5-tool
