@@ -15,7 +15,7 @@ def sentences_file_for_lang(lang: str) -> str:
 langs = ["en", "tr"]
 
 
-def ensure_sentence_files_exist():
+def ensure_sentence_files_exist() -> None:
     for lang in langs:
         sentences_file = sentences_file_for_lang(lang)
         if not os.path.exists(sentences_file):
@@ -31,14 +31,14 @@ def read_sentences_db(lang: str) -> Dict[str, List[str]]:
         return json.load(f)
 
 
-def update_sentences_db(lang: str, db: Dict[str, List[str]]):
+def update_sentences_db(lang: str, db: Dict[str, List[str]]) -> None:
     with open(sentences_file_for_lang(lang), "w", encoding="utf-8") as f:
         json.dump(db, f, ensure_ascii=False, indent=4)
 
 
 def fetch_sentences(word: str, lang: str) -> List[str]:
     sentences = []
-    for provider in languages[lang]["providers"]:
+    for provider in languages[lang].providers:
         sentences.extend(provider(word))
     return sentences
 

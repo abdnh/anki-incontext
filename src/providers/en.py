@@ -1,3 +1,5 @@
+from typing import List
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -10,7 +12,7 @@ headers = {
 # while it does in a normal web browser. Changing the user agent string doesn't seem to help.
 
 
-def from_oxford(word: str):
+def from_oxford(word: str) -> List[str]:
     try:
         res = requests.get(
             f"https://www.lexico.com/definition/{word}?locale=en", headers=headers
@@ -25,7 +27,7 @@ def from_oxford(word: str):
     return sentences
 
 
-def from_oxford_learner(word: str):
+def from_oxford_learner(word: str) -> List[str]:
     try:
         res = requests.get(
             f"https://www.oxfordlearnersdictionaries.com/definition/english/{word}",

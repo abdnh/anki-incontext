@@ -16,8 +16,8 @@ def incontext_filter(
     if not filter_name.lower().startswith("incontext"):
         return field_text
 
-    options = dict(map(lambda o: o.split('='), filter_name.split()[1:]))
-    lang = options.get('lang', 'en')
+    options = dict(map(lambda o: o.split("="), filter_name.split()[1:]))
+    lang = options.get("lang", "en")
 
     return get_sentence(field_text, lang)
 
@@ -29,7 +29,8 @@ def open_dialog():
 
 hooks.field_filter.append(incontext_filter)
 
-action = QAction(mw)
-action.setText("InContext")
-mw.form.menuTools.addAction(action)
-action.triggered.connect(open_dialog)
+if mw:
+    action = QAction(mw)
+    action.setText("InContext")
+    mw.form.menuTools.addAction(action)
+    qconnect(action.triggered, open_dialog)

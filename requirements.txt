@@ -3,3 +3,4 @@ aqt
 anki
 black
 beautifulsoup4
+mypy

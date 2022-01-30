@@ -1,5 +1,6 @@
 import importlib
 import os
+from typing import List
 
 PROVIDERS_DIR = os.path.dirname(__file__)
 VENDOR_DIR = os.path.join(PROVIDERS_DIR, "vendor")
@@ -8,7 +9,7 @@ tdk = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(tdk)
 
 
-def from_tdk(word: str):
+def from_tdk(word: str) -> List[str]:
     return tdk.TDK(word).examples
 
 

@@ -1,7 +1,18 @@
 import os
 import importlib
+from typing import Dict, Callable, List
+from dataclasses import dataclass
 
-languages = {}
+ProviderCallback = Callable[[str], List[str]]
+
+
+@dataclass
+class Language:
+    name: str
+    providers: List[ProviderCallback]
+
+
+languages: Dict[str, Language] = {}
 
 PROVIDERS_DIR = os.path.dirname(__file__)
 
@@ -13,4 +24,4 @@ for file in os.listdir(PROVIDERS_DIR):
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    languages[name] = {"name": module.NAME, "providers": module.PROVIDERS}
+    languages[name] = Language(module.NAME, module.PROVIDERS)

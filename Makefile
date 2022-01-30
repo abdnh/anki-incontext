@@ -1,9 +1,12 @@
-.PHONY: all format clean zip
+.PHONY: all format clean zip typecheck
 
 all: zip
 
 format:
 	python -m black src
+
+typecheck:
+	python -m mypy src
 
 zip: incontext.ankiaddon
 
