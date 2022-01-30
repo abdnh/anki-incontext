@@ -25,4 +25,11 @@ More sites and languages may be supported in the future.
 
 Fetched sentences are saved locally in the `user_files/{lang}_sentences.json` files and used in subsequent reviews of the same card.
 
+The add-on has a graphical interface to manage sentences that can be accessed from **Tools > InContext**.
+
+
 Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Era5ksSa59xjB3ZbVQsdoTbQEigzh6Bi/view?usp=sharing
+
+## TODO
+- [ ] Improve interface.
+- [ ] Support more languages and fetchers.
