@@ -10,11 +10,13 @@ sentences_file = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "user_files/sentences.json"
 )
 
+# Ensure sentences.json exist
+if not os.path.exists(sentences_file):
+    with open(sentences_file, "w", encoding="utf-8") as f:
+        f.write("{}\n")
+
 
 def read_sentences_db() -> Dict[str, List[str]]:
-    if not os.path.exists(sentences_file):
-        with open(sentences_file, "w", encoding="utf-8") as f:
-            f.write("{}\n")
     with open(sentences_file, "r", encoding="utf-8") as f:
         return json.load(f)
 
