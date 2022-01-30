@@ -34,7 +34,7 @@ headers = {
 # while it does in a normal web browser. Changing the user agent string doesn't seem to help.
 
 
-def _from_oxford(word: str):
+def from_oxford(word: str):
     try:
         res = requests.get(
             f"https://www.lexico.com/definition/{word}?locale=en", headers=headers
@@ -49,7 +49,7 @@ def _from_oxford(word: str):
     return sentences
 
 
-def _from_oxford_learner(word: str):
+def from_oxford_learner(word: str):
     try:
         res = requests.get(
             f"https://www.oxfordlearnersdictionaries.com/definition/english/{word}",
@@ -65,8 +65,10 @@ def _from_oxford_learner(word: str):
     return sentences
 
 
+providers = [from_oxford, from_oxford_learner]
+
+
 def fetch_sentences(word: str) -> List[str]:
-    providers = [_from_oxford, _from_oxford_learner]
     sentences = []
     for provider in providers:
         sentences.extend(provider(word))
