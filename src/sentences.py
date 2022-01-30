@@ -12,11 +12,8 @@ def sentences_file_for_lang(lang: str) -> str:
     )
 
 
-langs = ["en", "tr"]
-
-
 def ensure_sentence_files_exist() -> None:
-    for lang in langs:
+    for lang in languages.keys():
         sentences_file = sentences_file_for_lang(lang)
         if not os.path.exists(sentences_file):
             with open(sentences_file, "w", encoding="utf-8") as f:
