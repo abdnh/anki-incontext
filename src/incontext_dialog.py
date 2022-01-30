@@ -5,6 +5,7 @@ from aqt.utils import getOnlyText, getFile
 
 from .dialog import Ui_Dialog
 from .sentences import read_sentences_db, update_sentences_db, fetch_sentences
+from .providers import languages
 
 
 class InContextDialog(QDialog):
@@ -13,12 +14,21 @@ class InContextDialog(QDialog):
         QDialog.__init__(self)
         self.form = Ui_Dialog()
         self.form.setupUi(self)
+        self.setup_ui()
+
+    def setup_ui(self):
         self.form.words_list.currentItemChanged.connect(self.populate_word_sentences)
         self.form.add_word_button.clicked.connect(self.on_add_word)
         self.form.import_words_button.clicked.connect(self.on_import_words)
         self.form.add_sentence_button.clicked.connect(self.on_add_sentence)
         self.form.import_sentences_button.clicked.connect(self.on_import_sentences)
         self.form.sync_sentences_button.clicked.connect(self.on_sync_sentences)
+        for ident, entry in languages.items():
+            self.form.langComboBox.addItem(entry["name"], ident)
+        self.populate_words()
+        self.form.langComboBox.currentIndexChanged.connect(self.on_lang_changed)
+
+    def on_lang_changed(self, index: int):
         self.populate_words()
 
     def selected_words(self) -> List[str]:
@@ -37,7 +47,8 @@ class InContextDialog(QDialog):
         self.form.words_list.setCurrentItem(item)
 
     def populate_words(self):
-        self.sentences_db = read_sentences_db()
+        lang = self.form.langComboBox.currentData()
+        self.sentences_db = read_sentences_db(lang)
         self.refresh_words_list()
 
     def refresh_words_list(self):
@@ -54,7 +65,8 @@ class InContextDialog(QDialog):
     def add_words(self, words):
         for word in words:
             self.sentences_db.setdefault(word, [])
-        update_sentences_db(self.sentences_db)
+        lang = self.form.langComboBox.currentData()
+        update_sentences_db(lang, self.sentences_db)
         self.refresh_words_list()
 
     def on_add_word(self):
@@ -76,7 +88,8 @@ class InContextDialog(QDialog):
 
     def add_sentences(self, word: str, sentences: List[str]):
         self.sentences_db[word].extend(sentences)
-        update_sentences_db(self.sentences_db)
+        lang = self.form.langComboBox.currentData()
+        update_sentences_db(lang, self.sentences_db)
 
     def on_add_sentence(self):
         word = self.selected_word()
@@ -106,9 +119,10 @@ class InContextDialog(QDialog):
         getFile(self, title="Files to import", cb=import_files, multi=True)
 
     def on_sync_sentences(self):
+        lang = self.form.langComboBox.currentData()
         words = self.selected_words()
         for word in words:
-            sentences = fetch_sentences(word)
+            sentences = fetch_sentences(word, lang)
             # FIXME: just remove duplicates instead of clearing all sentences
             self.sentences_db[word] = []
             self.add_sentences(word, sentences)

@@ -7,3 +7,4 @@ venv/
 *.ankiaddon
 ankiprofile/
 src/dialog.py
+src/providers/vendor/

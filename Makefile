@@ -7,7 +7,7 @@ format:
 
 zip: incontext.ankiaddon
 
-incontext.ankiaddon: src/*
+incontext.ankiaddon: $(shell find src/ -type f) tdk
 	rm -f $@
 	rm -f src/meta.json
 	rm -rf src/__pycache__
@@ -17,6 +17,11 @@ forms: src/dialog.py
 
 src/dialog.py: designer/dialog.ui
 	pyuic5 $^ > $@
+
+tdk: src/providers/vendor/tdk.py
+
+src/providers/vendor/tdk.py:
+	curl https://raw.githubusercontent.com/abdnh/tdk/master/tdk.py -o $@
 
 clean:
 	rm -f *.pyc

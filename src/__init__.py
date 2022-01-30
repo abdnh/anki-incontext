@@ -16,7 +16,10 @@ def incontext_filter(
     if not filter_name.lower().startswith("incontext"):
         return field_text
 
-    return get_sentence(field_text)
+    options = dict(map(lambda o: o.split('='), filter_name.split()[1:]))
+    lang = options.get('lang', 'en')
+
+    return get_sentence(field_text, lang)
 
 
 def open_dialog():

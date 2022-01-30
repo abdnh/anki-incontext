@@ -3,90 +3,58 @@ import random
 import json
 from typing import Dict, List
 
-import requests
-from bs4 import BeautifulSoup
-
-sentences_file = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), "user_files/sentences.json"
-)
-
-# Ensure sentences.json exist
-if not os.path.exists(sentences_file):
-    with open(sentences_file, "w", encoding="utf-8") as f:
-        f.write("{}\n")
+from .providers import languages
 
 
-def read_sentences_db() -> Dict[str, List[str]]:
-    with open(sentences_file, "r", encoding="utf-8") as f:
+def sentences_file_for_lang(lang: str) -> str:
+    return os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), f"user_files/{lang}_sentences.json"
+    )
+
+
+langs = ["en", "tr"]
+
+
+def ensure_sentence_files_exist():
+    for lang in langs:
+        sentences_file = sentences_file_for_lang(lang)
+        if not os.path.exists(sentences_file):
+            with open(sentences_file, "w", encoding="utf-8") as f:
+                f.write("{}\n")
+
+
+ensure_sentence_files_exist()
+
+
+def read_sentences_db(lang: str) -> Dict[str, List[str]]:
+    with open(sentences_file_for_lang(lang), "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def update_sentences_db(db: Dict[str, List[str]]):
-    with open(sentences_file, "w", encoding="utf-8") as f:
+def update_sentences_db(lang: str, db: Dict[str, List[str]]):
+    with open(sentences_file_for_lang(lang), "w", encoding="utf-8") as f:
         json.dump(db, f, ensure_ascii=False, indent=4)
 
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
-}
-
-# FIXME: If we search for "numbered" for example, the Oxford dict site doesn't redirect us to the entry of "number" here,
-# while it does in a normal web browser. Changing the user agent string doesn't seem to help.
-
-
-def from_oxford(word: str):
-    try:
-        res = requests.get(
-            f"https://www.lexico.com/definition/{word}?locale=en", headers=headers
-        )
-    except:
-        return []
-    b = BeautifulSoup(res.content, "html.parser")
-    nodes = b.select(".ex")
+def fetch_sentences(word: str, lang: str) -> List[str]:
     sentences = []
-    for n in nodes:
-        sentences.append(n.get_text())
-    return sentences
-
-
-def from_oxford_learner(word: str):
-    try:
-        res = requests.get(
-            f"https://www.oxfordlearnersdictionaries.com/definition/english/{word}",
-            headers=headers,
-        )
-    except:
-        return []
-    b = BeautifulSoup(res.content, "html.parser")
-    nodes = b.select(".x")
-    sentences = []
-    for n in nodes:
-        sentences.append(n.get_text())
-    return sentences
-
-
-providers = [from_oxford, from_oxford_learner]
-
-
-def fetch_sentences(word: str) -> List[str]:
-    sentences = []
-    for provider in providers:
+    for provider in languages[lang]["providers"]:
         sentences.extend(provider(word))
     return sentences
 
 
-def get_sentence(word: str) -> str:
+def get_sentence(word: str, lang: str) -> str:
     word = word.strip()
-    local_db = read_sentences_db()
+    local_db = read_sentences_db(lang)
     if not word:
         # choose a sentence from all sentences in the DB if an empty word is given
         sentences = [s for l in local_db.values() for s in l]
     else:
         sentences = local_db.get(word, [])
         if len(sentences) <= 0:
-            sentences = fetch_sentences(word)
+            sentences = fetch_sentences(word, lang)
             local_db[word] = sentences
-            update_sentences_db(local_db)
+            update_sentences_db(lang, local_db)
     if len(sentences) > 0:
         sentence = random.choice(sentences)
         return sentence
