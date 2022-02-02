@@ -24,7 +24,7 @@ def incontext_filter(
 
 def open_dialog():
     dialog = InContextDialog(mw)
-    dialog.exec_()
+    dialog.exec()
 
 
 hooks.field_filter.append(incontext_filter)
