@@ -20,9 +20,10 @@ class InContextDialog(QDialog):
         self.form.words_list.currentItemChanged.connect(self.populate_word_sentences)
         self.form.add_word_button.clicked.connect(self.on_add_word)
         self.form.import_words_button.clicked.connect(self.on_import_words)
-        self.form.add_sentence_button.clicked.connect(self.on_add_sentence)
         self.form.import_sentences_button.clicked.connect(self.on_import_sentences)
+        self.form.import_text_button.clicked.connect(self.on_import_text)
         self.form.sync_sentences_button.clicked.connect(self.on_sync_sentences)
+        self.form.open_files_button.clicked.connect(self.on_open_files)
         for ident, lang in languages.items():
             self.form.langComboBox.addItem(lang.name, ident)
         self.populate_words()
@@ -91,32 +92,26 @@ class InContextDialog(QDialog):
         lang = self.form.langComboBox.currentData()
         update_sentences_db(lang, self.sentences_db)
 
-    def on_add_sentence(self) -> None:
-        word = self.selected_word()
-        if not word:
-            return
-        sentence = getOnlyText(
-            prompt="Type a sentence", parent=self, title="InContext"
-        ).strip()
-        if not sentence:
-            return
-        self.add_sentences(word, [sentence])
-        self.populate_word_sentences(self.form.words_list.currentItem())
-
     def on_import_sentences(self) -> None:
         word = self.selected_word()
         if not word:
             return
 
-        def import_files(filenames):
-            sentences = []
-            for filename in filenames:
-                with open(filename, "r", encoding="utf-8") as f:
-                    sentences.extend(map(lambda l: l.strip(), f.readlines()))
-            self.add_sentences(word, sentences)
-            self.populate_word_sentences(self.form.words_list.currentItem())
+        sentences = []
+        for sentence in self.form.textBox.toPlainText().split("\n"):
+            sentences.append(sentence)
+        self.add_sentences(word, sentences)
+        self.populate_word_sentences(self.form.words_list.currentItem())
 
-        getFile(self, title="Files to import", cb=import_files, multi=True)
+    def on_import_text(self) -> None:
+        for sentence in self.form.textBox.toPlainText().split("\n"):
+            for word in sentence.split():
+                d = self.sentences_db.get(word, [])
+                d.append(sentence)
+                self.sentences_db[word] = d
+        lang = self.form.langComboBox.currentData()
+        update_sentences_db(lang, self.sentences_db)
+        self.refresh_words_list()
 
     def on_sync_sentences(self) -> None:
         lang = self.form.langComboBox.currentData()
@@ -128,3 +123,16 @@ class InContextDialog(QDialog):
             self.add_sentences(word, sentences)
 
         self.populate_word_sentences(self.form.words_list.currentItem())
+
+    def on_open_files(self) -> None:
+        def import_files(filenames):
+            self.form.textBox.clear()
+            sentences = []
+            for filename in filenames:
+                with open(filename, "r", encoding="utf-8") as f:
+                    for line in f:
+                        sentence = line.strip()
+                        sentences.append(sentence)
+            self.form.textBox.setPlainText("\n".join(sentences))
+
+        getFile(self, title="Files to import", cb=import_files, multi=True)
