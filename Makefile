@@ -1,4 +1,4 @@
-.PHONY: all format clean zip typecheck
+.PHONY: all format clean zip typecheck tdk tatoeba forms
 
 all: zip
 
@@ -10,7 +10,7 @@ typecheck:
 
 zip: incontext.ankiaddon
 
-incontext.ankiaddon: $(shell find src/ -type f) tdk
+incontext.ankiaddon: $(shell find src/ -type f) tdk tatoeba
 	rm -f $@
 	rm -f src/meta.json
 	rm -rf src/__pycache__
@@ -25,6 +25,12 @@ tdk: src/providers/vendor/tdk.py
 
 src/providers/vendor/tdk.py:
 	curl https://raw.githubusercontent.com/abdnh/tdk/master/tdk.py -o $@
+
+tatoeba: src/providers/vendor/tur_sentences.tsv
+
+src/providers/vendor/tur_sentences.tsv:
+	curl https://downloads.tatoeba.org/exports/per_language/tur/tur_sentences.tsv.bz2 -o src/providers/vendor/tur_sentences.tsv.bz2
+	bzip2 -df $^
 
 clean:
 	rm -f *.pyc
