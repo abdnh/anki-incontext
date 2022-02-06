@@ -19,15 +19,18 @@ def from_tatoeba(word: str) -> List[str]:
     word = word.lower()
     pattern = re.compile(f"\\b{re.escape(word)}\\b")
     matches = []
-    with open(
-        os.path.join(VENDOR_DIR, "tur_sentences.tsv"), encoding="utf-8", newline=""
-    ) as f:
-        reader = csv.reader(f, delimiter="\t")
-        # FIXME: maybe we can do better than reading the file each time and iterating over all rows
-        for row in reader:
-            sentence = row[2]
-            if pattern.search(sentence):
-                matches.append(sentence)
+    try:
+        with open(
+            os.path.join(VENDOR_DIR, "tur_sentences.tsv"), encoding="utf-8", newline=""
+        ) as f:
+            reader = csv.reader(f, delimiter="\t")
+            # FIXME: maybe we can do better than reading the file each time and iterating over all rows
+            for row in reader:
+                sentence = row[2]
+                if pattern.search(sentence):
+                    matches.append(sentence)
+    except FileNotFoundError:
+        pass
     return matches
 
 
