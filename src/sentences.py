@@ -4,12 +4,11 @@ import json
 from typing import Dict, List
 
 from .providers import languages
+from . import consts
 
 
 def sentences_file_for_lang(lang: str) -> str:
-    return os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), f"user_files/{lang}_sentences.json"
-    )
+    return os.path.join(consts.USERFILES_DIR, f"{lang}_sentences.json")
 
 
 def ensure_sentence_files_exist() -> None:

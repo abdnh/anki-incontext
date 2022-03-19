@@ -1,18 +1,14 @@
-import importlib
 import os
 from typing import List
 import csv
 import re
 
-PROVIDERS_DIR = os.path.dirname(__file__)
-VENDOR_DIR = os.path.join(PROVIDERS_DIR, "vendor")
-spec = importlib.util.spec_from_file_location("tdk", os.path.join(VENDOR_DIR, "tdk.py"))
-tdk = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(tdk)
+from .. import consts
+from .vendor import TDK
 
 
 def from_tdk(word: str) -> List[str]:
-    return tdk.TDK(word).examples
+    return TDK(word).examples
 
 
 def from_tatoeba(word: str) -> List[str]:
@@ -21,7 +17,9 @@ def from_tatoeba(word: str) -> List[str]:
     matches = []
     try:
         with open(
-            os.path.join(VENDOR_DIR, "tur_sentences.tsv"), encoding="utf-8", newline=""
+            os.path.join(consts.VENDOR_DIR, "tur_sentences.tsv"),
+            encoding="utf-8",
+            newline="",
         ) as f:
             reader = csv.reader(f, delimiter="\t")
             # FIXME: maybe we can do better than reading the file each time and iterating over all rows

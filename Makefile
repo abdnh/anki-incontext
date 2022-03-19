@@ -8,18 +8,28 @@ format:
 typecheck:
 	python -m mypy src
 
-zip: incontext.ankiaddon
+PACKAGE_NAME := incontext
 
-incontext.ankiaddon: $(shell find src/ -type f) tdk tatoeba
+zip: $(PACKAGE_NAME).ankiaddon
+
+$(PACKAGE_NAME).ankiaddon: $(shell find src/ -type f) tdk tatoeba skell
 	rm -f $@
 	rm -f src/meta.json
 	rm -rf src/__pycache__
+	rm -rf src/providers/__pycache__
+	rm -rf src/providers/vendor/__pycache__
 	( cd src/; zip -r ../$@ * )
 
 forms: src/dialog.py
 
 src/dialog.py: designer/dialog.ui
 	pyuic5 $^ > $@
+
+# install in test profile
+install: zip
+	# rm -r ankiprofile/addons21/$(PACKAGE_NAME)
+	cp -r src/. ankiprofile/addons21/$(PACKAGE_NAME)
+
 
 tdk: src/providers/vendor/tdk.py
 
@@ -32,8 +42,13 @@ src/providers/vendor/tur_sentences.tsv:
 	curl https://downloads.tatoeba.org/exports/per_language/tur/tur_sentences.tsv.bz2 -o src/providers/vendor/tur_sentences.tsv.bz2
 	bzip2 -df $^
 
+skell: src/providers/vendor/skell_downloader.py
+
+src/providers/vendor/skell_downloader.py:
+	curl https://raw.githubusercontent.com/abdnh/skell-downloader/master/skell_downloader.py -o $@
+
 clean:
 	rm -f *.pyc
 	rm -f src/*.pyc
 	rm -f src/__pycache__
-	rm -f incontext.ankiaddon
+	rm -f $(PACKAGE_NAME).ankiaddon
