@@ -3,13 +3,12 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 
+from .. import consts
 from .vendor import SkellDownloader
 
 skell_downloader = SkellDownloader(lang="English")
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0"
-}
+headers = {"User-Agent": consts.USER_AGENT}
 
 # FIXME: If we search for "numbered" for example, the Oxford dict site doesn't redirect us to the entry of "number" here,
 # while it does in a normal web browser. Changing the user agent string doesn't seem to help.
