@@ -27,8 +27,9 @@ Fetched sentences are saved locally in the `user_files/{lang}_sentences.json` fi
 
 The add-on has a graphical interface to manage sentences that can be accessed from **Tools > InContext**.
 
-
 Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Era5ksSa59xjB3ZbVQsdoTbQEigzh6Bi/view?usp=sharing
+
+This add-on is likely to undergo many changes as I figure out how to make the perfect sentence bank that satisfy my needs.
 
 ## TODO
 - [ ] Improve interface.
