@@ -3,6 +3,9 @@ from typing import List
 import csv
 import re
 
+import requests
+from bs4 import BeautifulSoup
+
 from .. import consts
 from .vendor import TDK
 
@@ -32,5 +35,17 @@ def from_tatoeba(word: str) -> List[str]:
     return matches
 
 
+def from_seslisozluk(word: str) -> List[str]:
+    try:
+        req = requests.get(
+            f"https://www.seslisozluk.net/{word}-nedir-ne-demek/",
+            headers={"User-Agent": consts.USER_AGENT},
+        )
+    except:
+        return []
+    soup = BeautifulSoup(req.text, "html.parser")
+    return [e.get_text() for e in soup.select('q[lang="tr"]')]
+
+
 NAME = "Turkish"
-PROVIDERS = [from_tdk, from_tatoeba]
+PROVIDERS = [from_tdk, from_tatoeba, from_seslisozluk]
