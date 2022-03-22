@@ -6,5 +6,5 @@ __pycache__/
 venv/
 *.ankiaddon
 ankiprofile/
-src/dialog.py
+src/form.py
 src/providers/vendor/

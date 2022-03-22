@@ -20,9 +20,9 @@ $(PACKAGE_NAME).ankiaddon: $(shell find src/ -type f) tdk tatoeba skell
 	rm -rf src/providers/vendor/__pycache__
 	( cd src/; zip -r ../$@ * )
 
-forms: src/dialog.py
+forms: src/form.py
 
-src/dialog.py: designer/dialog.ui
+src/form.py: designer/form.ui
 	pyuic5 $^ > $@
 
 # install in test profile

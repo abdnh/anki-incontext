@@ -3,7 +3,7 @@ from typing import List
 from aqt.qt import *
 from aqt.utils import getOnlyText, getFile
 
-from .dialog import Ui_Dialog
+from .form import Ui_Dialog
 from .sentences import read_sentences_db, update_sentences_db, fetch_sentences
 from .providers import languages
 
