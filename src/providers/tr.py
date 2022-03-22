@@ -35,6 +35,8 @@ def from_tatoeba(word: str) -> List[str]:
     return matches
 
 
+# NOTE: sometimes returns English sentences because the site erroneously sets `lang=tr` on them
+# TODO: add GUI option to delete individual sentences
 def from_seslisozluk(word: str) -> List[str]:
     try:
         req = requests.get(
