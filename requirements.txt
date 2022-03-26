@@ -1,6 +1,6 @@
 requests
-aqt
-anki
+aqt>=2.1.49
+anki>=2.1.49
 black
 beautifulsoup4
 mypy
