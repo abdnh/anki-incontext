@@ -4,3 +4,5 @@ anki>=2.1.49
 black
 beautifulsoup4
 mypy
+ankibuild
+git+https://github.com/abdnh/ankibuild#egg=ankibuild[qt5,qt6]

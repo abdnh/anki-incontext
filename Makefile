@@ -2,34 +2,20 @@
 
 all: zip
 
+zip: tdk tatoeba skell
+	python -m ankibuild --type package --install --qt all --noconsts
+
+ankiweb:
+	python -m ankibuild --type ankiweb --install --qt all --noconsts
+
+run: zip
+	python -m ankirun
+
 format:
 	python -m black src
 
 typecheck:
 	python -m mypy src
-
-PACKAGE_NAME := incontext
-
-zip: $(PACKAGE_NAME).ankiaddon
-
-$(PACKAGE_NAME).ankiaddon: $(shell find src/ -type f) tdk tatoeba skell
-	rm -f $@
-	rm -f src/meta.json
-	rm -rf src/__pycache__
-	rm -rf src/providers/__pycache__
-	rm -rf src/providers/vendor/__pycache__
-	( cd src/; zip -r ../$@ * )
-
-forms: src/form.py
-
-src/form.py: designer/form.ui
-	pyuic5 $^ > $@
-
-# install in test profile
-install: zip
-	# rm -r ankiprofile/addons21/$(PACKAGE_NAME)
-	cp -r src/. ankiprofile/addons21/$(PACKAGE_NAME)
-
 
 tdk: src/providers/vendor/tdk.py
 
@@ -48,7 +34,4 @@ src/providers/vendor/skell_downloader.py:
 	curl https://raw.githubusercontent.com/abdnh/skell-downloader/master/skell_downloader.py -o $@
 
 clean:
-	rm -f *.pyc
-	rm -f src/*.pyc
-	rm -f src/__pycache__
-	rm -f $(PACKAGE_NAME).ankiaddon
+	rm -rf build/

@@ -2,8 +2,13 @@ from typing import List
 
 from aqt.qt import *
 from aqt.utils import getOnlyText, getFile
+from aqt.qt import qtmajor
 
-from .form import Ui_Dialog
+if qtmajor > 5:
+    from .form_qt6 import Ui_Dialog
+else:
+    from .form_qt5 import Ui_Dialog
+
 from .sentences import read_sentences_db, update_sentences_db, fetch_sentences
 from .providers import languages
 
