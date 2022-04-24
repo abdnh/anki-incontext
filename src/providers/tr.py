@@ -35,8 +35,6 @@ def from_tatoeba(word: str) -> List[str]:
     return matches
 
 
-# NOTE: sometimes returns English sentences because the site erroneously sets `lang=tr` on them
-# TODO: add GUI option to delete individual sentences
 def from_seslisozluk(word: str) -> List[str]:
     try:
         req = requests.get(
@@ -46,7 +44,12 @@ def from_seslisozluk(word: str) -> List[str]:
     except:
         return []
     soup = BeautifulSoup(req.text, "html.parser")
-    return [e.get_text() for e in soup.select('q[lang="tr"]')]
+    sentences = []
+    for e in soup.select('.ordered-list q[lang="tr"]'):
+        sentences.append(e.get_text())
+    # for e in soup.select('.similar.ordered-list + dd q[lang=en]'):
+    #     sentences.append(e.get_text())
+    return sentences
 
 
 NAME = "Turkish"
