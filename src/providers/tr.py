@@ -52,5 +52,21 @@ def from_seslisozluk(word: str) -> List[str]:
     return sentences
 
 
+# TODO: generalize to all supported languages
+def from_glosbe(word: str) -> List[str]:
+    try:
+        req = requests.get(
+            f"https://glosbe.com/tr/en/{word}",
+            headers={"User-Agent": consts.USER_AGENT},
+        )
+    except:
+        return []
+    soup = BeautifulSoup(req.text, "html.parser")
+    sentences = []
+    for e in soup.select("#tmem_first_examples .tmem__item [lang=tr]"):
+        sentences.append(e.get_text().strip())
+    return sentences
+
+
 NAME = "Turkish"
-PROVIDERS = [from_tdk, from_tatoeba, from_seslisozluk]
+PROVIDERS = [from_tdk, from_tatoeba, from_seslisozluk, from_glosbe]
