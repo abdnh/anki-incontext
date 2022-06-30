@@ -3,6 +3,6 @@ aqt==2.1.49
 requests==2.28.1
 beautifulsoup4==4.11.1
 ankibuild
-git+https://github.com/abdnh/ankibuild@60d991ed24c3fa122aa6830f53d236ec9252246f#egg=ankibuild[qt5,qt6]
+git+https://github.com/abdnh/ankibuild@54a837d942859aaa9512ffe7b27b483959d75d64#egg=ankibuild[qt5,qt6]
 black==22.6.0
 mypy==0.961

@@ -3,10 +3,10 @@
 all: zip
 
 zip: tdk tatoeba skell
-	python -m ankibuild --type package --install --qt all --noconsts
+	python -m ankibuild --type package --qt all --noconsts
 
 ankiweb:
-	python -m ankibuild --type ankiweb --install --qt all --noconsts
+	python -m ankibuild --type ankiweb --qt all --noconsts
 
 run: zip
 	python -m ankirun
