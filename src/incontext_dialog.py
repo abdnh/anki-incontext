@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Sequence
 
+from aqt.main import AnkiQt
 from aqt.qt import *
 from aqt.qt import qtmajor
 from aqt.utils import getFile, getOnlyText
@@ -7,14 +8,14 @@ from aqt.utils import getFile, getOnlyText
 if qtmajor > 5:
     from .forms.form_qt6 import Ui_Dialog
 else:
-    from .forms.form_qt5 import Ui_Dialog
+    from .forms.form_qt5 import Ui_Dialog  # type: ignore
 
 from .providers import languages
 from .sentences import fetch_sentences, read_sentences_db, update_sentences_db
 
 
 class InContextDialog(QDialog):
-    def __init__(self, mw):
+    def __init__(self, mw: AnkiQt):
         self.mw = mw
         QDialog.__init__(self)
         self.form = Ui_Dialog()
@@ -22,17 +23,17 @@ class InContextDialog(QDialog):
         self.setup_ui()
 
     def setup_ui(self) -> None:
-        self.form.words_list.currentItemChanged.connect(self.populate_word_sentences)
-        self.form.add_word_button.clicked.connect(self.on_add_word)
-        self.form.import_words_button.clicked.connect(self.on_import_words)
-        self.form.import_sentences_button.clicked.connect(self.on_import_sentences)
-        self.form.import_text_button.clicked.connect(self.on_import_text)
-        self.form.sync_sentences_button.clicked.connect(self.on_sync_sentences)
-        self.form.open_files_button.clicked.connect(self.on_open_files)
+        qconnect(self.form.words_list.currentItemChanged, self.populate_word_sentences)
+        qconnect(self.form.add_word_button.clicked, self.on_add_word)
+        qconnect(self.form.import_words_button.clicked, self.on_import_words)
+        qconnect(self.form.import_sentences_button.clicked, self.on_import_sentences)
+        qconnect(self.form.import_text_button.clicked, self.on_import_text)
+        qconnect(self.form.sync_sentences_button.clicked, self.on_sync_sentences)
+        qconnect(self.form.open_files_button.clicked, self.on_open_files)
         for ident, lang in languages.items():
             self.form.langComboBox.addItem(lang.name, ident)
         self.populate_words()
-        self.form.langComboBox.currentIndexChanged.connect(self.on_lang_changed)
+        qconnect(self.form.langComboBox.currentIndexChanged, self.on_lang_changed)
 
     def on_lang_changed(self, index: int) -> None:
         self.populate_words()
@@ -49,7 +50,7 @@ class InContextDialog(QDialog):
         return item.text() if item else ""
 
     def select_word(self, word: str) -> None:
-        item = self.form.words_list.findItems(word, Qt.MatchFlag.MatchFixedString)[0]
+        item = self.form.words_list.findItems(word, Qt.MatchFlag.MatchFixedString)[0]  # type: ignore[arg-type]
         self.form.words_list.setCurrentItem(item)
 
     def populate_words(self) -> None:
@@ -68,7 +69,7 @@ class InContextDialog(QDialog):
         if current:
             self.form.sentences_list.addItems(self.sentences_db[current.text()])
 
-    def add_words(self, words) -> None:
+    def add_words(self, words: List[str]) -> None:
         for word in words:
             self.sentences_db.setdefault(word, [])
         lang = self.form.langComboBox.currentData()
@@ -83,7 +84,7 @@ class InContextDialog(QDialog):
         self.select_word(word)
 
     def on_import_words(self) -> None:
-        def import_files(filenames):
+        def import_files(filenames: Sequence[str]) -> None:
             words = []
             for filename in filenames:
                 with open(filename, "r", encoding="utf-8") as f:
@@ -106,7 +107,7 @@ class InContextDialog(QDialog):
         for sentence in self.form.textBox.toPlainText().split("\n"):
             sentences.append(sentence)
         self.add_sentences(word, sentences)
-        self.populate_word_sentences(self.form.words_list.currentItem())
+        self.populate_word_sentences(self.form.words_list.currentItem())  # type: ignore[arg-type]
 
     def on_import_text(self) -> None:
         for sentence in self.form.textBox.toPlainText().split("\n"):
@@ -127,10 +128,10 @@ class InContextDialog(QDialog):
             self.sentences_db[word] = []
             self.add_sentences(word, sentences)
 
-        self.populate_word_sentences(self.form.words_list.currentItem())
+        self.populate_word_sentences(self.form.words_list.currentItem())  # type: ignore[arg-type]
 
     def on_open_files(self) -> None:
-        def import_files(filenames):
+        def import_files(filenames: Sequence[str]) -> None:
             self.form.textBox.clear()
             sentences = []
             for filename in filenames:

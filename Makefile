@@ -1,4 +1,4 @@
-.PHONY: all clean zip typecheck tdk tatoeba forms fix
+.PHONY: all clean zip tdk tatoeba forms fix mypy
 
 all: zip
 
@@ -15,8 +15,8 @@ fix:
 	python -m black src --exclude="forms|vendor"
 	python -m isort src
 
-typecheck:
-	python -m mypy src
+mypy:
+	python -m mypy .
 
 tdk: src/providers/vendor/tdk.py
 

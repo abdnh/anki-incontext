@@ -22,7 +22,7 @@ def incontext_filter(
     return get_sentence(field_text, lang)
 
 
-def open_dialog():
+def open_dialog() -> None:
     dialog = InContextDialog(mw)
     dialog.exec()
 
