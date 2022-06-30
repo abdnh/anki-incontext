@@ -1,10 +1,10 @@
 from anki import hooks
 from anki.template import TemplateRenderContext
-from aqt.qt import *
 from aqt import mw
+from aqt.qt import *
 
-from .sentences import get_sentence
 from .incontext_dialog import InContextDialog
+from .sentences import get_sentence
 
 
 def incontext_filter(

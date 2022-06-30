@@ -1,10 +1,10 @@
+import json
 import os
 import random
-import json
 from typing import Dict, List
 
-from .providers import languages
 from . import consts
+from .providers import languages
 
 
 def sentences_file_for_lang(lang: str) -> str:

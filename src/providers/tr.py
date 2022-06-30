@@ -1,7 +1,7 @@
-import os
-from typing import List
 import csv
+import os
 import re
+from typing import List
 
 import requests
 from bs4 import BeautifulSoup

@@ -1,4 +1,4 @@
-.PHONY: all format clean zip typecheck tdk tatoeba forms
+.PHONY: all clean zip typecheck tdk tatoeba forms fix
 
 all: zip
 
@@ -11,8 +11,9 @@ ankiweb:
 run: zip
 	python -m ankirun
 
-format:
-	python -m black src
+fix:
+	python -m black src --exclude="forms|vendor"
+	python -m isort src
 
 typecheck:
 	python -m mypy src

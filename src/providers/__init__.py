@@ -1,8 +1,8 @@
-import os
 import importlib
 import importlib.util
-from typing import Dict, Callable, List
+import os
 from dataclasses import dataclass
+from typing import Callable, Dict, List
 
 from .. import consts
 
