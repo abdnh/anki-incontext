@@ -12,7 +12,7 @@ def sentences_file_for_lang(lang: str) -> str:
 
 
 def ensure_sentence_files_exist() -> None:
-    for lang in languages.keys():
+    for lang in languages:
         sentences_file = sentences_file_for_lang(lang)
         if not os.path.exists(sentences_file):
             with open(sentences_file, "w", encoding="utf-8") as f:
@@ -54,5 +54,4 @@ def get_sentence(word: str, lang: str) -> str:
     if len(sentences) > 0:
         sentence = random.choice(sentences)
         return sentence
-    else:
-        return ""
+    return ""

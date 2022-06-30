@@ -5,13 +5,13 @@ from aqt.qt import *
 from aqt.qt import qtmajor
 from aqt.utils import getFile, getOnlyText
 
+from .providers import languages
+from .sentences import fetch_sentences, read_sentences_db, update_sentences_db
+
 if qtmajor > 5:
     from .forms.form_qt6 import Ui_Dialog
 else:
     from .forms.form_qt5 import Ui_Dialog  # type: ignore
-
-from .providers import languages
-from .sentences import fetch_sentences, read_sentences_db, update_sentences_db
 
 
 class InContextDialog(QDialog):
@@ -50,6 +50,7 @@ class InContextDialog(QDialog):
         return item.text() if item else ""
 
     def select_word(self, word: str) -> None:
+        # pylint: disable=no-member
         item = self.form.words_list.findItems(word, Qt.MatchFlag.MatchFixedString)[0]  # type: ignore[arg-type]
         self.form.words_list.setCurrentItem(item)
 

@@ -1,0 +1,26 @@
+[MASTER]
+extension-pkg-whitelist=PyQt6,PyQt5
+ignore-paths = venv|ankiprofile|src/forms|src/providers/vendor
+
+[REPORTS]
+output-format=colorized
+
+[MESSAGES CONTROL]
+disable=
+  missing-module-docstring,
+  missing-class-docstring,
+  missing-function-docstring,
+  wildcard-import,
+  unused-wildcard-import,
+  unused-argument,
+  redefined-outer-name,
+  fixme,
+  line-too-long,
+  invalid-name,
+  attribute-defined-outside-init,
+  bare-except,
+
+[BASIC]
+good-names =
+  i,
+  mw,

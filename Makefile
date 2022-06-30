@@ -1,4 +1,4 @@
-.PHONY: all clean zip tdk tatoeba forms fix mypy
+.PHONY: all clean zip tdk tatoeba forms fix mypy pylint
 
 all: zip
 
@@ -17,6 +17,9 @@ fix:
 
 mypy:
 	python -m mypy .
+
+pylint:
+	python -m pylint src
 
 tdk: src/providers/vendor/tdk.py
 
