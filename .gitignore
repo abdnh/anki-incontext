@@ -8,3 +8,5 @@ ankiprofile/
 src/providers/vendor/
 build/
 src/forms/*_qt[5,6].py
+tmp/
+src/user_files/*.db

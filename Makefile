@@ -26,10 +26,10 @@ tdk: src/providers/vendor/tdk.py
 src/providers/vendor/tdk.py:
 	curl https://raw.githubusercontent.com/abdnh/tdk/master/tdk.py -o $@
 
-tatoeba: src/providers/vendor/tur_sentences.tsv
+tatoeba: src/user_files/tatoeba/tur_sentences.tsv
 
-src/providers/vendor/tur_sentences.tsv:
-	curl https://downloads.tatoeba.org/exports/per_language/tur/tur_sentences.tsv.bz2 -o src/providers/vendor/tur_sentences.tsv.bz2
+src/user_files/tatoeba/tur_sentences.tsv:
+	curl https://downloads.tatoeba.org/exports/per_language/tur/tur_sentences.tsv.bz2 -o src/user_files/tatoeba/tur_sentences.tsv.bz2
 	bzip2 -df $^
 
 skell: src/providers/vendor/skell_downloader.py

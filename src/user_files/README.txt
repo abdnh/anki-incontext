@@ -1,3 +1,3 @@
 This folder contains user files that are preserved when updating the add-on.
 
-Currently, fetched sentences are stored in sentences.json here.
+Currently, fetched sentences are cached in the sentences.db file here.
