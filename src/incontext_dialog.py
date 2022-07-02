@@ -60,8 +60,11 @@ class InContextDialog(QDialog):
 
     def select_word(self, word: str) -> None:
         # pylint: disable=no-member
-        item = self.form.words_list.findItems(word, Qt.MatchFlag.MatchFixedString)[0]  # type: ignore[arg-type]
-        self.form.words_list.setCurrentItem(item)
+        try:
+            item = self.form.words_list.findItems(word, Qt.MatchFlag.MatchFixedString)[0]  # type: ignore[arg-type]
+            self.form.words_list.setCurrentItem(item)
+        except IndexError:
+            pass
 
     def populate_words(self) -> None:
         self.refresh_words_list()
