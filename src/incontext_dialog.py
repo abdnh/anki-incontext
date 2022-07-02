@@ -6,7 +6,7 @@ from aqt.qt import qtmajor
 from aqt.utils import getFile, getOnlyText
 
 from .db import Sentence, SentenceDB
-from .providers import get_languages, get_sentence
+from .providers import get_languages, get_providers_for_language, get_sentence
 
 if qtmajor > 5:
     from .forms.form_qt6 import Ui_Dialog
@@ -33,10 +33,18 @@ class InContextDialog(QDialog):
         qconnect(self.form.open_files_button.clicked, self.on_open_files)
         for (lang_code, lang_name) in get_languages():
             self.form.langComboBox.addItem(lang_name, lang_code)
+        self.populate_providers()
         self.populate_words()
         qconnect(self.form.langComboBox.currentIndexChanged, self.on_lang_changed)
+        qconnect(
+            self.form.providerComboBox.currentIndexChanged, self.on_provider_changed
+        )
 
     def on_lang_changed(self, index: int) -> None:
+        self.populate_providers()
+        self.populate_words()
+
+    def on_provider_changed(self) -> None:
         self.populate_words()
 
     def selected_words(self) -> List[str]:
@@ -58,13 +66,28 @@ class InContextDialog(QDialog):
     def populate_words(self) -> None:
         self.refresh_words_list()
 
+    def populate_providers(self) -> None:
+        self.form.providerComboBox.clear()
+        self.form.providerComboBox.addItem("All")
+        for provider in get_providers_for_language(
+            self.form.langComboBox.currentData()
+        ):
+            self.form.providerComboBox.addItem(provider)
+
     def refresh_words_list(self) -> None:
         lang = self.form.langComboBox.currentData()
+        provider = (
+            self.form.providerComboBox.currentText()
+            if self.form.providerComboBox.currentIndex()
+            else None
+        )
         self.form.words_list.clear()
         self.form.words_list.addItems(
             {
                 sentence.word
-                for sentence in self.sentences_db.get_sentences(language=lang)
+                for sentence in self.sentences_db.get_sentences(
+                    language=lang, provider=provider
+                )
             }
         )
 
@@ -74,20 +97,32 @@ class InContextDialog(QDialog):
         self.form.sentences_list.clear()
         if current:
             lang = self.form.langComboBox.currentData()
+            provider = (
+                self.form.providerComboBox.currentText()
+                if self.form.providerComboBox.currentIndex()
+                else None
+            )
             word = current.text()
             self.form.sentences_list.addItems(
                 {
                     sentence.text
                     for sentence in self.sentences_db.get_sentences(
-                        language=lang, word=word
+                        word=word,
+                        language=lang,
+                        provider=provider,
                     )
                 }
             )
 
     def add_words(self, words: List[str]) -> None:
         lang = self.form.langComboBox.currentData()
+        provider = (
+            self.form.providerComboBox.currentText()
+            if self.form.providerComboBox.currentIndex()
+            else None
+        )
         for word in words:
-            get_sentence(word, lang)
+            get_sentence(word, lang, provider)
         self.refresh_words_list()
 
     def on_add_word(self) -> None:
@@ -138,9 +173,14 @@ class InContextDialog(QDialog):
 
     def on_sync_sentences(self) -> None:
         lang = self.form.langComboBox.currentData()
+        provider = (
+            self.form.providerComboBox.currentText()
+            if self.form.providerComboBox.currentIndex()
+            else None
+        )
         words = self.selected_words()
         for word in words:
-            get_sentence(word, lang, None, use_cache=False)
+            get_sentence(word, lang, provider, use_cache=False)
 
         self.populate_word_sentences(self.form.words_list.currentItem())  # type: ignore[arg-type]
 

@@ -66,3 +66,11 @@ def get_languages() -> list[tuple[str, str]]:
     for provider in PROVIDERS:
         langs.update(provider.supported_languages)
     return [(code, iso639_to_name(code)) for code in langs]
+
+
+def get_providers_for_language(language: str) -> list[str]:
+    providers = []
+    for provider in PROVIDERS:
+        if language in provider.supported_languages:
+            providers.append(provider.name)
+    return providers

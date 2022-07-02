@@ -19,7 +19,9 @@ def incontext_filter(
 
     options = dict(map(lambda o: o.split("="), filter_name.split()[1:]))
     lang = options.get("lang", "en")
-    sentence = get_sentence(word=field_text, language=lang)
+    # TODO: support multiple comma-separted providers
+    provider = options.get("provider", None)
+    sentence = get_sentence(word=field_text, language=lang, provider=provider)
     return sentence.text if sentence else ""
 
 
