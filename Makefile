@@ -2,10 +2,10 @@
 
 all: zip
 
-zip: vendor
+zip:
 	python -m ankibuild --type package --qt all --noconsts
 
-ankiweb: vendor
+ankiweb:
 	python -m ankibuild --type ankiweb --qt all --noconsts
 
 run:
