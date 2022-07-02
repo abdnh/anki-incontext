@@ -1,7 +1,7 @@
 anki==2.1.49
 aqt==2.1.49
 requests==2.28.1
-types-requests 2.28.0
+types-requests==2.28.0
 beautifulsoup4==4.11.1
 black==22.6.0
 mypy==0.961
