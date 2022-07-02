@@ -12,12 +12,18 @@ from .provider import SentenceProvider
 class TatoebaProvider(SentenceProvider):
     name = "tatoeba"
     # TODO: add a way to indicate support for "all" or unspecified list of languages
-    supported_languages = {"en", "tr"}
+    supported_languages = {"en", "tr", "ja", "ko", "zh"}
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
         word = word.lower()
-        pattern = re.compile(f"\\b{re.escape(word)}\\b")
+        # TODO: use a proper tokenizer/morphemizer for CJK languages - see MorphMan add-on
+        pattern_str = (
+            re.escape(word)
+            if language in ("ja", "ko", "zh")
+            else f"\\b{re.escape(word)}\\b"
+        )
+        pattern = re.compile(pattern_str)
         try:
             # Tatoeba uses ISO 639-3 codes
             alpha_3 = pycountry.languages.get(alpha_2=language).alpha_3.lower()
