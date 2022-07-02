@@ -1,0 +1,2 @@
+class InContextError(Exception):
+    pass

@@ -18,19 +18,32 @@ You can specify the language using the `lang` option:
 
 Currently supported values are `en` (English) and `tr` (Turkish). `en` is the default.
 
-Currently, English example sentences are fetched from the [Oxford English Dictionaries](https://www.lexico.com/) and the [Oxford Learner's Dictionaries](https://www.oxfordlearnersdictionaries.com/).
-Turkish sentences are fetched from https://sozluk.gov.tr/
+Sentences are fetched from multiple sources such as https://www.lexico.com/ (for English) and https://sozluk.gov.tr (for Turkish).
+You can show sentences from only a certain source by using the `provider` option, like this:
 
-More sites and languages may be supported in the future.
+```
+{{incontext lang=en provider=lexico:Front}}
+```
 
-Fetched sentences are saved locally in the `user_files/{lang}_sentences.json` files and used in subsequent reviews of the same card.
+For a list of supported sources, see the [providers](./src/providers/) folder.
+The identifier of each provider is defined by a `name` variable inside each provider class.
+A list of available providers is also shown in the [interface](#interface).
 
-The add-on has a graphical interface to manage sentences that can be accessed from **Tools > InContext**.
+More sites and languages will be added in the future.
+
+## Interface
+
+The add-on has an experimental graphical interface to manage sentences that can be accessed from **Tools > InContext**.
+
+## Demo
 
 Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Era5ksSa59xjB3ZbVQsdoTbQEigzh6Bi/view?usp=sharing
 
-**Disclaimer: The add-on is very experimental currently and the storage format is likely to undergo big changes.**
+## Storage
+
+In the first review of a card that has the InContext filter, sentences will be fetched from the language providers and saved in the `user_files/sentences.db` file. Subsequent reviews will use those saved sentences (if any) and avoid making more requests to the providers. You can anyway update saved sentences manually from the GUI.
 
 ## TODO
+
 - [ ] Improve interface.
 - [ ] Support more languages and fetchers.

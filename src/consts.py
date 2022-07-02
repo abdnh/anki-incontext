@@ -1,7 +1,7 @@
-import os
+from pathlib import Path
 
-ADDON_DIR = os.path.dirname(__file__)
-USERFILES_DIR = os.path.join(ADDON_DIR, "user_files")
-PROVIDERS_DIR = os.path.join(ADDON_DIR, "providers")
-VENDOR_DIR = os.path.join(PROVIDERS_DIR, "vendor")
-USER_AGENT = "Mozilla/5.0 (compatible; Anki)"
+ADDON_DIR = Path(__file__).parent
+USERFILES_DIR = ADDON_DIR / "user_files"
+PROVIDERS_DIR = ADDON_DIR / "providers"
+VENDOR_DIR = PROVIDERS_DIR / "vendor"
+DB_FILE = USERFILES_DIR / "sentences.db"

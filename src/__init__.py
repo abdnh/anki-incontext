@@ -1,10 +1,18 @@
+import sys
+
 from anki import hooks
 from anki.template import TemplateRenderContext
 from aqt import mw
 from aqt.qt import *
 
+from . import consts
+
+sys.path.append(str(consts.VENDOR_DIR))
+
+# pylint: disable=wrong-import-position
+from .db import SentenceDB
 from .incontext_dialog import InContextDialog
-from .sentences import get_sentence
+from .providers import get_sentence, init_providers
 
 
 def incontext_filter(
@@ -18,12 +26,14 @@ def incontext_filter(
 
     options = dict(map(lambda o: o.split("="), filter_name.split()[1:]))
     lang = options.get("lang", "en")
-
-    return get_sentence(field_text, lang)
+    # TODO: support multiple comma-separted providers
+    provider = options.get("provider", None)
+    sentence = get_sentence(word=field_text, language=lang, provider=provider)
+    return sentence.text if sentence else ""
 
 
 def open_dialog() -> None:
-    dialog = InContextDialog(mw)
+    dialog = InContextDialog(mw, sentences_db)
     dialog.exec()
 
 
@@ -33,4 +43,6 @@ if mw:
     action = QAction(mw)
     action.setText("InContext")
     mw.form.menuTools.addAction(action)
+    sentences_db = SentenceDB()
+    init_providers(sentences_db)
     qconnect(action.triggered, open_dialog)

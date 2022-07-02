@@ -7,4 +7,7 @@ venv/
 ankiprofile/
 src/providers/vendor/
 build/
-src/forms/*_qt[5,6].py
+src/forms/*_qt[56].py
+tmp/
+src/user_files/**/*.db
+src/user_files/**/*.tsv
