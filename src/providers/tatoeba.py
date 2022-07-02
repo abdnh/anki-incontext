@@ -2,6 +2,8 @@ import csv
 import os
 import re
 
+import pycountry
+
 from .. import consts
 from ..db import Sentence
 from .provider import SentenceProvider
@@ -17,10 +19,11 @@ class TatoebaProvider(SentenceProvider):
         word = word.lower()
         pattern = re.compile(f"\\b{re.escape(word)}\\b")
         try:
+            # Tatoeba uses ISO 639-3 codes
+            alpha_3 = pycountry.languages.get(alpha_2=language).alpha_3.lower()
             with open(
-                # FIXME: Tatoeba uses ISO 639-3 codes while we currently use ISO 639-1
                 os.path.join(
-                    consts.USERFILES_DIR, "tatoeba", f"{language}_sentences.tsv"
+                    consts.USERFILES_DIR, "tatoeba", f"{alpha_3}_sentences.tsv"
                 ),
                 encoding="utf-8",
                 newline="",

@@ -3,6 +3,8 @@ from __future__ import annotations
 import random
 from typing import Type
 
+import pycountry
+
 from ..db import Sentence, SentenceDB
 from .glosbe import GlosbeProvider
 from .lexico import LexicoProvider
@@ -42,7 +44,7 @@ def get_sentence(
         if language:
             matched &= (
                 language in provider_obj.supported_languages
-                or iso639_to_name(language) in provider_obj.supported_languages
+                or langcode_to_name(language) in provider_obj.supported_languages
             )
         if provider:
             matched &= provider == provider_obj.name
@@ -56,16 +58,18 @@ def get_sentence(
     return sentence
 
 
-# TODO: maybe use the iso-639 or langcodes package after we add many more languages and add support for custom providers
-def iso639_to_name(lang_code: str) -> str:
-    return {"en": "English", "tr": "Turkish"}.get(lang_code, lang_code)
+def langcode_to_name(lang_code: str) -> str:
+    try:
+        return pycountry.languages.get(alpha_2=lang_code).name
+    except AttributeError:
+        return lang_code
 
 
 def get_languages() -> list[tuple[str, str]]:
     langs = set()
     for provider in PROVIDERS:
         langs.update(provider.supported_languages)
-    return [(code, iso639_to_name(code)) for code in langs]
+    return [(code, langcode_to_name(code)) for code in langs]
 
 
 def get_providers_for_language(language: str) -> list[str]:

@@ -1,0 +1,4 @@
+[submodule "submodules/pycountry"]
+	path = submodules/pycountry
+	url = https://github.com/flyingcircusio/pycountry
+	shallow = true

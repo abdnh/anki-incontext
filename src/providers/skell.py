@@ -1,6 +1,6 @@
 from ..db import Sentence
 from .provider import SentenceProvider
-from .vendor import SkellDownloader
+from .vendor.skell_downloader import SkellDownloader
 
 
 class SkellProvider(SentenceProvider):

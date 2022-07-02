@@ -1,6 +1,6 @@
 from ..db import Sentence
 from .provider import SentenceProvider
-from .vendor import TDK
+from .vendor.tdk import TDK
 
 
 class TDKProvider(SentenceProvider):

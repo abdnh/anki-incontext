@@ -1,8 +1,15 @@
+import sys
+
 from anki import hooks
 from anki.template import TemplateRenderContext
 from aqt import mw
 from aqt.qt import *
 
+from . import consts
+
+sys.path.append(str(consts.VENDOR_DIR))
+
+# pylint: disable=wrong-import-position
 from .db import SentenceDB
 from .incontext_dialog import InContextDialog
 from .providers import get_sentence, init_providers
