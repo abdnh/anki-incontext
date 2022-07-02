@@ -15,3 +15,6 @@ class SkellProvider(SentenceProvider):
         for example in downloader.get_examples(word):
             sentences.append(Sentence(str(example), word, language, self.name))
         return sentences
+
+    def get_source(self, word: str, language: str) -> str:
+        return f"https://skell.sketchengine.eu/#result?lang={language}&query={word}&f=concordance"

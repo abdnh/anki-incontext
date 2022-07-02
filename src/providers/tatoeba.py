@@ -43,3 +43,9 @@ class TatoebaProvider(SentenceProvider):
         except FileNotFoundError:
             pass
         return sentences
+
+    def get_source(self, word: str, language: str) -> str:
+        alpha_3 = pycountry.languages.get(alpha_2=language).alpha_3.lower()
+        return (
+            f"https://tatoeba.org/en/sentences/search?from={alpha_3}&query={word}&to="
+        )

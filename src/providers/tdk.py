@@ -13,3 +13,6 @@ class TDKProvider(SentenceProvider):
             Sentence(text, word, language, self.name) for text in TDK(word).examples
         )
         return sentences
+
+    def get_source(self, word: str, language: str) -> str:
+        return "https://sozluk.gov.tr/"

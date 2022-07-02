@@ -12,7 +12,7 @@ sys.path.append(str(consts.VENDOR_DIR))
 # pylint: disable=wrong-import-position
 from .db import SentenceDB
 from .incontext_dialog import InContextDialog
-from .providers import get_sentence, init_providers
+from .providers import get_provider, get_sentence, init_providers
 
 
 def incontext_filter(
@@ -29,7 +29,14 @@ def incontext_filter(
     # TODO: support multiple comma-separted providers
     provider = options.get("provider", None)
     sentence = get_sentence(word=field_text, language=lang, provider=provider)
-    return sentence.text if sentence else ""
+    provider_obj = get_provider(sentence.provider) if sentence else None
+    source = (
+        f'<br><br>Source: <a href="{provider_obj.get_source(field_text, lang)}">{sentence.provider.title().replace("_", " ")}</a>'
+        if provider_obj
+        else ""
+    )
+    ret = f"{sentence.text if sentence else ''} {source}"
+    return ret
 
 
 def open_dialog() -> None:

@@ -9,11 +9,15 @@ from .provider import SentenceProvider
 class LexicoProvider(SentenceProvider):
     name = "lexico"
     supported_languages = {"en"}
+    url = "https://www.lexico.com/definition/{word}?locale=en"
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
-        soup = get_soup(f"https://www.lexico.com/definition/{word}?locale=en")
+        soup = get_soup(self.url.format(word=word))
         nodes = soup.select(".ex")
         for n in nodes:
             sentences.append(Sentence(n.get_text(), word, language, self.name))
         return sentences
+
+    def get_source(self, word: str, language: str) -> str:
+        return self.url.format(word=word)

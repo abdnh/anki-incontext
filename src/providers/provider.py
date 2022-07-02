@@ -43,3 +43,9 @@ class SentenceProvider(ABC):
             self.db.add_sentences(fetched)
             return random.choice(fetched)
         return None
+
+    @abstractmethod
+    def get_source(self, word: str, language: str) -> str:
+        raise NotImplementedError(
+            "You should implement this method to provide a link or source from which the sentences are fetched for a given word."
+        )

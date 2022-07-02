@@ -78,3 +78,10 @@ def get_providers_for_language(language: str) -> list[str]:
         if language in provider.supported_languages:
             providers.append(provider.name)
     return providers
+
+
+def get_provider(name: str) -> SentenceProvider | None:
+    for provider in PROVIDERS:
+        if provider.name == name:
+            return provider
+    return None
