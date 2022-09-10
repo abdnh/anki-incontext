@@ -1,4 +1,6 @@
-from typing import List, Sequence
+from __future__ import annotations
+
+from typing import Any, List, Sequence, cast
 
 from aqt.main import AnkiQt
 from aqt.qt import *
@@ -14,6 +16,200 @@ else:
     from .forms.form_qt5 import Ui_Dialog  # type: ignore
 
 
+class InContextListView(QListView):
+    currentIndexChanged = pyqtSignal(QModelIndex, QModelIndex)
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        if event.matches(QKeySequence.StandardKey.Copy):
+            selected_indices = self.selectedIndexes()
+            selected_text = []
+            for idx in selected_indices:
+                selected_text.append(idx.data(Qt.ItemDataRole.DisplayRole))
+            QApplication.clipboard().setText("\n".join(selected_text) + "\n")
+            return None
+        return super().keyPressEvent(event)
+
+    def currentChanged(self, current: QModelIndex, previous: QModelIndex) -> None:
+        self.currentIndexChanged.emit(current, previous)
+        return super().currentChanged(current, previous)
+
+
+class WordListModel(QAbstractListModel):
+    def __init__(
+        self,
+        db: SentenceDB,
+        language: str,
+        provider: str,
+        parent: QObject | None = None,
+    ):
+        super().__init__(parent)
+        self.db = db
+        self.language = language
+        self.provider = provider
+        self.words = list(
+            {
+                sentence.word
+                for sentence in self.db.get_sentences(
+                    language=language, provider=provider
+                )
+            }
+        )
+
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return len(self.words)
+
+    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return 1
+
+    def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> Any:
+        if not index.isValid():
+            return None
+        row = index.row()
+        if role == Qt.ItemDataRole.DisplayRole:
+            if row < len(self.words):
+                return self.words[row]
+        elif role == Qt.ItemDataRole.TextAlignmentRole:
+            return Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
+        return None
+
+    def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
+        self.beginRemoveRows(QModelIndex(), row, row)
+        word = self.words.pop(row)
+        self.db.delete_sentences(
+            word=word, language=self.language, provider=self.provider
+        )
+        self.endRemoveRows()
+        return True
+
+    def removeMultipleRows(self, rows: list[int]) -> None:
+        if not rows:
+            return
+        self.beginRemoveRows(QModelIndex(), min(rows), max(rows))
+        removed_words = [self.words[row] for row in rows]
+        # TODO: add db method to remove sentences belonging to a list of words in bulk
+        for word in removed_words:
+            self.db.delete_sentences(
+                word=word, language=self.language, provider=self.provider
+            )
+        self.words = [t for t in self.words if t not in removed_words]
+        self.endRemoveRows()
+
+
+class WordListView(InContextListView):
+    def refresh_model(self, db: SentenceDB, language: str, provider: str) -> None:
+        model = WordListModel(db, language, provider)
+        self.setModel(model)
+        # self.sortByColumn(ColumnFields.WORDS_FOUND.value, Qt.SortOrder.DescendingOrder)
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        if event.key() == Qt.Key.Key_Delete:
+            indices = self.selectedIndexes()
+            rows = []
+            for index in indices:
+                if index.isValid():
+                    rows.append(index.row())
+            self.model().removeMultipleRows(rows)
+        return super().keyPressEvent(event)
+
+    def model(self) -> WordListModel:
+        return cast(WordListModel, super().model())
+
+
+class SentenceListModel(QAbstractListModel):
+    def __init__(
+        self,
+        db: SentenceDB,
+        language: str,
+        provider: str,
+        word: str,
+        parent: QObject | None = None,
+    ):
+        super().__init__(parent)
+        self.db = db
+        self.language = language
+        self.provider = provider
+        self.word = word
+        self.sentences = list(
+            {
+                sentence.text
+                for sentence in self.db.get_sentences(
+                    word=word,
+                    language=language,
+                    provider=provider,
+                )
+            }
+        )
+
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return len(self.sentences)
+
+    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+        return 1
+
+    def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> Any:
+        if not index.isValid():
+            return None
+        row = index.row()
+        if role == Qt.ItemDataRole.DisplayRole:
+            if row < len(self.sentences):
+                return self.sentences[row]
+        elif role == Qt.ItemDataRole.TextAlignmentRole:
+            return Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
+        return None
+
+    def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
+        self.beginRemoveRows(QModelIndex(), row, row)
+        sentence = self.sentences.pop(row)
+        self.db.delete_sentence(
+            sentence=sentence,
+            word=self.word,
+            language=self.language,
+            provider=self.provider,
+        )
+        self.endRemoveRows()
+        return True
+
+    def removeMultipleRows(self, rows: list[int]) -> None:
+        if not rows:
+            return
+        self.beginRemoveRows(QModelIndex(), min(rows), max(rows))
+        removed_sentences = [self.sentences[row] for row in rows]
+        for sentence in removed_sentences:
+            self.db.delete_sentence(
+                sentence=sentence,
+                word=self.word,
+                language=self.language,
+                provider=self.provider,
+            )
+        self.sentences = [t for t in self.sentences if t not in removed_sentences]
+        self.endRemoveRows()
+
+
+class SentenceListView(InContextListView):
+    def refresh_model(
+        self, db: SentenceDB, language: str, provider: str, word: str
+    ) -> None:
+        model = SentenceListModel(db, language, provider, word)
+        self.setModel(model)
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        if event.key() == Qt.Key.Key_Delete:
+            indices = self.selectedIndexes()
+            rows = []
+            for index in indices:
+                if index.isValid():
+                    rows.append(index.row())
+            self.model().removeMultipleRows(rows)
+        return super().keyPressEvent(event)
+
+    def model(self) -> SentenceListModel:
+        return cast(SentenceListModel, super().model())
+
+
 class InContextDialog(QDialog):
     def __init__(self, mw: AnkiQt, sentences_db: SentenceDB):
         self.mw = mw
@@ -24,7 +220,11 @@ class InContextDialog(QDialog):
         self.setup_ui()
 
     def setup_ui(self) -> None:
-        qconnect(self.form.words_list.currentItemChanged, self.populate_word_sentences)
+        self.wordlist_view = WordListView()
+        self.form.gridLayout.addWidget(self.wordlist_view, 4, 0)  # type: ignore[call-overload]
+        self.sentencelist_view = SentenceListView()
+        self.form.gridLayout.addWidget(self.sentencelist_view, 4, 1)  # type: ignore[call-overload]
+        qconnect(self.wordlist_view.currentIndexChanged, self.populate_word_sentences)  # type: ignore[arg-type]
         qconnect(self.form.add_word_button.clicked, self.on_add_word)
         qconnect(self.form.import_words_button.clicked, self.on_import_words)
         qconnect(self.form.import_sentences_button.clicked, self.on_import_sentences)
@@ -48,21 +248,28 @@ class InContextDialog(QDialog):
         self.populate_words()
 
     def selected_words(self) -> List[str]:
-        items = self.form.words_list.selectedItems()
+        indices = self.wordlist_view.selectedIndexes()
         words = []
-        for item in items:
-            words.append(item.text())
+        for idx in indices:
+            words.append(idx.data(Qt.ItemDataRole.DisplayRole))
         return words
 
     def selected_word(self) -> str:
-        item = self.form.words_list.currentItem()
-        return item.text() if item else ""
+        idx = self.wordlist_view.currentIndex()
+        return idx.data(Qt.ItemDataRole.DisplayRole) if idx else ""
 
     def select_word(self, word: str) -> None:
-        # pylint: disable=no-member
         try:
-            item = self.form.words_list.findItems(word, Qt.MatchFlag.MatchFixedString)[0]  # type: ignore[arg-type]
-            self.form.words_list.setCurrentItem(item)
+            model = self.wordlist_view.model()
+            indices = model.match(
+                model.index(0, 0),
+                Qt.ItemDataRole.DisplayRole,
+                word,
+                1,
+                Qt.MatchFlag.MatchFixedString,
+            )
+            if indices:
+                self.wordlist_view.setCurrentIndex(indices[0])
         except IndexError:
             pass
 
@@ -78,43 +285,27 @@ class InContextDialog(QDialog):
             self.form.providerComboBox.addItem(provider)
 
     def refresh_words_list(self) -> None:
-        lang = self.form.langComboBox.currentData()
+        language = self.form.langComboBox.currentData()
         provider = (
             self.form.providerComboBox.currentText()
             if self.form.providerComboBox.currentIndex()
             else None
         )
-        self.form.words_list.clear()
-        self.form.words_list.addItems(
-            {
-                sentence.word
-                for sentence in self.sentences_db.get_sentences(
-                    language=lang, provider=provider
-                )
-            }
-        )
+        self.wordlist_view.refresh_model(self.sentences_db, language, provider)
 
     def populate_word_sentences(
-        self, current: QListWidgetItem, previous: QListWidgetItem = None
+        self, current: QModelIndex, previous: QModelIndex = None
     ) -> None:
-        self.form.sentences_list.clear()
         if current:
-            lang = self.form.langComboBox.currentData()
+            language = self.form.langComboBox.currentData()
             provider = (
                 self.form.providerComboBox.currentText()
                 if self.form.providerComboBox.currentIndex()
                 else None
             )
-            word = current.text()
-            self.form.sentences_list.addItems(
-                {
-                    sentence.text
-                    for sentence in self.sentences_db.get_sentences(
-                        word=word,
-                        language=lang,
-                        provider=provider,
-                    )
-                }
+            word = current.data(Qt.ItemDataRole.DisplayRole)
+            self.sentencelist_view.refresh_model(
+                self.sentences_db, language, provider, word
             )
 
     def add_words(self, words: List[str]) -> None:
@@ -163,7 +354,7 @@ class InContextDialog(QDialog):
         for sentence in self.form.textBox.toPlainText().split("\n"):
             sentences.append(sentence)
         self.add_sentences(word, sentences, "file")
-        self.populate_word_sentences(self.form.words_list.currentItem())  # type: ignore[arg-type]
+        self.populate_word_sentences(self.wordlist_view.currentIndex())
 
     def on_import_text(self) -> None:
         lang = self.form.langComboBox.currentData()
@@ -185,7 +376,7 @@ class InContextDialog(QDialog):
         for word in words:
             get_sentence(word, lang, provider, use_cache=False)
 
-        self.populate_word_sentences(self.form.words_list.currentItem())  # type: ignore[arg-type]
+        self.populate_word_sentences(self.wordlist_view.currentIndex())
 
     def on_open_files(self) -> None:
         def import_files(filenames: Sequence[str]) -> None:

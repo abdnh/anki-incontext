@@ -82,17 +82,52 @@ class SentenceDB:
                 ],
             )
 
-    # def remove_sentences(self, sentences: list[Sentence]) -> None:
-    #     with self.con:
-    #         self.con.executemany(
-    #             """
-    #         DELETE FROM sentences
-    #         WHERE text = ? AND word = ? AND language = ? AND provider = ?""",
-    #             [
-    #                 (sentence.text, sentence.word, sentence.language, sentence.provider)
-    #                 for sentence in sentences
-    #             ],
-    #         )
+    def delete_sentences(
+        self,
+        word: str | None = None,
+        language: str | None = None,
+        provider: str | None = None,
+    ) -> None:
+        query = "DELETE from sentences"
+        where_clauses = []
+        params = []
+        if word:
+            where_clauses.append("word = ?")
+            params.append(word)
+        if language:
+            where_clauses.append("language = ?")
+            params.append(language)
+        if provider:
+            where_clauses.append("provider = ?")
+            params.append(provider)
+        query += " WHERE " + " AND ".join(where_clauses)
+        with self.con:
+            self.con.execute(query, params)
+
+    def delete_sentence(
+        self,
+        sentence: str,
+        word: str | None = None,
+        language: str | None = None,
+        provider: str | None = None,
+    ) -> None:
+        query = "DELETE from sentences"
+        where_clauses = []
+        params = []
+        where_clauses.append("text = ?")
+        params.append(sentence)
+        if word:
+            where_clauses.append("word = ?")
+            params.append(word)
+        if language:
+            where_clauses.append("language = ?")
+            params.append(language)
+        if provider:
+            where_clauses.append("provider = ?")
+            params.append(provider)
+        query += " WHERE " + " AND ".join(where_clauses)
+        with self.con:
+            self.con.execute(query, params)
 
     def get_sentences(
         self,

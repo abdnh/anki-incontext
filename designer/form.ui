@@ -15,8 +15,35 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout_1">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="6" column="0" colspan="2">
+      <widget class="QPushButton" name="open_files_button">
+       <property name="text">
+        <string>Open files...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" colspan="2">
+      <widget class="QPlainTextEdit" name="textBox"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="add_word_button">
+       <property name="text">
+        <string>Add word...</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="1">
+      <widget class="QPushButton" name="sync_sentences_button">
+       <property name="toolTip">
+        <string>Fetch sentences for selected words from online providers, overriding any sentences added manually</string>
+       </property>
+       <property name="text">
+        <string>Sync from online providers</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
       <widget class="QLabel" name="sentences_label">
        <property name="font">
         <font>
@@ -33,51 +60,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="langComboBox"/>
-     </item>
-     <item row="12" column="0" colspan="2">
-      <widget class="QPushButton" name="open_files_button">
-       <property name="text">
-        <string>Open files...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QListWidget" name="words_list">
-       <property name="selectionMode">
-        <enum>QAbstractItemView::ExtendedSelection</enum>
-       </property>
-       <property name="sortingEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="0">
-      <widget class="QPushButton" name="import_text_button">
-       <property name="toolTip">
-        <string>Import sentences from a text file, adding sentences to the entry of each word in the text</string>
-       </property>
-       <property name="text">
-        <string>Parse text and import sentences for found words</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QPushButton" name="add_word_button">
-       <property name="text">
-        <string>Add word...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QListWidget" name="sentences_list">
-       <property name="selectionMode">
-        <enum>QAbstractItemView::ExtendedSelection</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="1">
+     <item row="7" column="1">
       <widget class="QPushButton" name="import_sentences_button">
        <property name="toolTip">
         <string>Import from a file of sentences separated by newlines</string>
@@ -87,20 +70,24 @@
        </property>
       </widget>
      </item>
-     <item row="11" column="0" colspan="2">
-      <widget class="QPlainTextEdit" name="textBox"/>
-     </item>
-     <item row="8" column="0">
-      <widget class="QPushButton" name="import_words_button">
+     <item row="7" column="0">
+      <widget class="QPushButton" name="import_text_button">
        <property name="toolTip">
-        <string>Import from a list of words separated by blanks</string>
+        <string>Import sentences from a text file, adding sentences to the entry of each word in the text</string>
        </property>
        <property name="text">
-        <string>Import words...</string>
+        <string>Parse text and import sentences for found words</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Language</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
       <widget class="QLabel" name="words_label">
        <property name="font">
         <font>
@@ -117,31 +104,27 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Language</string>
-       </property>
-      </widget>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="langComboBox"/>
      </item>
-     <item row="7" column="1">
-      <widget class="QPushButton" name="sync_sentences_button">
-       <property name="toolTip">
-        <string>Fetch sentences for selected words from online providers, overriding any sentences added manually</string>
-       </property>
-       <property name="text">
-        <string>Sync from online providers</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
+     <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Provider</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="4" column="0">
+      <widget class="QPushButton" name="import_words_button">
+       <property name="toolTip">
+        <string>Import from a list of words separated by blanks</string>
+       </property>
+       <property name="text">
+        <string>Import words...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
       <widget class="QComboBox" name="providerComboBox"/>
      </item>
     </layout>

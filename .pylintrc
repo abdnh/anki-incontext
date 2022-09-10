@@ -19,6 +19,7 @@ disable=
   invalid-name,
   attribute-defined-outside-init,
   bare-except,
+  too-many-arguments,
 
 [BASIC]
 good-names =
