@@ -3,10 +3,10 @@
 all: zip
 
 zip:
-	python -m ankibuild --type package --qt all --noconsts
+	python -m ankibuild --type package --qt all --noconsts --exclude user_files/**.db --exclude user_files/**/*.tsv
 
 ankiweb:
-	python -m ankibuild --type ankiweb --qt all --noconsts
+	python -m ankibuild --type ankiweb --qt all --noconsts --exclude user_files/**.db --exclude user_files/**/*.tsv
 
 run:
 	python -m ankirun
