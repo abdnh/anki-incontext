@@ -9,7 +9,7 @@ from .provider import SentenceProvider
 class LexicoProvider(SentenceProvider):
     name = "lexico"
     supported_languages = {"en"}
-    url = "https://www.lexico.com/definition/{word}?locale=en"
+    url = "https://web.archive.org/web/https://www.lexico.com/definition/{word}?locale=en"
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
