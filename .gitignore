@@ -4,7 +4,7 @@
 __pycache__/
 *.pyc
 venv/
-ankiprofile/
+ankidata/
 src/providers/vendor/
 build/
 src/forms/*_qt[56].py
