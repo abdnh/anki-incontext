@@ -346,14 +346,15 @@ class InContextDialog(QDialog):
         self.sentences_db.add_sentences(sentences)
 
     def on_import_sentences(self) -> None:
-        word = self.selected_word()
-        if not word:
+        words = self.selected_words()
+        if not words:
             return
 
         sentences = []
         for sentence in self.form.textBox.toPlainText().split("\n"):
             sentences.append(sentence)
-        self.add_sentences(word, sentences, "file")
+        for word in words:
+            self.add_sentences(word, sentences, "file")
         self.populate_word_sentences(self.wordlist_view.currentIndex())
 
     def on_import_text(self) -> None:
