@@ -5,6 +5,7 @@ from .provider import SentenceProvider
 
 class OxfordLearnerProvider(SentenceProvider):
     name = "oxford_learner"
+    human_name = "Oxford Learner's Dictionaries"
     supported_languages = {"en"}
     url = "https://www.oxfordlearnersdictionaries.com/definition/english/{word}"
 

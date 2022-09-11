@@ -11,6 +11,7 @@ from .provider import SentenceProvider
 
 class TatoebaProvider(SentenceProvider):
     name = "tatoeba"
+    human_name = "Tatoeba"
     # TODO: add a way to indicate support for "all" or unspecified list of languages
     supported_languages = {"en", "tr", "ja", "ko", "zh"}
 

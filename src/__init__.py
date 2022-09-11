@@ -31,7 +31,7 @@ def incontext_filter(
     sentence = get_sentence(word=field_text, language=lang, provider=provider)
     provider_obj = get_provider(sentence.provider) if sentence else None
     source = (
-        f'<br><br>Source: <a href="{provider_obj.get_source(field_text, lang)}">{sentence.provider.title().replace("_", " ")}</a>'
+        f'<br><br>Source: <a href="{provider_obj.get_source(field_text, lang)}">{provider_obj.human_name}</a>'
         if provider_obj
         else ""
     )

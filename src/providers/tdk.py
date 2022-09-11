@@ -5,6 +5,7 @@ from .vendor.tdk import TDK
 
 class TDKProvider(SentenceProvider):
     name = "tdk"
+    human_name = "Türk Dil Kurumu Sözlükleri"
     supported_languages = {"tr"}
 
     def fetch(self, word: str, language: str) -> list[Sentence]:

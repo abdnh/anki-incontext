@@ -246,7 +246,7 @@ class InContextDialog(QDialog):
         last_provider = self.config["provider_field"]
         for idx in range(self.form.providerComboBox.count()):
             if (
-                self.form.providerComboBox.itemData(idx, Qt.ItemDataRole.DisplayRole)
+                self.form.providerComboBox.itemData(idx, Qt.ItemDataRole.UserRole)
                 == last_provider
             ):
                 self.form.providerComboBox.setCurrentIndex(idx)
@@ -260,7 +260,9 @@ class InContextDialog(QDialog):
 
     def on_finished(self) -> None:
         self.config["lang_field"] = self.form.langComboBox.currentText()
-        self.config["provider_field"] = self.form.providerComboBox.currentText()
+        self.config["provider_field"] = self.form.providerComboBox.currentData(
+            Qt.ItemDataRole.UserRole
+        )
         self.mw.addonManager.writeConfig(__name__, self.config)
 
     def on_lang_changed(self, index: int) -> None:
@@ -305,7 +307,7 @@ class InContextDialog(QDialog):
         for provider in get_providers_for_language(
             self.form.langComboBox.currentData()
         ):
-            self.form.providerComboBox.addItem(provider)
+            self.form.providerComboBox.addItem(provider.human_name, provider.name)
 
     def refresh_words_list(self) -> None:
         language = self.form.langComboBox.currentData()

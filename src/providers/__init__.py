@@ -72,11 +72,11 @@ def get_languages() -> list[tuple[str, str]]:
     return [(code, langcode_to_name(code)) for code in langs]
 
 
-def get_providers_for_language(language: str) -> list[str]:
+def get_providers_for_language(language: str) -> list[SentenceProvider]:
     providers = []
     for provider in PROVIDERS:
         if language in provider.supported_languages:
-            providers.append(provider.name)
+            providers.append(provider)
     return providers
 
 

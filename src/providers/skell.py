@@ -5,6 +5,7 @@ from .vendor.skell_downloader import SkellDownloader
 
 class SkellProvider(SentenceProvider):
     name = "skell"
+    human_name = "SkELL"
     # TODO: add all languages supported by Skell
     supported_languages = {"en"}
 

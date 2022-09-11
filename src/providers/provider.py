@@ -9,7 +9,10 @@ from ..errors import InContextError
 
 class SentenceProvider(ABC):
 
+    # Name used for identifying the provider in template filters and other places
     name: str
+    # Name shown to the user in the GUI
+    human_name: str
     supported_languages: set[str]
 
     def __init__(self, db: SentenceDB):

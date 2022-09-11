@@ -5,6 +5,7 @@ from .provider import SentenceProvider
 
 class SesliSozlukProvider(SentenceProvider):
     name = "sesli_sozluk"
+    human_name = "Sesli Sözlük"
     supported_languages = {"tr"}
     url = "https://www.seslisozluk.net/{word}-nedir-ne-demek/"
 
