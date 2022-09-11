@@ -4,6 +4,8 @@
 __pycache__/
 *.pyc
 venv/
+
+# Anki
 ankidata/
 src/providers/vendor/
 build/
@@ -11,3 +13,4 @@ src/forms/*_qt[56].py
 tmp/
 src/user_files/**/*.db
 src/user_files/**/*.tsv
+src/meta.json

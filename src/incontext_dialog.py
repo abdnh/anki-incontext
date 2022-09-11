@@ -215,6 +215,7 @@ class InContextDialog(QDialog):
         self.mw = mw
         self.sentences_db = sentences_db
         QDialog.__init__(self)
+        self.config = mw.addonManager.getConfig(__name__)
         self.form = Ui_Dialog()
         self.form.setupUi(self)
         self.setup_ui()
@@ -233,12 +234,34 @@ class InContextDialog(QDialog):
         qconnect(self.form.open_files_button.clicked, self.on_open_files)
         for (lang_code, lang_name) in get_languages():
             self.form.langComboBox.addItem(lang_name, lang_code)
+        last_lang = self.config["lang_field"]
+        for idx in range(self.form.langComboBox.count()):
+            if (
+                self.form.langComboBox.itemData(idx, Qt.ItemDataRole.DisplayRole)
+                == last_lang
+            ):
+                self.form.langComboBox.setCurrentIndex(idx)
+                break
         self.populate_providers()
+        last_provider = self.config["provider_field"]
+        for idx in range(self.form.providerComboBox.count()):
+            if (
+                self.form.providerComboBox.itemData(idx, Qt.ItemDataRole.DisplayRole)
+                == last_provider
+            ):
+                self.form.providerComboBox.setCurrentIndex(idx)
+                break
         self.populate_words()
         qconnect(self.form.langComboBox.currentIndexChanged, self.on_lang_changed)
         qconnect(
             self.form.providerComboBox.currentIndexChanged, self.on_provider_changed
         )
+        qconnect(self.finished, self.on_finished)
+
+    def on_finished(self) -> None:
+        self.config["lang_field"] = self.form.langComboBox.currentText()
+        self.config["provider_field"] = self.form.providerComboBox.currentText()
+        self.mw.addonManager.writeConfig(__name__, self.config)
 
     def on_lang_changed(self, index: int) -> None:
         self.populate_providers()
