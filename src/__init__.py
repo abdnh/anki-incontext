@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 
 from anki import hooks
@@ -39,9 +41,27 @@ def incontext_filter(
     return ret
 
 
+dialog: InContextDialog | None = None
+
+
+def on_finished() -> None:
+    global dialog
+    dialog = None
+
+
 def open_dialog() -> None:
-    dialog = InContextDialog(mw, sentences_db)
-    dialog.exec()
+    global dialog
+    if not dialog:
+        dialog = InContextDialog(mw, sentences_db)
+        qconnect(dialog.finished, on_finished)
+        dialog.show()
+    else:
+        if dialog.windowState() & Qt.WindowState.WindowMinimized:
+            dialog.setWindowState(
+                dialog.windowState() & ~Qt.WindowState.WindowMinimized
+            )
+        dialog.activateWindow()
+        dialog.raise_()
 
 
 hooks.field_filter.append(incontext_filter)

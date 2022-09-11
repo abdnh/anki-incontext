@@ -20,6 +20,7 @@ disable=
   attribute-defined-outside-init,
   bare-except,
   too-many-arguments,
+  global-statement,
 
 [BASIC]
 good-names =

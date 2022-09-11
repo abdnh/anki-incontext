@@ -214,7 +214,7 @@ class InContextDialog(QDialog):
     def __init__(self, mw: AnkiQt, sentences_db: SentenceDB):
         self.mw = mw
         self.sentences_db = sentences_db
-        QDialog.__init__(self)
+        QDialog.__init__(self, None, Qt.WindowType.Window)
         self.config = mw.addonManager.getConfig(__name__)
         self.form = Ui_Dialog()
         self.form.setupUi(self)
