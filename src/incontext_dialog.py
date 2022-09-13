@@ -312,7 +312,7 @@ class InContextDialog(QDialog):
     def refresh_words_list(self) -> None:
         language = self.form.langComboBox.currentData()
         provider = (
-            self.form.providerComboBox.currentText()
+            self.form.providerComboBox.currentData(Qt.ItemDataRole.UserRole)
             if self.form.providerComboBox.currentIndex()
             else None
         )
@@ -324,7 +324,7 @@ class InContextDialog(QDialog):
         if current:
             language = self.form.langComboBox.currentData()
             provider = (
-                self.form.providerComboBox.currentText()
+                self.form.providerComboBox.currentData(Qt.ItemDataRole.UserRole)
                 if self.form.providerComboBox.currentIndex()
                 else None
             )
@@ -336,7 +336,7 @@ class InContextDialog(QDialog):
     def add_words(self, words: List[str]) -> None:
         lang = self.form.langComboBox.currentData()
         provider = (
-            self.form.providerComboBox.currentText()
+            self.form.providerComboBox.currentData(Qt.ItemDataRole.UserRole)
             if self.form.providerComboBox.currentIndex()
             else None
         )
@@ -394,7 +394,7 @@ class InContextDialog(QDialog):
     def on_sync_sentences(self) -> None:
         lang = self.form.langComboBox.currentData()
         provider = (
-            self.form.providerComboBox.currentText()
+            self.form.providerComboBox.currentData(Qt.ItemDataRole.UserRole)
             if self.form.providerComboBox.currentIndex()
             else None
         )
