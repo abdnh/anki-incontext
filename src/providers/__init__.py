@@ -6,6 +6,7 @@ from typing import Type
 import pycountry
 
 from ..db import Sentence, SentenceDB
+from .dictionary_com import DictionaryProvider
 from .glosbe import GlosbeProvider
 from .lexico import LexicoProvider
 from .oxford_learner import OxfordLearnerProvider
@@ -23,6 +24,7 @@ PROVIDER_CLASSES: list[Type[SentenceProvider]] = [
     SkellProvider,
     TDKProvider,
     SesliSozlukProvider,
+    DictionaryProvider,
 ]
 PROVIDERS: list[SentenceProvider] = []
 
