@@ -4,12 +4,10 @@ requests==2.28.1
 types-requests==2.28.0
 # TODO: Use 22.3.6 version from pypi once it's released to fix this issue: https://github.com/flyingcircusio/pycountry/pull/52
 # Do not forget to also simplify the packaging code and remove the git submodule
-pycountry
-git+https://github.com/flyingcircusio/pycountry@e2352cc16c7bd2c3190f56507b4321a57177a7ef
+pycountry @ git+https://github.com/flyingcircusio/pycountry@e2352cc16c7bd2c3190f56507b4321a57177a7ef
 beautifulsoup4==4.11.1
 black==22.6.0
 mypy==0.961
 isort==5.10.1
 pylint==2.14.4
-ankibuild
-git+https://github.com/abdnh/ankibuild@5092188f6b7c73e7bab2c7f64e7008a7e24466f6#egg=ankibuild[qt5,qt6]
+ankibuild @ git+https://github.com/abdnh/ankibuild@5092188f6b7c73e7bab2c7f64e7008a7e24466f6#egg=ankibuild[qt5,qt6]
