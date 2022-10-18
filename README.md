@@ -53,6 +53,10 @@ The add-on has an experimental graphical interface to manage sentences that can 
 
 Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Era5ksSa59xjB3ZbVQsdoTbQEigzh6Bi/view?usp=sharing
 
+## Download
+
+You can download the add-on from its page on AnkiWeb: https://ankiweb.net/shared/info/385420176
+
 ## Storage
 
 In the first review of a card that has the InContext filter, sentences will be fetched from the language providers and saved in the `user_files/sentences.db` file. Subsequent reviews will use those saved sentences (if any) and avoid making more requests to the providers. You can anyway update saved sentences manually from the GUI.
