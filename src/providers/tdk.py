@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ..db import Sentence
 from .provider import SentenceProvider
 from .vendor.tdk import TDK

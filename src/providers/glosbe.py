@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ..db import Sentence
 from ..request import get_soup
 from .provider import SentenceProvider
