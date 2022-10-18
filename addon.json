@@ -1,5 +1,7 @@
 {
-    "name": "InContext - Learn vocabulary in context",
+    "name": "InContext - Learn vocabulary in context with random sentences",
     "package": "incontext",
-    "homepage": "https://github.com/abdnh/anki-incontext"
+    "homepage": "https://github.com/abdnh/anki-incontext",
+    "ankiweb_id": "385420176",
+    "min_point_version": 45
 }
