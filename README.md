@@ -18,11 +18,11 @@ You can specify the language using the `lang` option:
 
 Currently supported values are:
 
-- `en` English
-- `tr` Turkish
-- `ja` Japanese
-- `ko`: Korean
-- `zh`: Chinese
+-   `en` English
+-   `tr` Turkish
+-   `ja` Japanese
+-   `ko`: Korean
+-   `zh`: Chinese
 
 The default is `en`.
 
@@ -61,7 +61,6 @@ You can download the add-on from its page on AnkiWeb: https://ankiweb.net/shared
 
 In the first review of a card that has the InContext filter, sentences will be fetched from the language providers and saved in the `user_files/sentences.db` file. Subsequent reviews will use those saved sentences (if any) and avoid making more requests to the providers. You can anyway update saved sentences manually from the GUI.
 
-## TODO
+## Changelog
 
-- [ ] Improve interface.
-- [ ] Support more languages and fetchers.
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
