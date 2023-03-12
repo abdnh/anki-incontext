@@ -36,7 +36,6 @@ class SentenceProvider(ABC):
     def get_sentence(
         self, word: str, language: str, use_cache: bool = True
     ) -> Sentence | None:
-        print(f"get_sentence: {word=} {language=} {use_cache=}")
         if use_cache:
             cached = self.get_cached_sentence(word, language)
             if cached:

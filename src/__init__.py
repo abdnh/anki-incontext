@@ -8,6 +8,7 @@ from aqt import mw
 from aqt.qt import *
 
 from . import consts
+from .errors import InContextError
 
 sys.path.append(str(consts.VENDOR_DIR))
 
@@ -28,17 +29,19 @@ def incontext_filter(
 
     options = dict(map(lambda o: o.split("="), filter_name.split()[1:]))
     lang = options.get("lang", "en")
-    # TODO: support multiple comma-separted providers
+    # TODO: support multiple comma-separated providers
     provider = options.get("provider", None)
-    sentence = get_sentence(word=field_text, language=lang, provider=provider)
-    provider_obj = get_provider(sentence.provider) if sentence else None
-    source = (
-        f'<br><br>Source: <a href="{provider_obj.get_source(field_text, lang)}">{provider_obj.human_name}</a>'
-        if provider_obj
-        else ""
-    )
-    ret = f"{sentence.text if sentence else ''} {source}"
-    return ret
+    try:
+        sentence = get_sentence(word=field_text, language=lang, provider=provider)
+        provider_obj = get_provider(sentence.provider) if sentence else None
+        source = (
+            f'<br><br>Source: <a href="{provider_obj.get_source(field_text, lang)}">{provider_obj.human_name}</a>'
+            if provider_obj
+            else ""
+        )
+        return f"{sentence.text if sentence else ''} {source}"
+    except InContextError as exc:
+        return f"<div style='color: red'>InContext error: {str(exc)}</div>"
 
 
 dialog: InContextDialog | None = None
