@@ -8,7 +8,7 @@ HEADERS = {"User-Agent": USER_AGENT}
 
 
 def make_request(url: str) -> requests.Response:
-    res = requests.get(url, headers=HEADERS)
+    res = requests.get(url, headers=HEADERS, timeout=30)
     return res
 
 
