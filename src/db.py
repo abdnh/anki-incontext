@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import sqlite3
+from threading import Lock
 
 from . import consts
 
@@ -20,7 +21,8 @@ class SentenceDB:
     SCHEMA_MAX_VERSION = 1
 
     def __init__(self, path: str | None = None):
-        self.con = sqlite3.connect(path or consts.DB_FILE)
+        self.con = sqlite3.connect(path or consts.DB_FILE, check_same_thread=False)
+        self.lock = Lock()
         self._open_or_create_db()
 
     def _schema_version(self) -> tuple[bool, int]:

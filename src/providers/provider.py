@@ -20,7 +20,8 @@ class SentenceProvider(ABC):
 
     def get_cached_sentence(self, word: str, language: str) -> Sentence | None:
         try:
-            return self.db.get_random_sentence(word, language, self.name)
+            with self.db.lock:
+                return self.db.get_random_sentence(word, language, self.name)
         except:
             return None
 
@@ -42,7 +43,8 @@ class SentenceProvider(ABC):
                 return cached
         fetched = self.fetch(word, language)
         if fetched:
-            self.db.add_sentences(fetched)
+            with self.db.lock:
+                self.db.add_sentences(fetched)
             return random.choice(fetched)
         return None
 
