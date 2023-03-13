@@ -36,10 +36,10 @@
      <item row="3" column="1">
       <widget class="QPushButton" name="sync_sentences_button">
        <property name="toolTip">
-        <string>Fetch sentences for selected words from online providers, overriding any sentences added manually</string>
+        <string>Fetch sentences for selected words from providers, overriding any sentences added manually</string>
        </property>
        <property name="text">
-        <string>Sync from online providers</string>
+        <string>Sync from selected providers</string>
        </property>
       </widget>
      </item>
