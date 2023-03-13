@@ -60,6 +60,30 @@ def get_sentence(
     return sentence
 
 
+def sync_sentences(
+    word: str,
+    language: str | None = None,
+    provider: str | None = None,
+    use_cache: bool = True,
+) -> None:
+    matched_providers: list[SentenceProvider] = []
+    for provider_obj in PROVIDERS:
+        matched = True
+        if language:
+            matched &= (
+                language in provider_obj.supported_languages
+                or langcode_to_name(language) in provider_obj.supported_languages
+            )
+        if provider:
+            matched &= provider == provider_obj.name
+        if matched:
+            matched_providers.append(provider_obj)
+    random.shuffle(matched_providers)
+    while matched_providers:
+        chosen_provider = matched_providers.pop()
+        chosen_provider.get_sentence(word, language, use_cache)
+
+
 def langcode_to_name(lang_code: str) -> str:
     try:
         return pycountry.languages.get(alpha_2=lang_code).name

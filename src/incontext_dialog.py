@@ -8,7 +8,7 @@ from aqt.qt import qtmajor
 from aqt.utils import getFile, getOnlyText
 
 from .db import Sentence, SentenceDB
-from .providers import get_languages, get_providers_for_language, get_sentence
+from .providers import get_languages, get_providers_for_language, sync_sentences
 
 if qtmajor > 5:
     from .forms.form_qt6 import Ui_Dialog
@@ -341,7 +341,7 @@ class InContextDialog(QDialog):
             else None
         )
         for word in words:
-            get_sentence(word, lang, provider)
+            sync_sentences(word, lang, provider)
         self.refresh_words_list()
 
     def on_add_word(self) -> None:
@@ -400,7 +400,7 @@ class InContextDialog(QDialog):
         )
         words = self.selected_words()
         for word in words:
-            get_sentence(word, lang, provider, use_cache=False)
+            sync_sentences(word, lang, provider, use_cache=False)
 
         self.populate_word_sentences(self.wordlist_view.currentIndex())
 
