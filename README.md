@@ -65,6 +65,10 @@ In the first review of a card that has the InContext filter, sentences will be f
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
 
+## Credit
+
+Some icons are adapted from [Bootstrap Icons](https://icons.getbootstrap.com/); licensed under the MIT.
+
 ## Support & feature requests
 
 Please post any questions, bug reports, or feature requests in the [support page](https://forums.ankiweb.net/t/incontext-learn-vocabulary-in-context-with-random-sentences/24017) or the [issue tracker](https://github.com/abdnh/anki-incontext/issues).
