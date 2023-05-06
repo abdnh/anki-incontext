@@ -1,17 +1,16 @@
-.vscode/
-.mypy_cache/
-.pytest_cache/
 __pycache__/
-*.pyc
 venv/
-
-# Anki
+.mypy_cache/
 ankidata/
-src/providers/vendor/
 build/
-src/forms/*_qt[56].py
-tmp/
+src/manifest.json
+src/meta.json
+src/forms/
+src/user_files/*/
+src/providers/vendor/
 src/user_files/**/*.db
 src/user_files/**/*.tsv
 src/meta.json
 src/manifest.json
+TODO.md
+tmp/

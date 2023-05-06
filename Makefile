@@ -3,26 +3,23 @@
 all: zip
 
 zip:
-	python -m ankibuild --type package --qt all --noconsts --exclude user_files/**.db --exclude user_files/**/*.tsv
+	python -m ankiscripts.build --type package --qt all --exclude user_files/**.db --exclude user_files/**/*.tsv
 
 ankiweb:
-	python -m ankibuild --type ankiweb --qt all --noconsts --exclude user_files/**.db --exclude user_files/**/*.tsv
-
-run:
-	python -m ankirun
+	python -m ankiscripts.build --type ankiweb --qt all --exclude user_files/**.db --exclude user_files/**/*.tsv
 
 vendor:
 	./vendor.sh
 
 fix:
-	python -m black src --exclude="forms|vendor"
-	python -m isort src
+	python -m black src tests --exclude="forms|vendor"
+	python -m isort src tests
 
 mypy:
-	python -m mypy .
+	python -m mypy src tests
 
 pylint:
-	python -m pylint src
+	python -m pylint src tests
 
 clean:
 	rm -rf build/

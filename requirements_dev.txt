@@ -1,0 +1,11 @@
+-r requirements.txt
+anki==2.1.49
+aqt==2.1.49
+requests==2.28.1
+types-requests==2.28.0
+beautifulsoup4==4.11.1
+black==23.3.0
+mypy==1.2.0
+isort==5.12.0
+pylint==2.17.4
+ankiscripts @ git+https://github.com/abdnh/ankiscripts@09b68f5d54db4d29dd01ab248740d2219b3892d6#egg=ankibuild[qt5,qt6]
