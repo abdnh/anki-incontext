@@ -5,15 +5,21 @@ import json
 import sys
 from concurrent.futures import Future
 from dataclasses import dataclass
+from typing import Any
 
 from anki import hooks
 from anki.cards import Card
 from anki.template import TemplateRenderContext
 from aqt import gui_hooks, mw
-from aqt.browser.previewer import Previewer
 from aqt.clayout import CardLayout
 from aqt.qt import *
-from aqt.webview import AnkiWebView
+from aqt.reviewer import Reviewer
+from aqt.webview import AnkiWebView, WebContent
+
+try:
+    from aqt.browser.previewer import Previewer
+except ImportError:
+    from aqt.previewer import Previewer  # type: ignore
 
 from . import consts
 from .errors import InContextError
@@ -24,6 +30,8 @@ sys.path.append(str(consts.VENDOR_DIR))
 from .db import SentenceDB
 from .incontext_dialog import InContextDialog
 from .providers import get_provider, get_sentence, init_providers
+
+WEB_BASE = f"/_addons/{mw.addonManager.addonFromModule(__name__)}/web/"
 
 
 @dataclass
@@ -41,6 +49,21 @@ def get_active_card_context() -> CardContext:
         # pylint: disable=protected-access
         return CardContext(window.card(), window._web)
     return CardContext(mw.reviewer.card, mw.reviewer.web)
+
+
+def get_formatted_sentence(text: str, lang: str, provider: str) -> str:
+    try:
+        sentence = get_sentence(word=text, language=lang, provider=provider)
+        provider_obj = get_provider(sentence.provider) if sentence else None
+        source = (
+            f'<br><br>Source: <a href="{provider_obj.get_source(text, lang)}">{provider_obj.human_name}</a>'
+            if provider_obj
+            else ""
+        )
+        ret = f"{sentence.text if sentence else ''} {source}"
+    except InContextError as exc:
+        ret = f"<div style='color: red'>InContext error: {html.escape(str(exc))}</div>"
+    return ret
 
 
 def incontext_filter(
@@ -61,18 +84,7 @@ def incontext_filter(
     provider = options.get("provider", None)
 
     def task() -> str:
-        try:
-            sentence = get_sentence(word=field_text, language=lang, provider=provider)
-            provider_obj = get_provider(sentence.provider) if sentence else None
-            source = (
-                f'<br><br>Source: <a href="{provider_obj.get_source(field_text, lang)}">{provider_obj.human_name}</a>'
-                if provider_obj
-                else ""
-            )
-            ret = f"{sentence.text if sentence else ''} {source}"
-        except InContextError as exc:
-            ret = f"<div style='color: red'>InContext error: {html.escape(str(exc))}</div>"
-        return ret
+        return get_formatted_sentence(field_text, lang, provider)
 
     def on_done(fut: Future) -> None:
         result = fut.result()
@@ -94,14 +106,19 @@ def incontext_filter(
     mw.taskman.run_in_background(task, on_done)
     ctx.extra_state["incontext_id"] += 1
     return """
-    <div class='incontext-sentence' id='incontext-sentence-%(filter_id)d'>InContext: fetching sentence...</div>
+    <div class='incontext-sentence' id='incontext-sentence-%(filter_id)d' data-query='%(field_text)s' data-lang='%(lang)s' data-provider='%(provider)s'>InContext: fetching sentence...</div>
+    <img src="%(refresh_icon)s" class="incontext-refresh-button" onclick="InContextRefreshSentence(%(filter_id)d)">
     <script>
         if(globalThis.inContextResults[%(filter_id)d]) {
             document.getElementById('incontext-sentence-%(filter_id)d').innerHTML = globalThis.inContextResults[%(filter_id)d];
         }
     </script>
     """ % dict(
-        filter_id=filter_id
+        filter_id=filter_id,
+        refresh_icon=f"{WEB_BASE}arrow-clockwise.svg",
+        field_text=html.escape(field_text),
+        lang=html.escape(lang),
+        provider=html.escape(provider) if provider else "",
     )
 
 
@@ -109,6 +126,45 @@ def on_card_will_show(text: str, card: Card, kind: str) -> str:
     if kind.endswith("Question"):
         text = "<script>globalThis.inContextResults = [];</script>" + text
     return text
+
+
+def on_webview_will_set_content(web_content: WebContent, context: Any | None) -> None:
+    if not isinstance(context, (Reviewer, Previewer, CardLayout)):
+        return
+    web_content.css.append(f"{WEB_BASE}incontext.css")
+    web_content.js.append(f"{WEB_BASE}incontext.js")
+
+
+def on_webview_did_receive_js_message(
+    handled: tuple[bool, Any], message: str, context: Any
+) -> tuple[bool, Any]:
+    if not message.startswith("incontext:"):
+        return handled
+    _, subcmd, data = message.split(":", maxsplit=2)
+    if subcmd == "refresh":
+        options = json.loads(data)
+
+        def task() -> str:
+            return get_formatted_sentence(
+                options["query"], options["lang"], options["provider"]
+            )
+
+        def on_done(fut: Future) -> None:
+            result = fut.result()
+            card_context = get_active_card_context()
+            if card_context.card and card_context.web:
+                card_context.web.eval(
+                    """(() => {
+                        const result = %(result)s;
+                        globalThis.inContextResults[%(filter_id)d] = result;
+                        document.getElementById('incontext-sentence-%(filter_id)d').innerHTML = result;
+                    })();"""
+                    % dict(result=json.dumps(result), filter_id=options["id"])
+                )
+
+        mw.taskman.run_in_background(task, on_done)
+
+    return True, None
 
 
 dialog: InContextDialog | None = None
@@ -136,6 +192,9 @@ def open_dialog() -> None:
 
 hooks.field_filter.append(incontext_filter)
 gui_hooks.card_will_show.append(on_card_will_show)
+gui_hooks.webview_will_set_content.append(on_webview_will_set_content)
+gui_hooks.webview_did_receive_js_message.append(on_webview_did_receive_js_message)
+mw.addonManager.setWebExports(__name__, "web/.*")
 action = QAction("InContext", mw)
 mw.form.menuTools.addAction(action)
 sentences_db = SentenceDB()
