@@ -136,11 +136,8 @@ def open_dialog() -> None:
 
 hooks.field_filter.append(incontext_filter)
 gui_hooks.card_will_show.append(on_card_will_show)
-
-if mw:
-    action = QAction(mw)
-    action.setText("InContext")
-    mw.form.menuTools.addAction(action)
-    sentences_db = SentenceDB()
-    init_providers(sentences_db)
-    qconnect(action.triggered, open_dialog)
+action = QAction("InContext", mw)
+mw.form.menuTools.addAction(action)
+sentences_db = SentenceDB()
+init_providers(sentences_db)
+qconnect(action.triggered, open_dialog)

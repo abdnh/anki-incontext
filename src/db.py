@@ -35,7 +35,6 @@ class SentenceDB:
             return (False, self.con.execute("select ver from col").fetchone()[0])
 
     def _open_or_create_db(self) -> None:
-
         with self.con:
             create, _ = self._schema_version()
             # upgrade = ver != self.SCHEMA_MAX_VERSION

@@ -8,7 +8,6 @@ from ..errors import InContextError
 
 
 class SentenceProvider(ABC):
-
     # Name used for identifying the provider in template filters and other places
     name: str
     # Name shown to the user in the GUI

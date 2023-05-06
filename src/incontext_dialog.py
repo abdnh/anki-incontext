@@ -232,7 +232,7 @@ class InContextDialog(QDialog):
         qconnect(self.form.import_text_button.clicked, self.on_import_text)
         qconnect(self.form.sync_sentences_button.clicked, self.on_sync_sentences)
         qconnect(self.form.open_files_button.clicked, self.on_open_files)
-        for (lang_code, lang_name) in get_languages():
+        for lang_code, lang_name in get_languages():
             self.form.langComboBox.addItem(lang_name, lang_code)
         last_lang = self.config["lang_field"]
         for idx in range(self.form.langComboBox.count()):
