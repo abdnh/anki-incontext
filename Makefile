@@ -1,6 +1,6 @@
 .PHONY: all clean zip fix mypy pylint vendor
 
-all: zip
+all: zip ankiweb
 
 zip:
 	python -m ankiscripts.build --type package --qt all --exclude user_files/**.db --exclude user_files/**/*.tsv
