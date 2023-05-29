@@ -61,6 +61,13 @@ You can download the add-on from its page on AnkiWeb: https://ankiweb.net/shared
 
 In the first review of a card that has the InContext filter, sentences will be fetched from the language providers and saved in the `user_files/sentences.db` file. Subsequent reviews will use those saved sentences (if any) and avoid making more requests to the providers. You can anyway update saved sentences manually from the GUI.
 
+## Known Issues
+
+-   **IMPORTANT**: In versions before 0.3.1, the add-on suffered from an [issue](https://github.com/ankitects/anki/pull/2518) preventing updates from being properly installed, which resulted in Anki prompting to update the add-on every time. To fix this, please follow the steps carefully:
+    1. Download version 0.3.1 from [this page](https://github.com/abdnh/anki-incontext/releases/tag/0.3.1). You should download the `incontext_ankiweb.ankiaddon` file or this won't work.
+    2. Close Anki then double click on the .ankiaddon file to install it and run Anki. Closing Anki is important for the update to work.
+    3. Go to _Tools > Add-ons_ and click _Check for Updates_. You should be prompted to update the add-on. The issue should be fixed after updating this time.
+
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
