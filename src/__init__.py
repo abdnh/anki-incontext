@@ -9,8 +9,10 @@ from typing import Any
 
 from anki import hooks
 from anki.cards import Card
+from anki.hooks import wrap
 from anki.template import TemplateRenderContext
 from aqt import gui_hooks, mw
+from aqt.addons import AddonManager
 from aqt.clayout import CardLayout
 from aqt.qt import *
 from aqt.reviewer import Reviewer
@@ -190,13 +192,53 @@ def open_dialog() -> None:
         dialog.raise_()
 
 
+sentences_db: SentenceDB | None = None
+
+
+def init_db() -> None:
+    global sentences_db
+    sentences_db = SentenceDB()
+    init_providers(sentences_db)
+
+
+def on_addon_manager_will_install_addon(
+    manager: AddonManager, module: str, *args: Any, **kwargs: Any
+) -> None:
+    if module == manager.addonFromModule(__name__):
+        sentences_db.close()
+
+
+def on_addon_manager_did_install_addon(
+    manager: AddonManager, module: str, *args: Any, **kwargs: Any
+) -> None:
+    if module == manager.addonFromModule(__name__):
+        init_db()
+        if dialog is not None:
+            dialog.sentences_db = sentences_db
+
+
 hooks.field_filter.append(incontext_filter)
 gui_hooks.card_will_show.append(on_card_will_show)
 gui_hooks.webview_will_set_content.append(on_webview_will_set_content)
 gui_hooks.webview_did_receive_js_message.append(on_webview_did_receive_js_message)
+if getattr(gui_hooks, "addon_manager_will_install_addon", None):
+    gui_hooks.addon_manager_will_install_addon.append(
+        on_addon_manager_will_install_addon
+    )
+else:
+    AddonManager._install = wrap(
+        AddonManager._install, on_addon_manager_will_install_addon, "before"
+    )
+
+if getattr(gui_hooks, "addon_manager_did_install_addon", None):
+    gui_hooks.addon_manager_did_install_addon.append(on_addon_manager_did_install_addon)
+else:
+    AddonManager._install = wrap(
+        AddonManager._install, on_addon_manager_did_install_addon, "after"
+    )
+
 mw.addonManager.setWebExports(__name__, "web/.*")
 action = QAction("InContext", mw)
 mw.form.menuTools.addAction(action)
-sentences_db = SentenceDB()
-init_providers(sentences_db)
+init_db()
 qconnect(action.triggered, open_dialog)

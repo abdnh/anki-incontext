@@ -30,6 +30,7 @@ PROVIDERS: list[SentenceProvider] = []
 
 
 def init_providers(db: SentenceDB) -> None:
+    PROVIDERS.clear()
     for cls in PROVIDER_CLASSES:
         PROVIDERS.append(cls(db))
 

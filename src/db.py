@@ -25,6 +25,9 @@ class SentenceDB:
         self.lock = Lock()
         self._open_or_create_db()
 
+    def close(self) -> None:
+        self.con.close()
+
     def _schema_version(self) -> tuple[bool, int]:
         with self.con:
             row = self.con.execute(
