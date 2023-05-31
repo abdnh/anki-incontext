@@ -221,7 +221,7 @@ hooks.field_filter.append(incontext_filter)
 gui_hooks.card_will_show.append(on_card_will_show)
 gui_hooks.webview_will_set_content.append(on_webview_will_set_content)
 gui_hooks.webview_did_receive_js_message.append(on_webview_did_receive_js_message)
-if getattr(gui_hooks, "addon_manager_will_install_addon", None):
+if hasattr(gui_hooks, "addon_manager_will_install_addon"):
     gui_hooks.addon_manager_will_install_addon.append(
         on_addon_manager_will_install_addon
     )
@@ -230,7 +230,7 @@ else:
         AddonManager._install, on_addon_manager_will_install_addon, "before"
     )
 
-if getattr(gui_hooks, "addon_manager_did_install_addon", None):
+if hasattr(gui_hooks, "addon_manager_did_install_addon"):
     gui_hooks.addon_manager_did_install_addon.append(on_addon_manager_did_install_addon)
 else:
     AddonManager._install = wrap(
