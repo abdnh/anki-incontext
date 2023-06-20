@@ -72,8 +72,6 @@ class WordListModel(QAbstractListModel):
         if role == Qt.ItemDataRole.DisplayRole:
             if row < len(self.words):
                 return self.words[row]
-        elif role == Qt.ItemDataRole.TextAlignmentRole:
-            return Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
         return None
 
     def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
@@ -157,8 +155,6 @@ class SentenceListModel(QAbstractListModel):
         if role == Qt.ItemDataRole.DisplayRole:
             if row < len(self.sentences):
                 return self.sentences[row]
-        elif role == Qt.ItemDataRole.TextAlignmentRole:
-            return Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
         return None
 
     def removeRow(self, row: int, parent: QModelIndex = QModelIndex()) -> bool:
