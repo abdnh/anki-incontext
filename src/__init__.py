@@ -98,9 +98,15 @@ def incontext_filter(
         ):
             card_context.web.eval(
                 """(() => {
-                    const result = %(result)s;
-                    globalThis.inContextResults.push(result);
-                    document.getElementById('incontext-sentence-%(filter_id)d').innerHTML = result;
+                    const inContextIntervalID = setTimeout(() => {
+                        const inContextSentenceElement = document.getElementById('incontext-sentence-%(filter_id)d');
+                        if(inContextSentenceElement) {
+                            clearInterval(inContextIntervalID);
+                            const result = %(result)s;
+                            globalThis.inContextResults.push(result);
+                            inContextSentenceElement.innerHTML = result;
+                        }
+                    }, 100);
                 })();"""
                 % dict(result=json.dumps(result), filter_id=filter_id)
             )
