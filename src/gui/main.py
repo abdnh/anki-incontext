@@ -22,6 +22,8 @@ class InContextListView(QListView):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.setLayoutMode(QListView.LayoutMode.Batched)
+        self.setBatchSize(12)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.matches(QKeySequence.StandardKey.Copy):
