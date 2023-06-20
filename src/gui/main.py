@@ -220,9 +220,9 @@ class InContextDialog(QDialog):
 
     def setup_ui(self) -> None:
         self.wordlist_view = WordListView()
-        self.form.gridLayout.addWidget(self.wordlist_view, 4, 0)  # type: ignore[call-overload]
+        self.form.gridLayout.addWidget(self.wordlist_view, 4, 0)
         self.sentencelist_view = SentenceListView()
-        self.form.gridLayout.addWidget(self.sentencelist_view, 4, 1)  # type: ignore[call-overload]
+        self.form.gridLayout.addWidget(self.sentencelist_view, 4, 1)
         qconnect(self.wordlist_view.currentIndexChanged, self.populate_word_sentences)  # type: ignore[arg-type]
         qconnect(self.form.add_word_button.clicked, self.on_add_word)
         qconnect(self.form.import_words_button.clicked, self.on_import_words)
