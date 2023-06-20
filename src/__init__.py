@@ -30,7 +30,7 @@ sys.path.append(str(consts.VENDOR_DIR))
 
 # pylint: disable=wrong-import-position
 from .db import SentenceDB
-from .incontext_dialog import InContextDialog
+from .gui.main import InContextDialog
 from .providers import get_provider, get_sentence, init_providers
 
 WEB_BASE = f"/_addons/{mw.addonManager.addonFromModule(__name__)}/web/"
