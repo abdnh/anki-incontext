@@ -1,4 +1,6 @@
 {
     "lang_field": "English",
-    "provider_field": "All"
+    "provider_field": "All",
+    "word_field": "",
+    "sentences_field": ""
 }

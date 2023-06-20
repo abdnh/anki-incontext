@@ -1,6 +1,10 @@
 # InContext
 
-An [Anki](https://apps.ankiweb.net/) add-on that mainly works as a template filter to show random example sentences for vocabulary each time a card is viewed.
+An [Anki](https://apps.ankiweb.net/) add-on that fetches and displays random example sentences in different languages from various sources.
+
+## Template filter
+
+The add-on mainly works as a template filter to show random example sentences for vocabulary each time a card is viewed.
 
 You just have to put a filter like this in your [card template](https://docs.ankiweb.net/templates/intro.html):
 
@@ -38,6 +42,12 @@ The identifier of each provider is defined by a `name` variable inside each prov
 A list of available providers is also shown in the [interface](#interface).
 
 More sites and languages will be added in the future. Contributions are welcome!
+
+## Fill-in option
+
+You can also add sentences to a chosen field in multiple notes using the browser's _Notes > InContext: Add sentences_ menu item. This is useful if you review on mobile.
+
+![Fill-in dialog](images/fill.png)
 
 ## Importing Tatoeba databases
 

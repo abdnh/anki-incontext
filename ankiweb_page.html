@@ -1,15 +1,26 @@
-This add-on mainly works as a template filter to show random example sentences for vocabulary each time a card is viewed.
+An <a href="https://apps.ankiweb.net/">Anki</a> add-on that fetches and displays random example sentences in different languages from various sources.
+
+<b>Template filter</b>
+The add-on mainly works as a template filter to show random example sentences for vocabulary each time a card is viewed.
 You just have to put a filter like this in your <a href="https://docs.ankiweb.net/templates/intro.html">card template</a>:
-<code>{{incontext:Front}}</code>
+<code>{{incontext:Front}}
+</code>
 Here, the add-on will show a random English example sentence containing the word in the <code>Front</code> field.
 You can specify the language using the <code>lang</code> option:
-<code>{{incontext lang=en:Front}}</code>
+<code>{{incontext lang=en:Front}}
+</code>
 Currently supported values are:
-<ul><li><code>en</code> English</li><li><code>tr</code> Turkish</li><li><code>ja</code> Japanese</li><li><code>ko</code>: Korean</li><li><code>zh</code>: Chinese</li></ul>The default is <code>en</code>.
-Sentences are fetched from multiple sources such as https://www.lexico.com/ (for English) and https://sozluk.gov.tr (for Turkish). You can show sentences from only a certain source by using the <code>provider</code> option, like this:
-<code>{{incontext lang=en provider=lexico:Front}}</code>
-For a list of supported sources, see the <a href="https://github.com/abdnh/anki-incontext/blob/master/src/providers/">providers</a> folder. The identifier of each provider is defined by a <code>name</code> variable inside each provider class. A list of available providers is also shown in the <a href="https://github.com/abdnh/anki-incontext/blob/master/#interface">interface</a>.
+<ul><li><code>en</code> English</li><li><code>tr</code> Turkish</li><li><code>ja</code> Japanese</li><li><code>ko</code>: Korean</li><li><code>zh</code>: Chinese</li></ul>
+The default is <code>en</code>.
+Sentences are fetched from multiple sources such as <a href="https://www.lexico.com/">https://www.lexico.com/</a> (for English) and <a href="https://sozluk.gov.tr">https://sozluk.gov.tr</a> (for Turkish). You can show sentences from only a certain source by using the <code>provider</code> option, like this:
+<code>{{incontext lang=en provider=lexico:Front}}
+</code>
+For a list of supported sources, see the <a href="https://github.com/abdnh/anki-incontext/blob/master/src/providers">providers</a> folder. The identifier of each provider is defined by a <code>name</code> variable inside each provider class. A list of available providers is also shown in the <a href="https://github.com/abdnh/anki-incontext/blob/master/#interface">interface</a>.
 More sites and languages will be added in the future. Contributions are welcome!
+
+<b>Fill-in option</b>
+You can also add sentences to a chosen field in multiple notes using the browser's <i>Notes &gt; InContext: Add sentences</i> menu item. This is useful if you review on mobile.
+<img src="https://raw.githubusercontent.com/abdnh/anki-incontext/master/images/fill.png" alt="Fill-in dialog">
 
 <b>Importing Tatoeba databases</b>
 To make <a href="https://tatoeba.org">Tatoeba</a> databases available for use with the add-on, please see <a href="https://github.com/abdnh/anki-incontext/blob/master/src/user_files/tatoeba/README.txt">this doc</a>.

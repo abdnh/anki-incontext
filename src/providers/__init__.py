@@ -35,12 +35,13 @@ def init_providers(db: SentenceDB) -> None:
         PROVIDERS.append(cls(db))
 
 
-def get_sentence(
+def get_sentences(
     word: str,
     language: str | None = None,
     provider: str | None = None,
     use_cache: bool = True,
-) -> Sentence | None:
+    limit: int | None = None,
+) -> list[Sentence]:
     matched_providers: list[SentenceProvider] = []
     for provider_obj in PROVIDERS:
         matched = True
@@ -53,12 +54,16 @@ def get_sentence(
             matched &= provider == provider_obj.name
         if matched:
             matched_providers.append(provider_obj)
-    sentence: Sentence | None = None
     random.shuffle(matched_providers)
-    while matched_providers and not sentence:
+    sentences: list[Sentence] = []
+    while matched_providers and len(sentences) < limit:
         chosen_provider = matched_providers.pop()
-        sentence = chosen_provider.get_sentence(word, language, use_cache)
-    return sentence
+        sentences.extend(
+            chosen_provider.get_sentences(word, language, use_cache, limit)
+        )
+    if sentences and limit and len(sentences) > limit:
+        sentences = random.sample(sentences, limit)
+    return sentences
 
 
 def sync_sentences(
@@ -82,7 +87,7 @@ def sync_sentences(
     random.shuffle(matched_providers)
     while matched_providers:
         chosen_provider = matched_providers.pop()
-        chosen_provider.get_sentence(word, language, use_cache)
+        chosen_provider.get_sentences(word, language, use_cache)
 
 
 def langcode_to_name(lang_code: str) -> str:

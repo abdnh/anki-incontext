@@ -5,7 +5,7 @@ import json
 import sys
 from concurrent.futures import Future
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 from anki import hooks
 from anki.cards import Card
@@ -13,6 +13,7 @@ from anki.hooks import wrap
 from anki.template import TemplateRenderContext
 from aqt import gui_hooks, mw
 from aqt.addons import AddonManager
+from aqt.browser import Browser
 from aqt.clayout import CardLayout
 from aqt.qt import *
 from aqt.reviewer import Reviewer
@@ -30,8 +31,9 @@ sys.path.append(str(consts.VENDOR_DIR))
 
 # pylint: disable=wrong-import-position
 from .db import SentenceDB
+from .gui.fill import FillDialog
 from .gui.main import InContextDialog
-from .providers import get_provider, get_sentence, init_providers
+from .providers import get_provider, get_sentences, init_providers
 
 WEB_BASE = f"/_addons/{mw.addonManager.addonFromModule(__name__)}/web/"
 
@@ -55,7 +57,8 @@ def get_active_card_context() -> CardContext:
 
 def get_formatted_sentence(text: str, lang: str, provider: str) -> str:
     try:
-        sentence = get_sentence(word=text, language=lang, provider=provider)
+        sentences = get_sentences(word=text, language=lang, provider=provider, limit=1)
+        sentence = sentences[0] if sentences else None
         provider_obj = get_provider(sentence.provider) if sentence else None
         source = (
             f'<br><br>Source: <a href="{provider_obj.get_source(text, lang)}">{provider_obj.human_name}</a>'
@@ -207,6 +210,16 @@ def init_db() -> None:
     init_providers(sentences_db)
 
 
+def on_browser_action(browser: Browser) -> None:
+    FillDialog(browser, mw, sentences_db, cast(list, browser.selected_notes())).exec()
+
+
+def add_browser_action(browser: Browser) -> None:
+    action = QAction("InContext: Add sentences", browser)
+    qconnect(action.triggered, lambda: on_browser_action(browser))
+    browser.form.menu_Notes.addAction(action)
+
+
 def on_addon_manager_will_install_addon(
     manager: AddonManager, module: str, *args: Any, **kwargs: Any
 ) -> None:
@@ -227,6 +240,7 @@ hooks.field_filter.append(incontext_filter)
 gui_hooks.card_will_show.append(on_card_will_show)
 gui_hooks.webview_will_set_content.append(on_webview_will_set_content)
 gui_hooks.webview_did_receive_js_message.append(on_webview_did_receive_js_message)
+gui_hooks.browser_menus_did_init.append(add_browser_action)
 if hasattr(gui_hooks, "addon_manager_will_install_addon"):
     gui_hooks.addon_manager_will_install_addon.append(
         on_addon_manager_will_install_addon

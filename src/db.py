@@ -62,13 +62,20 @@ class SentenceDB:
             # if create or upgrade:
             #     self._upgrade_to_latest_schema(ver)
 
-    def get_random_sentence(self, word: str, language: str, provider: str) -> Sentence:
+    def get_random_sentences(
+        self, word: str, language: str, provider: str, limit: int | None = None
+    ) -> list[Sentence]:
+        sentences = []
         with self.con:
-            row = self.con.execute(
-                "SELECT * from sentences WHERE word = ? AND language = ? AND provider = ? order by RANDOM() limit 1",
+            query = "SELECT * from sentences WHERE word = ? AND language = ? AND provider = ? order by RANDOM()"
+            if limit is not None:
+                query += f" limit {limit}"
+            for row in self.con.execute(
+                query,
                 (word, language, provider),
-            ).fetchone()
-            return Sentence(*row)
+            ):
+                sentences.append(Sentence(*row))
+        return sentences
 
     def add_sentences(self, sentences: list[Sentence]) -> None:
         with self.con:

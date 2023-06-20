@@ -17,12 +17,14 @@ class SentenceProvider(ABC):
     def __init__(self, db: SentenceDB):
         self.db = db
 
-    def get_cached_sentence(self, word: str, language: str) -> Sentence | None:
+    def get_cached_sentences(
+        self, word: str, language: str, limit: int | None = None
+    ) -> list[Sentence]:
         try:
             with self.db.lock:
-                return self.db.get_random_sentence(word, language, self.name)
+                return self.db.get_random_sentences(word, language, self.name, limit)
         except:
-            return None
+            return []
 
     @abstractmethod
     def fetch(self, word: str, language: str) -> list[Sentence]:
@@ -33,19 +35,24 @@ class SentenceProvider(ABC):
         return []
 
     # TODO: maybe fetch from all languages if language is None
-    def get_sentence(
-        self, word: str, language: str, use_cache: bool = True
-    ) -> Sentence | None:
+    def get_sentences(
+        self, word: str, language: str, use_cache: bool = True, limit: int | None = None
+    ) -> list[Sentence]:
+        sentences = []
+        # FIXME: if use_cache=True, use cached sentences and fill rest of limit using fetched ones if necessary
         if use_cache:
-            cached = self.get_cached_sentence(word, language)
-            if cached:
-                return cached
-        fetched = self.fetch(word, language)
-        if fetched:
-            with self.db.lock:
-                self.db.add_sentences(fetched)
-            return random.choice(fetched)
-        return None
+            sentences.extend(self.get_cached_sentences(word, language, limit))
+            if not limit:
+                return sentences
+        if not limit or len(sentences) < limit:
+            fetched = self.fetch(word, language)
+            if fetched:
+                with self.db.lock:
+                    self.db.add_sentences(fetched)
+                sentences.extend(fetched)
+        if sentences and limit and len(sentences) > limit:
+            sentences = random.sample(sentences, limit)
+        return sentences
 
     @abstractmethod
     def get_source(self, word: str, language: str) -> str:
