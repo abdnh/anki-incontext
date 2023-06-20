@@ -11,9 +11,9 @@ from .db import Sentence, SentenceDB
 from .providers import get_languages, get_providers_for_language, sync_sentences
 
 if qtmajor > 5:
-    from .forms.form_qt6 import Ui_Dialog
+    from .forms.main_qt6 import Ui_Dialog
 else:
-    from .forms.form_qt5 import Ui_Dialog  # type: ignore
+    from .forms.main_qt5 import Ui_Dialog  # type: ignore
 
 
 class InContextListView(QListView):
