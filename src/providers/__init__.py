@@ -8,6 +8,7 @@ import pycountry
 from ..db import Sentence, SentenceDB
 from .dictionary_com import DictionaryProvider
 from .glosbe import GlosbeProvider
+from .jisho import JishoProvider
 from .lexico import LexicoProvider
 from .oxford_learner import OxfordLearnerProvider
 from .provider import SentenceProvider
@@ -25,6 +26,7 @@ PROVIDER_CLASSES: list[Type[SentenceProvider]] = [
     TDKProvider,
     SesliSozlukProvider,
     DictionaryProvider,
+    JishoProvider,
 ]
 PROVIDERS: list[SentenceProvider] = []
 
