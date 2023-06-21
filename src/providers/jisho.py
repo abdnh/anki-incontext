@@ -20,10 +20,11 @@ class JishoProvider(SentenceProvider):
             if not sentence_elements:
                 break
             for sentence_element in sentence_elements:
-                text = "".join(
-                    e.get_text() for e in sentence_element.select(".unlinked")
+                for el in sentence_element.select(".furigana"):
+                    el.decompose()
+                sentences.append(
+                    Sentence(sentence_element.get_text(), word, language, self.name)
                 )
-                sentences.append(Sentence(text, word, language, self.name))
             page += 1
         return sentences
 
