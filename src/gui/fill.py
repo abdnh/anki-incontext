@@ -118,7 +118,7 @@ class FillDialog(QDialog):
             self.mw.taskman.run_on_main(lambda: self.mw.progress.set_title("InContext"))
 
             updated_notes = []
-            last_progress = time.time()
+            last_progress = 0.0
             for i, nid in enumerate(self.nids):
                 note = col.get_note(nid)
                 if word_field in note and sentences_field in note:
