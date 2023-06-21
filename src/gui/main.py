@@ -398,7 +398,7 @@ class InContextDialog(QDialog):
         )
         words = self.selected_words()
         for word in words:
-            sync_sentences(word, lang, provider, use_cache=False)
+            sync_sentences(word, lang, provider)
 
         self.populate_word_sentences(self.wordlist_view.currentIndex())
 

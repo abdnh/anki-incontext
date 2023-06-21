@@ -75,7 +75,6 @@ def sync_sentences(
     word: str,
     language: str | None = None,
     provider: str | None = None,
-    use_cache: bool = True,
 ) -> None:
     matched_providers: list[SentenceProvider] = []
     for provider_obj in PROVIDERS:
@@ -92,7 +91,7 @@ def sync_sentences(
     random.shuffle(matched_providers)
     while matched_providers:
         chosen_provider = matched_providers.pop()
-        chosen_provider.get_sentences(word, language, use_cache)
+        chosen_provider.get_sentences(word, language)
 
 
 def langcode_to_name(lang_code: str) -> str:
