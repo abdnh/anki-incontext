@@ -8,7 +8,7 @@ from .provider import SentenceProvider
 class SesliSozlukProvider(SentenceProvider):
     name = "sesli_sozluk"
     human_name = "Sesli Sözlük"
-    supported_languages = {"tr"}
+    supported_languages = ["tr"]
     url = "https://www.seslisozluk.net/{word}-nedir-ne-demek/"
 
     def fetch(self, word: str, language: str) -> list[Sentence]:

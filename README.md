@@ -28,8 +28,6 @@ Currently supported values are:
 -   `ko`: Korean
 -   `zh`: Chinese
 
-The default is `en`.
-
 Sentences are fetched from multiple sources such as https://www.lexico.com/ (for English) and https://sozluk.gov.tr (for Turkish).
 You can show sentences from only a certain source by using the `provider` option, like this:
 
@@ -40,6 +38,9 @@ You can show sentences from only a certain source by using the `provider` option
 For a list of supported sources, see the [providers](./src/providers/) folder.
 The identifier of each provider is defined by a `name` variable inside each provider class.
 A list of available providers is also shown in the [interface](#interface).
+
+If a provider is given but no language, the first supported language of the provider will be assumed.
+If both language and provider are not given, the default is English with all providers.
 
 More sites and languages will be added in the future. Contributions are welcome!
 

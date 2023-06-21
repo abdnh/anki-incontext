@@ -44,6 +44,9 @@ def get_sentences(
     use_cache: bool = True,
     limit: int | None = None,
 ) -> list[Sentence]:
+    # Default to English if no language and provider is given
+    if not (language or provider):
+        language = "en"
     matched_providers: list[SentenceProvider] = []
     for provider_obj in PROVIDERS:
         matched = True

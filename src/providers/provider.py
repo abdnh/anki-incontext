@@ -12,7 +12,7 @@ class SentenceProvider(ABC):
     name: str
     # Name shown to the user in the GUI
     human_name: str
-    supported_languages: set[str]
+    supported_languages: list[str]
 
     def __init__(self, db: SentenceDB):
         self.db = db
@@ -34,12 +34,17 @@ class SentenceProvider(ABC):
             )
         return []
 
-    # TODO: maybe fetch from all languages if language is None
     def get_sentences(
-        self, word: str, language: str, use_cache: bool = True, limit: int | None = None
+        self,
+        word: str,
+        language: str | None,
+        use_cache: bool = True,
+        limit: int | None = None,
     ) -> list[Sentence]:
         sentences = []
-        # FIXME: if use_cache=True, use cached sentences and fill rest of limit using fetched ones if necessary
+        if not language:
+            # Default to first supported language
+            language = self.supported_languages[0]
         if use_cache:
             sentences.extend(self.get_cached_sentences(word, language, limit))
             if not limit:

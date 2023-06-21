@@ -10,7 +10,7 @@ from .provider import SentenceProvider
 class DictionaryProvider(SentenceProvider):
     name = "dictionary.com"
     human_name = "Dictionary.com"
-    supported_languages = {"en"}
+    supported_languages = ["en"]
     url = "https://www.dictionary.com/browse/{word}"
 
     def fetch(self, word: str, language: str) -> list[Sentence]:

@@ -9,7 +9,7 @@ from .vendor.tdk import TDK, TDKError
 class TDKProvider(SentenceProvider):
     name = "tdk"
     human_name = "Türk Dil Kurumu Sözlükleri"
-    supported_languages = {"tr"}
+    supported_languages = ["tr"]
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)

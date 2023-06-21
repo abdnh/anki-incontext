@@ -8,7 +8,7 @@ from .provider import SentenceProvider
 class JishoProvider(SentenceProvider):
     name = "jisho"
     human_name = "Jisho"
-    supported_languages = {"ja"}
+    supported_languages = ["ja"]
     url = "https://jisho.org/search/{word} %23sentences"
 
     def fetch(self, word: str, language: str) -> list[Sentence]:

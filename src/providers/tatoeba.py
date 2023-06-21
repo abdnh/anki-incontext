@@ -15,7 +15,7 @@ class TatoebaProvider(SentenceProvider):
     name = "tatoeba"
     human_name = "Tatoeba"
     # TODO: add a way to indicate support for "all" or unspecified list of languages
-    supported_languages = {"en", "tr", "ja", "ko", "zh"}
+    supported_languages = ["en", "tr", "ja", "ko", "zh"]
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)

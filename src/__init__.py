@@ -55,7 +55,7 @@ def get_active_card_context() -> CardContext:
     return CardContext(mw.reviewer.card, mw.reviewer.web)
 
 
-def get_formatted_sentence(text: str, lang: str, provider: str) -> str:
+def get_formatted_sentence(text: str, lang: str | None, provider: str | None) -> str:
     try:
         sentences = get_sentences(word=text, language=lang, provider=provider, limit=1)
         sentence = sentences[0] if sentences else None
@@ -84,7 +84,7 @@ def incontext_filter(
     filter_id = ctx.extra_state["incontext_id"]
 
     options = dict(map(lambda o: o.split("="), filter_name.split()[1:]))
-    lang = options.get("lang", "en")
+    lang = options.get("lang", None)
     # TODO: support multiple comma-separated providers
     provider = options.get("provider", None)
 
@@ -128,7 +128,7 @@ def incontext_filter(
         filter_id=filter_id,
         refresh_icon=f"{WEB_BASE}arrow-clockwise.svg",
         field_text=html.escape(field_text),
-        lang=html.escape(lang),
+        lang=html.escape(lang) if lang else "",
         provider=html.escape(provider) if provider else "",
     )
 

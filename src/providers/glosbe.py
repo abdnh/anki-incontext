@@ -9,7 +9,7 @@ class GlosbeProvider(SentenceProvider):
     name = "glosbe"
     human_name = "Glosbe"
     # TODO: add a way to indicate support for "all" or unspecified list of languages
-    supported_languages = {"en", "tr"}
+    supported_languages = ["en", "tr"]
     url = "https://glosbe.com/{language}/{language}/{word}"
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
