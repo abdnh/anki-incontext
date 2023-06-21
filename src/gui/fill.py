@@ -109,7 +109,7 @@ class FillDialog(QDialog):
 
         def update_progress(i: int) -> None:
             self.mw.progress.update(
-                f"Processed note {i} of {len(self.nids)}...",
+                f"Processed note {i+1} of {len(self.nids)}...",
                 value=i,
                 max=len(self.nids),
             )
