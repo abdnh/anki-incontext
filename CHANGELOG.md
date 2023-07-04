@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2023-07-04
+
+### Added
+
+-   Added an interface to paste sentences to a chosen field.
+-   Added support for [Jisho](https://jisho.org/).
+
+### Fixed
+
+-   Improved interface responsiveness with a lot of sentences.
+-   Fixed error on first card when cache is used
+
+### Changed
+
+-   Words and sentences in the GUI are now aligned to the left.
+-   Default to first supported language if no language is provided in the template filter.
+-   Words added from the interface are now synced immediately.
+-   The refresh button now spins when loading sentences.
+
 ## [0.3.1] - 2023-05-29
 
 ### Fixed
@@ -52,6 +71,7 @@ Initial release to AnkiWeb
 
 Initial release
 
+[0.4.0]: https://github.com/abdnh/anki-incontext/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/abdnh/anki-incontext/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/abdnh/anki-incontext/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/abdnh/anki-incontext/compare/0.1.0...0.2.0
