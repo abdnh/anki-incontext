@@ -110,6 +110,7 @@ def incontext_filter(
                             const result = %(result)s;
                             globalThis.inContextResults.push(result);
                             inContextSentenceElement.innerHTML = result;
+                            inContextSentenceElement.nextElementSibling.classList.remove('incontext-loading');
                         }
                     }, 100);
                 })();"""
@@ -120,7 +121,7 @@ def incontext_filter(
     ctx.extra_state["incontext_id"] += 1
     return """
     <div class='incontext-sentence' id='incontext-sentence-%(filter_id)d' data-query='%(field_text)s' data-lang='%(lang)s' data-provider='%(provider)s'>InContext: fetching sentence...</div>
-    <img src="%(refresh_icon)s" class="incontext-refresh-button" onclick="InContextRefreshSentence(%(filter_id)d)">
+    <img src="%(refresh_icon)s" class="incontext-refresh-button incontext-loading" onclick="InContextRefreshSentence(%(filter_id)d)">
     <script>
         if(globalThis.inContextResults[%(filter_id)d]) {
             document.getElementById('incontext-sentence-%(filter_id)d').innerHTML = globalThis.inContextResults[%(filter_id)d];
@@ -156,6 +157,7 @@ def on_webview_did_receive_js_message(
     _, subcmd, data = message.split(":", maxsplit=2)
     if subcmd == "refresh":
         options = json.loads(data)
+        card_context = get_active_card_context()
 
         def task() -> str:
             return get_formatted_sentence(
@@ -164,17 +166,25 @@ def on_webview_did_receive_js_message(
 
         def on_done(fut: Future) -> None:
             result = fut.result()
-            card_context = get_active_card_context()
             if card_context.card and card_context.web:
                 card_context.web.eval(
                     """(() => {
                         const result = %(result)s;
                         globalThis.inContextResults[%(filter_id)d] = result;
-                        document.getElementById('incontext-sentence-%(filter_id)d').innerHTML = result;
+                        const inContextSentenceElement = document.getElementById('incontext-sentence-%(filter_id)d');
+                        inContextSentenceElement.innerHTML = result;
+                        inContextSentenceElement.nextElementSibling.classList.remove('incontext-loading');
                     })();"""
                     % dict(result=json.dumps(result), filter_id=options["id"])
                 )
 
+        card_context.web.eval(
+            """(() => {
+                const inContextSentenceElement = document.getElementById('incontext-sentence-%(filter_id)d');
+                inContextSentenceElement.nextElementSibling.classList.add('incontext-loading');
+            })();"""
+            % dict(filter_id=options["id"])
+        )
         mw.taskman.run_in_background(task, on_done)
 
     return True, None
