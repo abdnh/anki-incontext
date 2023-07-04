@@ -101,7 +101,7 @@ def incontext_filter(
         ):
             card_context.web.eval(
                 """(() => {
-                    const inContextIntervalID = setTimeout(() => {
+                    const inContextIntervalID = setInterval(() => {
                         const inContextSentenceElement = document.getElementById('incontext-sentence-%(filter_id)d');
                         if(inContextSentenceElement) {
                             clearInterval(inContextIntervalID);
