@@ -12,7 +12,7 @@ from anki.cards import Card
 from anki.hooks import wrap
 from anki.template import TemplateRenderContext
 from aqt import gui_hooks, mw
-from aqt.addons import AddonManager
+from aqt.addons import AddonManager, AddonsDialog
 from aqt.browser import Browser
 from aqt.clayout import CardLayout
 from aqt.qt import *
@@ -247,6 +247,10 @@ def on_addon_manager_did_install_addon(
         if dialog is not None:
             dialog.sentences_db = sentences_db
 
+def on_addons_dialog_will_delete_addons(dialog: AddonsDialog, ids: list[str]) -> None:
+    if mw.addonManager.addonFromModule(__name__) in ids:
+        sentences_db.close()
+
 
 hooks.field_filter.append(incontext_filter)
 gui_hooks.card_will_show.append(on_card_will_show)
@@ -268,6 +272,8 @@ else:
     AddonManager._install = wrap(
         AddonManager._install, on_addon_manager_did_install_addon, "after"
     )
+gui_hooks.addons_dialog_will_delete_addons.append(on_addons_dialog_will_delete_addons)
+
 
 mw.addonManager.setWebExports(__name__, "web/.*")
 action = QAction("InContext", mw)
