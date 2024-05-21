@@ -1,7 +1,7 @@
 -r requirements.txt
 anki==2.1.49
 aqt==2.1.49
-requests==2.31.0
+requests==2.32.0
 types-requests==2.28.0
 beautifulsoup4==4.11.1
 black==23.3.0
