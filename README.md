@@ -28,11 +28,11 @@ Currently supported values are:
 - `ko`: Korean
 - `zh`: Chinese
 
-Sentences are fetched from multiple sources such as https://www.lexico.com/ (for English) and https://sozluk.gov.tr (for Turkish).
+Sentences are fetched from multiple sources such as [Dictionary.com](https://www.dictionary.com/) (for English) and [sozluk.gov.tr](https://sozluk.gov.tr) (for Turkish).
 You can show sentences from only a certain source by using the `provider` option, like this:
 
 ```
-{{incontext lang=en provider=lexico:Front}}
+{{incontext lang=en provider=dictionary.com:Front}}
 ```
 
 For a list of supported sources, see the [providers](./src/providers/) folder.

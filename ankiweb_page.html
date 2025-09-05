@@ -11,8 +11,8 @@ You can specify the language using the <code>lang</code> option:
 </code>
 Currently supported values are:
 <ul><li><code>en</code> English</li><li><code>tr</code> Turkish</li><li><code>ja</code> Japanese</li><li><code>ko</code>: Korean</li><li><code>zh</code>: Chinese</li></ul>
-Sentences are fetched from multiple sources such as <a href="https://www.lexico.com/">https://www.lexico.com/</a> (for English) and <a href="https://sozluk.gov.tr">https://sozluk.gov.tr</a> (for Turkish). You can show sentences from only a certain source by using the <code>provider</code> option, like this:
-<code>{{incontext lang=en provider=lexico:Front}}
+Sentences are fetched from multiple sources such as <a href="https://www.dictionary.com/">Dictionary.com</a> (for English) and <a href="https://sozluk.gov.tr">sozluk.gov.tr</a> (for Turkish). You can show sentences from only a certain source by using the <code>provider</code> option, like this:
+<code>{{incontext lang=en provider=dictionary.com:Front}}
 </code>
 For a list of supported sources, see the <a href="https://github.com/abdnh/anki-incontext/blob/master/src/providers">providers</a> folder. The identifier of each provider is defined by a <code>name</code> variable inside each provider class. A list of available providers is also shown in the <a href="https://github.com/abdnh/anki-incontext/blob/master/#interface">interface</a>.
 If a provider is given but no language, the first supported language of the provider will be assumed. If both language and provider are not given, the default is English with all providers.
