@@ -62,7 +62,7 @@ def get_formatted_sentence(text: str, lang: str | None, provider: str | None) ->
         sentences = get_sentences(word=text, language=lang, provider=provider, limit=1)
         sentence = sentences[0] if sentences else None
         provider_obj = get_provider(sentence.provider) if sentence else None
-        if not lang:
+        if not lang and provider_obj:
             lang = provider_obj.supported_languages[0]
         source = (
             f'<br><br>Source: <a href="{provider_obj.get_source(text, lang)}">'
