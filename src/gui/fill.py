@@ -8,23 +8,18 @@ from anki.notes import NoteId
 from anki.utils import ids2str
 from aqt.main import AnkiQt
 from aqt.operations import CollectionOp
-from aqt.qt import *
-from aqt.qt import qtmajor
+from aqt.qt import QDialog, Qt, QWidget, qconnect
 from aqt.utils import tooltip
 
 from ..db import SentenceDB
+from ..forms.fill import Ui_Dialog
 from ..providers import get_languages, get_providers_for_language, get_sentences
-
-if qtmajor > 5:
-    from ..forms.fill_qt6 import Ui_Dialog
-else:
-    from ..forms.fill_qt5 import Ui_Dialog  # type: ignore
 
 
 def fields_for_notes(mw: AnkiQt, nids: list[NoteId]) -> list[str]:
     return mw.col.db.list(
-        "select distinct name from fields where ntid in (select mid from notes where id in %s)"
-        % ids2str(nids)
+        "select distinct name from fields where ntid in"
+        f" (select mid from notes where id in {ids2str(nids)})"
     )
 
 
@@ -109,7 +104,7 @@ class FillDialog(QDialog):
 
         def update_progress(i: int) -> None:
             self.mw.progress.update(
-                f"Processed note {i+1} of {len(self.nids)}...",
+                f"Processed note {i + 1} of {len(self.nids)}...",
                 value=i,
                 max=len(self.nids),
             )
@@ -127,7 +122,7 @@ class FillDialog(QDialog):
                         word, lang, provider, limit=number_of_sentences
                     )
                     note[sentences_field] = "<br>".join(
-                        (sentence.text for sentence in sentences)
+                        sentence.text for sentence in sentences
                     )
                     updated_notes.append(note)
                 if time.time() - last_progress >= 0.1:

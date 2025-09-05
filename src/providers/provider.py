@@ -4,7 +4,7 @@ import random
 from abc import ABC, abstractmethod
 
 from ..db import Sentence, SentenceDB
-from ..errors import InContextError
+from ..exceptions import InContextUnsupportedLanguageError
 
 
 class SentenceProvider(ABC):
@@ -23,15 +23,13 @@ class SentenceProvider(ABC):
         try:
             with self.db.lock:
                 return self.db.get_random_sentences(word, language, self.name, limit)
-        except:
+        except Exception:
             return []
 
     @abstractmethod
     def fetch(self, word: str, language: str) -> list[Sentence]:
         if language not in self.supported_languages:
-            raise InContextError(
-                f'Language "{language}" is not supported by provider "{self.name}"'
-            )
+            raise InContextUnsupportedLanguageError(language, self.name)
         return []
 
     def get_sentences(
@@ -62,5 +60,6 @@ class SentenceProvider(ABC):
     @abstractmethod
     def get_source(self, word: str, language: str) -> str:
         raise NotImplementedError(
-            "You should implement this method to provide a link or source from which the sentences are fetched for a given word."
+            "You should implement this method to provide a link or source "
+            "from which the sentences are fetched for a given word."
         )

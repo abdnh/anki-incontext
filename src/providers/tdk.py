@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from ..db import Sentence
-from ..errors import InContextError
+from ..exceptions import InContextError
+from ..vendor.tdk import TDK, TDKError
 from .provider import SentenceProvider
-from .vendor.tdk import TDK, TDKError
 
 
 class TDKProvider(SentenceProvider):

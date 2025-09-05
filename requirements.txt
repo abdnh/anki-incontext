@@ -1,3 +1,0 @@
-# TODO: Use 22.3.6 version from pypi once it's released to fix this issue: https://github.com/flyingcircusio/pycountry/pull/52
-# Do not forget to also simplify the packaging code and remove the git submodule
-pycountry @ git+https://github.com/flyingcircusio/pycountry@e2352cc16c7bd2c3190f56507b4321a57177a7ef

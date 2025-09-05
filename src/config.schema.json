@@ -1,0 +1,20 @@
+{
+    "properties": {
+        "lang_field": {
+            "type": "string"
+        },
+        "provider_field": {
+            "type": "string"
+        },
+        "report_errors": {
+            "type": "boolean"
+        },
+        "sentences_field": {
+            "type": "string"
+        },
+        "word_field": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

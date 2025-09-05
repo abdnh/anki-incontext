@@ -1,19 +1,29 @@
 from __future__ import annotations
 
-from typing import Any, List, Sequence, cast
+from collections.abc import Sequence
+from typing import Any, cast
 
 from aqt.main import AnkiQt
-from aqt.qt import *
-from aqt.qt import qtmajor
+from aqt.qt import (
+    QAbstractItemView,
+    QAbstractListModel,
+    QApplication,
+    QDialog,
+    QKeyEvent,
+    QKeySequence,
+    QListView,
+    QModelIndex,
+    QObject,
+    Qt,
+    QWidget,
+    pyqtSignal,
+    qconnect,
+)
 from aqt.utils import getFile, getOnlyText
 
 from ..db import Sentence, SentenceDB
+from ..forms.main import Ui_Dialog
 from ..providers import get_languages, get_providers_for_language, sync_sentences
-
-if qtmajor > 5:
-    from ..forms.main_qt6 import Ui_Dialog
-else:
-    from ..forms.main_qt5 import Ui_Dialog  # type: ignore
 
 
 class InContextListView(QListView):
@@ -103,7 +113,6 @@ class WordListView(InContextListView):
     def refresh_model(self, db: SentenceDB, language: str, provider: str) -> None:
         model = WordListModel(db, language, provider)
         self.setModel(model)
-        # self.sortByColumn(ColumnFields.WORDS_FOUND.value, Qt.SortOrder.DescendingOrder)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key.Key_Delete:
@@ -223,7 +232,7 @@ class InContextDialog(QDialog):
         self.form.gridLayout.addWidget(self.wordlist_view, 4, 0)
         self.sentencelist_view = SentenceListView()
         self.form.gridLayout.addWidget(self.sentencelist_view, 4, 1)
-        qconnect(self.wordlist_view.currentIndexChanged, self.populate_word_sentences)  # type: ignore[arg-type]
+        qconnect(self.wordlist_view.currentIndexChanged, self.populate_word_sentences)
         qconnect(self.form.add_word_button.clicked, self.on_add_word)
         qconnect(self.form.import_words_button.clicked, self.on_import_words)
         qconnect(self.form.import_sentences_button.clicked, self.on_import_sentences)
@@ -270,7 +279,7 @@ class InContextDialog(QDialog):
     def on_provider_changed(self) -> None:
         self.populate_words()
 
-    def selected_words(self) -> List[str]:
+    def selected_words(self) -> list[str]:
         indices = self.wordlist_view.selectedIndexes()
         words = []
         for idx in indices:
@@ -331,7 +340,7 @@ class InContextDialog(QDialog):
                 self.sentences_db, language, provider, word
             )
 
-    def add_words(self, words: List[str]) -> None:
+    def add_words(self, words: list[str]) -> None:
         lang = self.form.langComboBox.currentData()
         provider = (
             self.form.providerComboBox.currentData(Qt.ItemDataRole.UserRole)
@@ -353,14 +362,14 @@ class InContextDialog(QDialog):
         def import_files(filenames: Sequence[str]) -> None:
             words = []
             for filename in filenames:
-                with open(filename, "r", encoding="utf-8") as f:
+                with open(filename, encoding="utf-8") as f:
                     words.extend(f.read().split())
             self.add_words(words)
 
         getFile(self, title="Files to import", cb=import_files, multi=True)
 
     def add_sentences(
-        self, word: str, sentence_texts: List[str], provider: str
+        self, word: str, sentence_texts: list[str], provider: str
     ) -> None:
         lang = self.form.langComboBox.currentData()
         sentences = []
@@ -407,7 +416,7 @@ class InContextDialog(QDialog):
             self.form.textBox.clear()
             sentences = []
             for filename in filenames:
-                with open(filename, "r", encoding="utf-8") as f:
+                with open(filename, encoding="utf-8") as f:
                     for line in f:
                         sentence = line.strip()
                         sentences.append(sentence)

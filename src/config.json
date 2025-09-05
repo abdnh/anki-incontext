@@ -1,6 +1,7 @@
 {
     "lang_field": "English",
     "provider_field": "All",
-    "word_field": "",
-    "sentences_field": ""
+    "report_errors": true,
+    "sentences_field": "",
+    "word_field": ""
 }

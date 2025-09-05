@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import random
-from typing import Type
-
-import pycountry
 
 from ..db import Sentence, SentenceDB
+from ..vendor import pycountry
 from .dictionary_com import DictionaryProvider
 from .glosbe import GlosbeProvider
 from .jisho import JishoProvider
@@ -17,7 +15,7 @@ from .skell import SkellProvider
 from .tatoeba import TatoebaProvider
 from .tdk import TDKProvider
 
-PROVIDER_CLASSES: list[Type[SentenceProvider]] = [
+PROVIDER_CLASSES: list[type[SentenceProvider]] = [
     TatoebaProvider,
     GlosbeProvider,
     LexicoProvider,

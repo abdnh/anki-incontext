@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run add-on",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "ankiscripts.run",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["-b", "ankidata"],
+            "env": {
+                "REPORT_ERRORS": "0"
+            }
+        }
+    ]
+}

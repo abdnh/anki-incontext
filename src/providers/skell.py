@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from ..db import Sentence
+from ..vendor.skell_downloader import SkellDownloader
 from .provider import SentenceProvider
-from .vendor.skell_downloader import SkellDownloader
 
 
 class SkellProvider(SentenceProvider):

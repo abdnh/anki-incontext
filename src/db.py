@@ -4,7 +4,7 @@ import dataclasses
 import sqlite3
 from threading import Lock
 
-from . import consts
+from .consts import consts
 
 
 @dataclasses.dataclass
@@ -21,7 +21,9 @@ class SentenceDB:
     SCHEMA_MAX_VERSION = 1
 
     def __init__(self, path: str | None = None):
-        self.con = sqlite3.connect(path or consts.DB_FILE, check_same_thread=False)
+        self.con = sqlite3.connect(
+            path or consts.dir / "user_files" / "sentences.db", check_same_thread=False
+        )
         self.lock = Lock()
         self._open_or_create_db()
 
@@ -67,7 +69,8 @@ class SentenceDB:
     ) -> list[Sentence]:
         sentences = []
         with self.con:
-            query = "SELECT * from sentences WHERE word = ? AND language = ? AND provider = ? order by RANDOM()"
+            query = "SELECT * from sentences WHERE word = ? AND language = ?"
+            " AND provider = ? order by RANDOM()"
             if limit is not None:
                 query += f" limit {limit}"
             for row in self.con.execute(

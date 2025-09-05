@@ -4,10 +4,9 @@ import csv
 import os
 import re
 
-import pycountry
-
-from .. import consts
+from ..consts import consts
 from ..db import Sentence
+from ..vendor import pycountry
 from .provider import SentenceProvider
 
 
@@ -20,7 +19,8 @@ class TatoebaProvider(SentenceProvider):
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
         word = word.lower()
-        # TODO: use a proper tokenizer/morphemizer for CJK languages - see MorphMan add-on
+        # TODO: use a proper tokenizer/morphemizer for CJK languages
+        # See MorphMan add-on
         pattern_str = (
             re.escape(word)
             if language in ("ja", "ko", "zh")
@@ -32,13 +32,14 @@ class TatoebaProvider(SentenceProvider):
             alpha_3 = pycountry.languages.get(alpha_2=language).alpha_3.lower()
             with open(
                 os.path.join(
-                    consts.USERFILES_DIR, "tatoeba", f"{alpha_3}_sentences.tsv"
+                    consts.dir / "user_files", "tatoeba", f"{alpha_3}_sentences.tsv"
                 ),
                 encoding="utf-8",
                 newline="",
             ) as f:
                 reader = csv.reader(f, delimiter="\t")
-                # TODO: maybe we can do better than reading the file each time and iterating over all rows
+                # TODO: maybe we can do better than reading the file each time
+                # and iterating over all rows
                 for row in reader:
                     sentence = row[2]
                     if pattern.search(sentence):
