@@ -16,7 +16,7 @@ class DictionaryProvider(SentenceProvider):
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
         soup = get_soup(self.url.format(word=word))
-        nodes = soup.select(".luna-example")
+        nodes = soup.select('[data-type="example-sentences-module"] div p')
         for n in nodes:
             sentences.append(Sentence(n.get_text(), word, language, self.name))
         return sentences
