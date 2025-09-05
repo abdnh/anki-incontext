@@ -8,12 +8,14 @@ from anki.notes import NoteId
 from anki.utils import ids2str
 from aqt.main import AnkiQt
 from aqt.operations import CollectionOp
-from aqt.qt import QDialog, Qt, QWidget, qconnect
+from aqt.qt import Qt, QWidget, qconnect
 from aqt.utils import tooltip
 
+from ..config import config
 from ..db import SentenceDB
 from ..forms.fill import Ui_Dialog
 from ..providers import get_languages, get_providers_for_language, get_sentences
+from .dialog import Dialog
 
 
 def fields_for_notes(mw: AnkiQt, nids: list[NoteId]) -> list[str]:
@@ -23,24 +25,25 @@ def fields_for_notes(mw: AnkiQt, nids: list[NoteId]) -> list[str]:
     )
 
 
-class FillDialog(QDialog):
+class FillDialog(Dialog):
+    key = "fill"
+
     def __init__(
         self, parent: QWidget, mw: AnkiQt, sentences_db: SentenceDB, nids: list[NoteId]
     ):
         self.mw = mw
         self.sentences_db = sentences_db
         self.nids = nids
-        QDialog.__init__(self, parent)
-        self.config = mw.addonManager.getConfig(__name__)
-        self.form = Ui_Dialog()
-        self.form.setupUi(self)
-        self.setup_ui()
+        super().__init__(parent)
 
     def setup_ui(self) -> None:
+        super().setup_ui()
+        self.form = Ui_Dialog()
+        self.form.setupUi(self)
         self.setWindowTitle("InContext - Fill in sentences")
         for lang_code, lang_name in get_languages():
             self.form.language.addItem(lang_name, lang_code)
-        last_lang = self.config["lang_field"]
+        last_lang = config["lang_field"]
         for idx in range(self.form.language.count()):
             if (
                 self.form.language.itemData(idx, Qt.ItemDataRole.DisplayRole)
@@ -49,7 +52,7 @@ class FillDialog(QDialog):
                 self.form.language.setCurrentIndex(idx)
                 break
         self.populate_providers()
-        last_provider = self.config["provider_field"]
+        last_provider = config["provider_field"]
         for idx in range(self.form.provider.count()):
             if (
                 self.form.provider.itemData(idx, Qt.ItemDataRole.UserRole)
@@ -59,8 +62,8 @@ class FillDialog(QDialog):
                 break
 
         fields = fields_for_notes(self.mw, self.nids)
-        last_word_field = self.config["word_field"]
-        last_sentences_field = self.config["sentences_field"]
+        last_word_field = config["word_field"]
+        last_sentences_field = config["sentences_field"]
         for i, field in enumerate(fields):
             self.form.wordField.addItem(field)
             self.form.sentencesField.addItem(field)
@@ -74,13 +77,12 @@ class FillDialog(QDialog):
         qconnect(self.finished, self.on_finished)
 
     def on_finished(self) -> None:
-        self.config["lang_field"] = self.form.language.currentText()
-        self.config["provider_field"] = self.form.provider.currentData(
+        config["lang_field"] = self.form.language.currentText()
+        config["provider_field"] = self.form.provider.currentData(
             Qt.ItemDataRole.UserRole
         )
-        self.config["word_field"] = self.form.wordField.currentText()
-        self.config["sentences_field"] = self.form.sentencesField.currentText()
-        self.mw.addonManager.writeConfig(__name__, self.config)
+        config["word_field"] = self.form.wordField.currentText()
+        config["sentences_field"] = self.form.sentencesField.currentText()
 
     def on_lang_changed(self, index: int) -> None:
         self.populate_providers()
