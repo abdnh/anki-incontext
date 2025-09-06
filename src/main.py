@@ -16,7 +16,7 @@ from anki import hooks
 from anki.cards import Card
 from anki.hooks import wrap
 from anki.template import TemplateRenderContext
-from aqt import gui_hooks, mw
+from aqt import QMenu, gui_hooks, mw
 from aqt.addons import AddonManager, AddonsDialog
 from aqt.browser import Browser
 from aqt.clayout import CardLayout
@@ -35,6 +35,7 @@ from .db import SentenceDB
 from .exceptions import InContextError
 from .gui.fill import FillDialog
 from .gui.main import InContextDialog
+from .gui.tatoeba import TatoebaDialog
 from .providers import get_provider, get_sentences, init_providers
 
 WEB_BASE = f"/_addons/{mw.addonManager.addonFromModule(__name__)}/web"
@@ -185,7 +186,7 @@ def on_finished() -> None:
     dialog = None
 
 
-def open_dialog() -> None:
+def open_manage_dialog() -> None:
     global dialog
     if not dialog:
         dialog = InContextDialog(mw, sentences_db)
@@ -240,6 +241,21 @@ def on_addons_dialog_will_delete_addons(dialog: AddonsDialog, ids: list[str]) ->
         sentences_db.close()
 
 
+def open_tatoeba_dialog() -> None:
+    TatoebaDialog(mw).exec()
+
+
+def add_menu() -> None:
+    menu = QMenu("InContext", mw)
+    manage_action = QAction("Manage sentences", mw)
+    qconnect(manage_action.triggered, open_manage_dialog)
+    menu.addAction(manage_action)
+    tatoeba_action = QAction("Download Tatoeba sentences", mw)
+    qconnect(tatoeba_action.triggered, open_tatoeba_dialog)
+    menu.addAction(tatoeba_action)
+    mw.form.menuTools.addMenu(menu)
+
+
 def init() -> None:
     setup_error_handler()
     hooks.field_filter.append(incontext_filter)
@@ -268,7 +284,5 @@ def init() -> None:
         on_addons_dialog_will_delete_addons
     )
     mw.addonManager.setWebExports(__name__, "web/.*")
-    action = QAction("InContext", mw)
-    mw.form.menuTools.addAction(action)
     init_db()
-    qconnect(action.triggered, open_dialog)
+    add_menu()

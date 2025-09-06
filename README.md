@@ -52,7 +52,7 @@ You can also add sentences to a chosen field in multiple notes using the browser
 
 ## Importing Tatoeba databases
 
-To make [Tatoeba](https://tatoeba.org) databases available for use with the add-on, please see [this doc](./src/user_files/tatoeba/README.txt).
+Use _Tools > InContext > Download Tatoeba sentences_ to download sentences for your target language from [Tatoeba](https://tatoeba.org/).
 
 ## Interface
 
