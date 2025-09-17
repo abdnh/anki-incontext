@@ -70,7 +70,6 @@ testpaths = ["tests"]
 omit = ["src/forms/*", "src/vendor/*"]
 
 [tool.mypy]
-python_version = "3.13"
 pretty = true
 strict_optional = false
 show_error_codes = true
@@ -81,7 +80,7 @@ warn_unused_ignores = true
 check_untyped_defs = true
 disallow_untyped_defs = true
 strict_equality = true
-exclude = ["venv", "ankidata", "vendor", "user_files", "build"]
+exclude = ["vendor", "user_files"]
 modules = ["src", "tests"]
 
 [[tool.mypy.overrides]]

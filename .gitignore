@@ -17,6 +17,9 @@ src/user_files/*/
 src/user_files/**/*.db
 src/user_files/**/*.tsv
 src/bin/
+src/web/sveltekit/
+src/web/build/
+src/proto/
 vendor/
 node_modules/
 TODO.md

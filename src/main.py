@@ -24,6 +24,7 @@ from aqt.qt import QAction, QApplication, Qt, qconnect
 from aqt.reviewer import Reviewer
 from aqt.webview import AnkiWebView, WebContent
 
+from .backend.server import init_server
 from .errors import setup_error_handler
 
 try:
@@ -258,6 +259,7 @@ def add_menu() -> None:
 
 def init() -> None:
     setup_error_handler()
+    init_server()
     hooks.field_filter.append(incontext_filter)
     gui_hooks.card_will_show.append(on_card_will_show)
     gui_hooks.webview_will_set_content.append(on_webview_will_set_content)

@@ -2,6 +2,7 @@ from typing import Optional
 
 from aqt.qt import Qt, QWidget
 
+from ..consts import consts
 from ..vendor.ankiutils.gui import dialog
 
 
@@ -10,5 +11,7 @@ class Dialog(dialog.Dialog):
         self,
         parent: Optional[QWidget] = None,
         flags: Qt.WindowType = Qt.WindowType.Dialog,
+        subtitle: str = "",
     ) -> None:
-        super().__init__(__name__, parent, flags)
+        self.subtitle = subtitle
+        super().__init__(consts=consts, parent=parent, flags=flags, subtitle=subtitle)
