@@ -45,8 +45,10 @@
         <div class="mt-4">
             <h2 class="mb-3">Select a language</h2>
             <select class="form-select" bind:value={selectedLanguage}>
-                {#each languages.languages as language}
-                    <option value={language.code}>{language.name}</option>
+                {#each languages.languages as language (language.code)}
+                    <option value={language.code}>
+                        {language.name}
+                    </option>
                 {/each}
             </select>
             <button class="btn btn-primary mt-3" onclick={onDownload}>
