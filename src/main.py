@@ -243,7 +243,7 @@ def on_addons_dialog_will_delete_addons(dialog: AddonsDialog, ids: list[str]) ->
 
 
 def open_tatoeba_dialog() -> None:
-    TatoebaDialog(mw).exec()
+    TatoebaDialog(mw).show()
 
 
 def add_menu() -> None:

@@ -4,27 +4,27 @@ package ankiaddon.backend;
 import "generic.proto";
 
 service BackendService {
-  rpc GetStats(GetStatsRequest) returns (GetStatsResponse);
-  rpc SayHello(SayHelloRequest) returns (SayHelloResponse);
+  rpc GetTatoebaLanguages(generic.Empty) returns (GetTatoebaLanguagesResponse);
+  rpc DownloadTatoebaSentences(DownloadTatoebaSentencesRequest) returns (generic.Empty);
+  rpc GetTatoebaDownloadProgress(generic.Empty) returns (TatoebaDownloadProgress);
 }
 
-message GetStatsRequest {
-  int64 deck_id = 1;
+message GetTatoebaLanguagesResponse {
+  repeated Language languages = 1;
 }
 
-message GetStatsResponse {
-  Stats stats = 1;
+message Language {
+  string code = 1;
+  string name = 2;
 }
 
-message Stats {
-  uint32 reviews = 1;
-  int64 time_spent = 2;
+message DownloadTatoebaSentencesRequest {
+  string language = 1;
 }
 
-message SayHelloRequest {
-  string name = 1;
-}
-
-message SayHelloResponse {
-  string message = 1;
+message TatoebaDownloadProgress {
+  float progress = 1;
+  string message = 2;
+  bool is_error = 3;
+  bool finished = 4;
 }

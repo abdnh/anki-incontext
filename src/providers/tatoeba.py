@@ -6,9 +6,10 @@ import sqlite3
 import tempfile
 from pathlib import Path
 from types import TracebackType
-from typing import Callable
+from typing import Callable, cast
 
 import requests
+from bs4 import BeautifulSoup, Tag
 
 from ..consts import consts
 from ..db import Sentence
@@ -16,15 +17,40 @@ from ..vendor import pycountry
 from .provider import SentenceProvider
 
 
+def get_language_info(lang_code: str) -> pycountry.db.Country | None:
+    return pycountry.languages.get(alpha_2=lang_code) or pycountry.languages.get(
+        alpha_3=lang_code
+    )
+
+
+def get_languages() -> list[tuple[str, str]]:
+    response = requests.get("https://downloads.tatoeba.org/exports/per_language/")
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "html.parser")
+    codes = [str(cast(Tag, lang)["href"]).split("/")[0] for lang in soup.find_all("a")]
+    return [
+        (code, get_language_info(code).name if get_language_info(code) else code)
+        for code in codes
+        if code not in ("..", "unknown")
+    ]
+
+
 def tatoeba_db_path(language: str) -> Path:
     return consts.dir / "user_files" / "tatoeba" / f"{language}_sentences.db"
 
 
 class TatoebaDB:
-    def __init__(self, language: str):
-        self.language = language
-        alpha_3 = pycountry.languages.get(alpha_2=language).alpha_3.lower()
-        self.conn = sqlite3.connect(tatoeba_db_path(alpha_3), check_same_thread=False)
+    def __init__(self, lang_code: str):
+        self.language = get_language_info(lang_code)
+        self.alpha_3 = self.language.alpha_3.lower() if self.language else lang_code
+        self.alpha_2 = (
+            self.language.alpha_2.lower()
+            if self.language and hasattr(self.language, "alpha_2")
+            else lang_code
+        )
+        self.conn = sqlite3.connect(
+            tatoeba_db_path(self.alpha_3), check_same_thread=False
+        )
         self.conn.executescript(
             """
             CREATE TABLE IF NOT EXISTS sentences (text TEXT);
@@ -53,7 +79,7 @@ class TatoebaDB:
 
     def get_sentences(self, word: str) -> list[str]:
         params: tuple[str, ...]
-        if self.language in ("ja", "ko", "zh"):
+        if self.alpha_2 in ("ja", "ko", "zh"):
             # TODO: use a proper tokenizer/morphemizer for CJK languages
             query = "SELECT text FROM sentences WHERE text LIKE ?"
             params = (f"%{word}%",)
@@ -73,18 +99,21 @@ class TatoebaDB:
 
 
 def download_tatoeba_sentences(
-    language: str, on_progress: Callable[[float, str], None]
+    lang_code: str, on_progress: Callable[[float, str, bool], None]
 ) -> None:
+    language = get_language_info(lang_code)
+    alpha_3 = language.alpha_3.lower() if language else lang_code
     chunk_size = 8192
     with tempfile.NamedTemporaryFile() as bz2_file:
-        url = f"https://downloads.tatoeba.org/exports/per_language/{language}/{language}_sentences.tsv.bz2"
+        url = f"https://downloads.tatoeba.org/exports/per_language/{alpha_3}/{alpha_3}_sentences.tsv.bz2"
         response = requests.get(url, stream=True)
         response.raise_for_status()
         for chunk in response.iter_content(chunk_size=chunk_size):
             bz2_file.write(chunk)
             on_progress(
                 bz2_file.tell() / int(response.headers["Content-Length"]),
-                "Downloading Tatoeba sentences",
+                f"Downloading Tatoeba sentences for {language.name}",
+                False,
             )
         bz2_file.seek(0)
         decompressor = bz2.BZ2Decompressor()
@@ -95,16 +124,20 @@ def download_tatoeba_sentences(
                     tsv_file.write(chunk)
                     on_progress(
                         tsv_file.tell() / bz2_file.tell(),
-                        "Decompressing Tatoeba sentences",
+                        f"Decompressing Tatoeba sentences for {language.name}",
+                        False,
                     )
                 except EOFError:
                     break
             tsv_file.close()
             with open(tsv_file.name, encoding="utf-8", newline="") as tsv_file2:
-                with TatoebaDB(language) as db:
+                with TatoebaDB(alpha_3) as db:
                     db.add_sentences(
                         [row[2] for row in csv.reader(tsv_file2, delimiter="\t")],
                     )
+            on_progress(
+                1.0, f"Finished downloading Tatoeba sentences for {language.name}", True
+            )
 
 
 class TatoebaProvider(SentenceProvider):
@@ -117,7 +150,6 @@ class TatoebaProvider(SentenceProvider):
         sentences = super().fetch(word, language)
         word = word.lower()
         try:
-            # Tatoeba uses ISO 639-3 codes
             with TatoebaDB(language) as db:
                 sentences.extend(
                     Sentence(sentence, word, language, self.name)
