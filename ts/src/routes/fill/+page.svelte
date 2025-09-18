@@ -64,9 +64,9 @@
         <h1>Fill in sentences</h1>
         <form>
             <div class="mb-3 row">
-                <label for="language" class="col-sm-2 col-form-label"
+                <label for="language" class="col-sm-3 col-form-label"
                 >Language</label>
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                     <Select
                         id="language"
                         options={initialData.languages.map(lang => ({
@@ -80,9 +80,9 @@
                 </div>
             </div>
             <div class="mb-3 row">
-                <label for="provider" class="col-sm-2 col-form-label"
+                <label for="provider" class="col-sm-3 col-form-label"
                 >Provider</label>
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                     <Select
                         id="provider"
                         options={providers.map(provider => ({
@@ -95,9 +95,9 @@
                 </div>
             </div>
             <div class="mb-3 row">
-                <label for="word" class="col-sm-2 col-form-label"
+                <label for="word" class="col-sm-3 col-form-label"
                 >Word field</label>
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                     <Select
                         id="word"
                         options={initialData.fields.map(field => ({
@@ -110,9 +110,9 @@
                 </div>
             </div>
             <div class="mb-3 row">
-                <label for="sentences" class="col-sm-2 col-form-label"
+                <label for="sentences" class="col-sm-3 col-form-label"
                 >Sentences field</label>
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                     <Select
                         id="sentences"
                         options={initialData.fields.map(field => ({
@@ -125,9 +125,9 @@
                 </div>
             </div>
             <div class="mb-3 row">
-                <label for="number" class="col-sm-2 col-form-label"
+                <label for="number" class="col-sm-3 col-form-label"
                 >Number of sentences</label>
-                <div class="col-sm-10">
+                <div class="col-sm-9">
                     <input
                         type="number"
                         id="number"
@@ -137,7 +137,7 @@
                 </div>
             </div>
             <div class="mb-3 row">
-                <div class="col-sm-10 offset-sm-2">
+                <div class="col-sm-9 offset-sm-2">
                     <button
                         type="button"
                         class="btn btn-primary"
