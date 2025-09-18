@@ -212,7 +212,7 @@ def init_db() -> None:
 
 
 def on_browser_action(browser: Browser) -> None:
-    FillDialog(browser, mw, sentences_db, cast(list, browser.selected_notes())).exec()
+    FillDialog(browser, sentences_db, cast(list, browser.selected_notes())).show()
 
 
 def add_browser_action(browser: Browser) -> None:

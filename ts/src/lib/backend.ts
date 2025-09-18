@@ -1,7 +1,14 @@
 import { createClient } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-web";
 
-import { BackendService, type GetTatoebaLanguagesResponse, type TatoebaDownloadProgress } from "./generated/backend_pb";
+import {
+    BackendService,
+    type GetDefaultFillFieldsResponse,
+    type GetProvidersForLanguageResponse,
+    type GetTatoebaLanguagesResponse,
+    type Provider,
+    type TatoebaDownloadProgress,
+} from "./generated/backend_pb";
 
 const transport = createConnectTransport({
     baseUrl: "/api",
@@ -20,4 +27,10 @@ const transport = createConnectTransport({
 
 export const client = createClient(BackendService, transport);
 
-export { type GetTatoebaLanguagesResponse, type TatoebaDownloadProgress };
+export {
+    type GetDefaultFillFieldsResponse,
+    type GetProvidersForLanguageResponse,
+    type GetTatoebaLanguagesResponse,
+    type Provider,
+    type TatoebaDownloadProgress,
+};

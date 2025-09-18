@@ -7,6 +7,9 @@ service BackendService {
   rpc GetTatoebaLanguages(generic.Empty) returns (GetTatoebaLanguagesResponse);
   rpc DownloadTatoebaSentences(DownloadTatoebaSentencesRequest) returns (generic.Empty);
   rpc GetTatoebaDownloadProgress(generic.Empty) returns (TatoebaDownloadProgress);
+  rpc GetDefaultFillFields(GetDefaultFillFieldsRequest) returns (GetDefaultFillFieldsResponse);
+  rpc GetProvidersForLanguage(GetProvidersForLanguageRequest) returns (GetProvidersForLanguageResponse);
+  rpc FillInSentences(FillInSentencesRequest) returns (generic.Empty);
 }
 
 message GetTatoebaLanguagesResponse {
@@ -14,6 +17,11 @@ message GetTatoebaLanguagesResponse {
 }
 
 message Language {
+  string code = 1;
+  string name = 2;
+}
+
+message Provider {
   string code = 1;
   string name = 2;
 }
@@ -27,4 +35,36 @@ message TatoebaDownloadProgress {
   string message = 2;
   bool is_error = 3;
   bool finished = 4;
+}
+
+message GetDefaultFillFieldsRequest {
+  repeated int64 nids = 1;
+}
+
+message GetDefaultFillFieldsResponse {
+  string language = 1;
+  string provider = 2;
+  string word_field = 3;
+  string sentences_field = 4;
+  int64 number_of_sentences = 5;
+  repeated Language languages = 6;
+  repeated Provider providers = 7;
+  repeated string fields = 8;
+}
+
+message GetProvidersForLanguageRequest {
+  string language = 1;
+}
+
+message GetProvidersForLanguageResponse {
+  repeated Provider providers = 1;
+}
+
+message FillInSentencesRequest {
+  string language = 1;
+  string provider = 2;
+  string word_field = 3;
+  string sentences_field = 4;
+  int64 number_of_sentences = 5;
+  repeated int64 nids = 6;
 }

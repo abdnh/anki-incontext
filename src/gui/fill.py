@@ -1,127 +1,68 @@
-from __future__ import annotations
-
 import functools
 import time
+from typing import Any
 
 from anki.collection import Collection, OpChangesWithCount
 from anki.notes import NoteId
-from anki.utils import ids2str
-from aqt.main import AnkiQt
+from aqt import mw
 from aqt.operations import CollectionOp
-from aqt.qt import Qt, QWidget, qconnect
+from aqt.qt import QWidget
 from aqt.utils import tooltip
 
+from ..backend.server import get_server
 from ..config import config
+from ..consts import consts
 from ..db import SentenceDB
-from ..forms.fill import Ui_Dialog
-from ..providers import get_languages, get_providers_for_language, get_sentences
-from .dialog import Dialog
+from ..proto.backend_pb2 import FillInSentencesRequest
+from ..providers import get_sentences
+from .sveltekit_web import SveltekitWebDialog
 
 
-def fields_for_notes(mw: AnkiQt, nids: list[NoteId]) -> list[str]:
-    return mw.col.db.list(
-        "select distinct name from fields where ntid in"
-        f" (select mid from notes where id in {ids2str(nids)})"
-    )
-
-
-class FillDialog(Dialog):
-    key = "fill"
-
-    def __init__(
-        self, parent: QWidget, mw: AnkiQt, sentences_db: SentenceDB, nids: list[NoteId]
-    ):
-        self.mw = mw
+class FillDialog(SveltekitWebDialog):
+    def __init__(self, parent: QWidget, sentences_db: SentenceDB, nids: list[NoteId]):
         self.sentences_db = sentences_db
         self.nids = nids
-        super().__init__(parent)
-
-    def setup_ui(self) -> None:
-        super().setup_ui()
-        self.form = Ui_Dialog()
-        self.form.setupUi(self)
-        self.setWindowTitle("InContext - Fill in sentences")
-        for lang_code, lang_name in get_languages():
-            self.form.language.addItem(lang_name, lang_code)
-        last_lang = config["lang_field"]
-        for idx in range(self.form.language.count()):
-            if (
-                self.form.language.itemData(idx, Qt.ItemDataRole.DisplayRole)
-                == last_lang
-            ):
-                self.form.language.setCurrentIndex(idx)
-                break
-        self.populate_providers()
-        last_provider = config["provider_field"]
-        for idx in range(self.form.provider.count()):
-            if (
-                self.form.provider.itemData(idx, Qt.ItemDataRole.UserRole)
-                == last_provider
-            ):
-                self.form.provider.setCurrentIndex(idx)
-                break
-
-        fields = fields_for_notes(self.mw, self.nids)
-        last_word_field = config["word_field"]
-        last_sentences_field = config["sentences_field"]
-        for i, field in enumerate(fields):
-            self.form.wordField.addItem(field)
-            self.form.sentencesField.addItem(field)
-            if field == last_word_field:
-                self.form.wordField.setCurrentIndex(i)
-            if field == last_sentences_field:
-                self.form.sentencesField.setCurrentIndex(i)
-
-        qconnect(self.form.language.currentIndexChanged, self.on_lang_changed)
-        qconnect(self.form.processButton.clicked, self.on_process)
-        qconnect(self.finished, self.on_finished)
-
-    def on_finished(self) -> None:
-        config["lang_field"] = self.form.language.currentText()
-        config["provider_field"] = self.form.provider.currentData(
-            Qt.ItemDataRole.UserRole
+        super().__init__(path="fill", parent=parent, subtitle="Fill in sentences")
+        get_server().add_proto_handler_for_dialog(
+            self,
+            "ankiaddon.backend.BackendService",
+            "FillInSentences",
+            self._fill_in_sentences_request,
         )
-        config["word_field"] = self.form.wordField.currentText()
-        config["sentences_field"] = self.form.sentencesField.currentText()
 
-    def on_lang_changed(self, index: int) -> None:
-        self.populate_providers()
+    def get_query_params(self) -> dict[str, Any]:
+        return {
+            **super().get_query_params(),
+            "nids": ",".join(str(nid) for nid in self.nids),
+        }
 
-    def populate_providers(self) -> None:
-        self.form.provider.clear()
-        self.form.provider.addItem("All")
-        for provider in get_providers_for_language(self.form.language.currentData()):
-            self.form.provider.addItem(provider.human_name, provider.name)
-
-    def on_process(self) -> None:
-        lang = self.form.language.currentData()
-        provider = (
-            self.form.provider.currentData(Qt.ItemDataRole.UserRole)
-            if self.form.provider.currentIndex()
-            else None
-        )
-        word_field = self.form.wordField.currentText()
-        sentences_field = self.form.sentencesField.currentText()
-        number_of_sentences = self.form.numberOfSentences.value()
+    def _fill_in_sentences_request(self, data: bytes) -> bytes:
+        request = FillInSentencesRequest.FromString(data)
+        language = request.language
+        provider = request.provider
+        word_field = request.word_field
+        sentences_field = request.sentences_field
+        number_of_sentences = request.number_of_sentences
+        nids = request.nids
 
         def update_progress(i: int) -> None:
-            self.mw.progress.update(
-                f"Processed note {i + 1} of {len(self.nids)}...",
+            mw.progress.update(
+                f"Processed note {i + 1} of {len(nids)}...",
                 value=i,
-                max=len(self.nids),
+                max=len(nids),
             )
 
         def op(col: Collection) -> OpChangesWithCount:
-            self.mw.taskman.run_on_main(lambda: self.mw.progress.set_title("InContext"))
+            mw.taskman.run_on_main(lambda: mw.progress.set_title(consts.name))
 
             updated_notes = []
             last_progress = 0.0
-            for i, nid in enumerate(self.nids):
-                note = col.get_note(nid)
+            for i, nid in enumerate(nids):
+                note = col.get_note(NoteId(nid))
                 if word_field in note and sentences_field in note:
                     word = note[word_field]
                     sentences = get_sentences(
-                        word, lang, provider, limit=number_of_sentences
+                        word, language, provider, limit=number_of_sentences
                     )
                     note[sentences_field] = "<br>".join(
                         sentence.text for sentence in sentences
@@ -129,7 +70,7 @@ class FillDialog(Dialog):
                     updated_notes.append(note)
                 if time.time() - last_progress >= 0.1:
                     last_progress = time.time()
-                    self.mw.taskman.run_on_main(functools.partial(update_progress, i=i))
+                    mw.taskman.run_on_main(functools.partial(update_progress, i=i))
 
             return OpChangesWithCount(
                 count=len(updated_notes), changes=col.update_notes(updated_notes)
@@ -137,6 +78,12 @@ class FillDialog(Dialog):
 
         def success(changes: OpChangesWithCount) -> None:
             self.accept()
+            config["lang_field"] = language
+            config["provider_field"] = provider
+            config["word_field"] = word_field
+            config["sentences_field"] = sentences_field
             tooltip(f"Updated {changes.count} notes", parent=self.parentWidget())
 
-        CollectionOp(self, op).success(success).run_in_background()
+        collection_op = CollectionOp(parent=self, op=op).success(success)
+        mw.taskman.run_on_main(collection_op.run_in_background)
+        return b""

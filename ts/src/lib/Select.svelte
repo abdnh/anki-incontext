@@ -7,21 +7,25 @@
     }
 
     interface Props {
+        id?: string;
         options: SelectOption[];
         value?: string;
         placeholder?: string;
         searchPlaceholder?: string;
         disabled?: boolean;
         clearable?: boolean;
+        onSelected?: (value: string) => void;
     }
 
     let {
+        id,
         options,
         value = $bindable(""),
         placeholder = "Select an option...",
         searchPlaceholder = "Search...",
         disabled = false,
         clearable = true,
+        onSelected = () => {},
     }: Props = $props();
 
     let searchTerm = $state("");
@@ -78,12 +82,14 @@
     function selectOption(option: SelectOption) {
         value = option.value;
         closeDropdown();
+        onSelected(value);
     }
 
     function clearSelection() {
         value = "";
         searchTerm = "";
         inputElement?.focus();
+        onSelected(value);
     }
 
     async function scrollHighlightedIntoView() {
@@ -166,6 +172,7 @@
     <div class="input-group">
         <input
             bind:this={inputElement}
+            id={id}
             class="form-control"
             type="text"
             value={displayValue}
