@@ -19,6 +19,8 @@ from .sveltekit_web import SveltekitWebDialog
 
 
 class FillDialog(SveltekitWebDialog):
+    key = "fill"
+
     def __init__(self, parent: QWidget, sentences_db: SentenceDB, nids: list[NoteId]):
         self.sentences_db = sentences_db
         self.nids = nids
