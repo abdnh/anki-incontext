@@ -13,7 +13,7 @@
 
     let { data }: PageProps = $props();
 
-    let { nids } = data;
+    let nids = data.nids.map(nid => BigInt(nid));
 
     let [initialDataPromise, resolveInitialData] = promiseWithResolver<
         GetDefaultFillFieldsResponse
@@ -23,10 +23,12 @@
     let selectedProvider = $state<string>("");
     let selectedWordField = $state<string>("");
     let selectedSentencesField = $state<string>("");
-    let selectedNumberOfSentences = $state<number>(0);
+    let selectedNumberOfSentences = $state<bigint>(0n);
 
     onMount(() => {
-        client.getDefaultFillFields({ nids }).then((response) => {
+        client.getDefaultFillFields({
+            nids,
+        }).then((response) => {
             resolveInitialData(response);
             providers = response.providers;
             selectedNumberOfSentences = response.numberOfSentences;
@@ -38,7 +40,6 @@
     });
 
     async function onLanguageSelected(language: string) {
-        console.log("onLanguageSelected", language);
         const response = await client.getProvidersForLanguage({
             language,
         });
@@ -59,7 +60,7 @@
 
 <div class="container">
     {#await initialDataPromise}
-        <Spinner />
+        <Spinner label="Loading..." />
     {:then initialData}
         <h1>Fill in sentences</h1>
         <form>
