@@ -19,6 +19,7 @@ dependencies = [
     "sentry-sdk>=1.14.0",
     "skell-downloader",
     "tdk",
+    "protobuf",
 ]
 
 [tool.setuptools]
