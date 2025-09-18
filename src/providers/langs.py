@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ..vendor import pycountry
 
 # All languages supported by the add-on (https://downloads.tatoeba.org/exports/per_language/)
