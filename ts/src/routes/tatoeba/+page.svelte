@@ -1,23 +1,28 @@
 <script lang="ts">
     import {
         client,
-        type GetTatoebaLanguagesResponse,
         promiseWithResolver,
         type TatoebaDownloadProgress,
     } from "$lib";
+    import Select from "$lib/Select.svelte";
     import Spinner from "$lib/Spinner.svelte";
 
     import { onMount } from "svelte";
 
     let [languagesPromise, resolveLanguages] = promiseWithResolver<
-        GetTatoebaLanguagesResponse
+        Array<{ value: string; label: string }>
     >();
 
     let selectedLanguage = $state("");
     let downloadProgress = $state<TatoebaDownloadProgress | null>(null);
 
     onMount(() => {
-        client.getTatoebaLanguages({}).then(resolveLanguages);
+        client.getTatoebaLanguages({}).then((response) => {
+            resolveLanguages(response.languages.map(lang => ({
+                value: lang.code,
+                label: lang.name,
+            })));
+        });
     });
 
     async function onDownload() {
@@ -43,14 +48,13 @@
         <Spinner label="Fetching languages..." />
     {:then languages}
         <div class="mt-4">
-            <h2 class="mb-3">Select a language</h2>
-            <select class="form-select" bind:value={selectedLanguage}>
-                {#each languages.languages as language (language.code)}
-                    <option value={language.code}>
-                        {language.name}
-                    </option>
-                {/each}
-            </select>
+            <p>Select a language to download sentences from Tatoeba.</p>
+            <Select
+                options={languages}
+                bind:value={selectedLanguage}
+                placeholder="Select a language..."
+                searchPlaceholder="Search languages..."
+            />
             <button class="btn btn-primary mt-3" onclick={onDownload}>
                 Download
             </button>
