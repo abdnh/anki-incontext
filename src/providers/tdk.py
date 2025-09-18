@@ -9,7 +9,10 @@ from .provider import SentenceProvider
 class TDKProvider(SentenceProvider):
     name = "tdk"
     human_name = "Türk Dil Kurumu Sözlükleri"
-    supported_languages = ["tr"]
+
+    @property
+    def supported_languages(self) -> list[str]:
+        return ["tur"]
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)

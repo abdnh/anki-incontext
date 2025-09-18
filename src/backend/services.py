@@ -23,8 +23,8 @@ from ..proto.backend_pb2 import (
 from ..proto.generic_pb2 import Empty
 from ..proto.services import BackendServiceBase
 from ..providers import get_languages, get_providers_for_language
+from ..providers.langs import get_all_languages
 from ..providers.tatoeba import download_tatoeba_sentences
-from ..providers.tatoeba import get_languages as get_tatoeba_languages
 
 
 def fields_for_notes(mw: AnkiQt, nids: Iterable[NoteId]) -> list[str]:
@@ -41,7 +41,7 @@ class BackendService(BackendServiceBase):
     def get_tatoeba_languages(cls, request: Empty) -> GetTatoebaLanguagesResponse:
         return GetTatoebaLanguagesResponse(
             languages=[
-                Language(code=code, name=name) for code, name in get_tatoeba_languages()
+                Language(code=code, name=name) for code, name in get_all_languages()
             ]
         )
 

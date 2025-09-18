@@ -6,37 +6,23 @@ import sqlite3
 import tempfile
 from pathlib import Path
 from types import TracebackType
-from typing import Callable, cast
+from typing import Callable
 
 import requests
-from bs4 import BeautifulSoup, Tag
 
 from ..consts import consts
 from ..db import Sentence
 from ..vendor import pycountry
+from .langs import get_language_info
 from .provider import SentenceProvider
 
 
-def get_language_info(lang_code: str) -> pycountry.db.Country | None:
-    return pycountry.languages.get(alpha_2=lang_code) or pycountry.languages.get(
-        alpha_3=lang_code
-    )
-
-
-def get_languages() -> list[tuple[str, str]]:
-    response = requests.get("https://downloads.tatoeba.org/exports/per_language/")
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
-    codes = [str(cast(Tag, lang)["href"]).split("/")[0] for lang in soup.find_all("a")]
-    return [
-        (code, get_language_info(code).name if get_language_info(code) else code)
-        for code in codes
-        if code not in ("..", "unknown")
-    ]
+def tatoeba_data_dir() -> Path:
+    return consts.dir / "user_files" / "tatoeba"
 
 
 def tatoeba_db_path(language: str) -> Path:
-    return consts.dir / "user_files" / "tatoeba" / f"{language}_sentences.db"
+    return tatoeba_data_dir() / f"{language}_sentences.db"
 
 
 class TatoebaDB:
@@ -143,8 +129,14 @@ def download_tatoeba_sentences(
 class TatoebaProvider(SentenceProvider):
     name = "tatoeba"
     human_name = "Tatoeba"
-    # TODO: add a way to indicate support for "all" or unspecified list of languages
-    supported_languages = ["en", "tr", "ja", "ko", "zh"]
+
+    @property
+    def supported_languages(self) -> list[str]:
+        langs = []
+        for path in tatoeba_data_dir().iterdir():
+            if path.is_file() and path.suffix == ".db":
+                langs.append(path.stem.split("_")[0])
+        return langs
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)

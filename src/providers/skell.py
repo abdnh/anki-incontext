@@ -8,8 +8,11 @@ from .provider import SentenceProvider
 class SkellProvider(SentenceProvider):
     name = "skell"
     human_name = "SkELL"
+
     # TODO: add all languages supported by Skell
-    supported_languages = ["en"]
+    @property
+    def supported_languages(self) -> list[str]:
+        return ["eng"]
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)

@@ -12,10 +12,13 @@ class SentenceProvider(ABC):
     name: str
     # Name shown to the user in the GUI
     human_name: str
-    supported_languages: list[str]
 
     def __init__(self, db: SentenceDB):
         self.db = db
+
+    @property
+    def supported_languages(self) -> list[str]:
+        return []
 
     def get_cached_sentences(
         self, word: str, language: str, limit: int | None = None

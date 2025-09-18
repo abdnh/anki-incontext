@@ -8,8 +8,11 @@ from .provider import SentenceProvider
 class OxfordLearnerProvider(SentenceProvider):
     name = "oxford_learner"
     human_name = "Oxford Learner's Dictionaries"
-    supported_languages = ["en"]
     url = "https://www.oxfordlearnersdictionaries.com/definition/english/{word}"
+
+    @property
+    def supported_languages(self) -> list[str]:
+        return ["eng"]
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)

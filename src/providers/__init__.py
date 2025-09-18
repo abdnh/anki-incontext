@@ -3,10 +3,10 @@ from __future__ import annotations
 import random
 
 from ..db import Sentence, SentenceDB
-from ..vendor import pycountry
 from .dictionary_com import DictionaryProvider
 from .glosbe import GlosbeProvider
 from .jisho import JishoProvider
+from .langs import langcode_to_name
 from .oxford_learner import OxfordLearnerProvider
 from .provider import SentenceProvider
 from .seslisozluk import SesliSozlukProvider
@@ -88,13 +88,6 @@ def sync_sentences(
     while matched_providers:
         chosen_provider = matched_providers.pop()
         chosen_provider.get_sentences(word, language)
-
-
-def langcode_to_name(lang_code: str) -> str:
-    try:
-        return pycountry.languages.get(alpha_2=lang_code).name
-    except AttributeError:
-        return lang_code
 
 
 def get_languages() -> list[tuple[str, str]]:

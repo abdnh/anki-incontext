@@ -2,15 +2,18 @@ from __future__ import annotations
 
 from ..db import Sentence
 from ..request import get_soup
+from .langs import get_all_languages
 from .provider import SentenceProvider
 
 
 class GlosbeProvider(SentenceProvider):
     name = "glosbe"
     human_name = "Glosbe"
-    # TODO: add a way to indicate support for "all" or unspecified list of languages
-    supported_languages = ["en", "tr"]
     url = "https://glosbe.com/{language}/{language}/{word}"
+
+    @property
+    def supported_languages(self) -> list[str]:
+        return [code for code, _ in get_all_languages()]
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
