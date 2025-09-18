@@ -18,7 +18,9 @@ from .provider import SentenceProvider
 
 
 def tatoeba_data_dir() -> Path:
-    return consts.dir / "user_files" / "tatoeba"
+    path = consts.dir / "user_files" / "tatoeba"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def tatoeba_db_path(language: str) -> Path:
