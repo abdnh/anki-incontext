@@ -60,7 +60,7 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "PL", "TRY"]
+select = ["E", "F", "I", "UP", "PL", "TRY", "FA"]
 ignore = ["PLW0603", "PLR2004"]
 
 [tool.pytest.ini_options]
