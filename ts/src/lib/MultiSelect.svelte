@@ -4,40 +4,34 @@
     interface Props {
         id?: string;
         options: SelectOption[];
-        value?: string;
+        selectedOptions: string[];
         placeholder?: string;
         searchPlaceholder?: string;
         disabled?: boolean;
         clearable?: boolean;
-        onSelected?: (value: string) => void;
+        onSelected?: (options: string[]) => void;
     }
 
     let {
         id,
         options,
-        value = $bindable(""),
+        selectedOptions = $bindable<string[]>([]),
         placeholder,
         searchPlaceholder,
         disabled = false,
         clearable = true,
         onSelected = () => {},
     }: Props = $props();
-
-    let selectedOptions = $state<string[]>([value]);
-
-    $effect(() => {
-        value = selectedOptions[0] || "";
-    });
 </script>
 
 <BaseSelect
     id={id}
     options={options}
-    selectedOptions={selectedOptions}
+    bind:selectedOptions={selectedOptions}
     placeholder={placeholder}
     searchPlaceholder={searchPlaceholder}
     disabled={disabled}
     clearable={clearable}
-    multiple={false}
-    onSelected={(options) => onSelected(options[0])}
+    multiple={true}
+    onSelected={onSelected}
 />
