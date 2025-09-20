@@ -27,6 +27,10 @@ def tatoeba_db_path(language: str) -> Path:
     return tatoeba_data_dir() / f"{language}_sentences.db"
 
 
+def tatoeba_tsv_path(language: str) -> Path:
+    return tatoeba_data_dir() / f"{language}_sentences.tsv"
+
+
 class TatoebaDB:
     def __init__(self, lang_code: str):
         self.language = get_language_info(lang_code)
@@ -105,7 +109,7 @@ def download_tatoeba_sentences(
             )
         bz2_file.seek(0)
         decompressor = bz2.BZ2Decompressor()
-        with tempfile.NamedTemporaryFile(delete_on_close=False) as tsv_file:
+        with open(tatoeba_tsv_path(alpha_3), "wb") as tsv_file:
             while True:
                 try:
                     chunk = decompressor.decompress(bz2_file.read(), chunk_size)
@@ -117,15 +121,14 @@ def download_tatoeba_sentences(
                     )
                 except EOFError:
                     break
-            tsv_file.close()
-            with open(tsv_file.name, encoding="utf-8", newline="") as tsv_file2:
-                with TatoebaDB(alpha_3) as db:
-                    db.add_sentences(
-                        [row[2] for row in csv.reader(tsv_file2, delimiter="\t")],
-                    )
-            on_progress(
-                1.0, f"Finished downloading Tatoeba sentences for {language.name}", True
-            )
+        with open(tatoeba_tsv_path(alpha_3), encoding="utf-8", newline="") as tsv_file2:
+            with TatoebaDB(alpha_3) as db:
+                db.add_sentences(
+                    [row[2] for row in csv.reader(tsv_file2, delimiter="\t")],
+                )
+        on_progress(
+            1.0, f"Finished downloading Tatoeba sentences for {language.name}", True
+        )
 
 
 class TatoebaProvider(SentenceProvider):
