@@ -82,7 +82,6 @@
                             value: lang.code,
                             label: lang.name,
                         }))}
-                        clearable={false}
                         bind:value={selectedLanguage}
                         onSelected={onLanguageSelected}
                     />
@@ -98,7 +97,6 @@
                             value: provider.code,
                             label: provider.name,
                         }))}
-                        clearable={false}
                         bind:selectedOptions={selectedProviders}
                     />
                 </div>
@@ -113,7 +111,6 @@
                             value: field,
                             label: field,
                         }))}
-                        clearable={false}
                         bind:value={selectedWordField}
                     />
                 </div>
@@ -128,7 +125,6 @@
                             value: field,
                             label: field,
                         }))}
-                        clearable={false}
                         bind:value={selectedSentencesField}
                     />
                 </div>
