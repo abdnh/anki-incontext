@@ -221,7 +221,7 @@
             {/if}
             <button
                 type="button"
-                class="btn btn-outline-secondary dropdown-toggle"
+                class="btn btn-outline-secondary"
                 class:disabled
                 onclick={() => isOpen ? closeDropdown() : openDropdown()}
                 aria-label="Toggle dropdown"
