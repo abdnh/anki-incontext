@@ -208,7 +208,7 @@
         />
 
         <div class="control-buttons btn-group" role="group">
-            {#if clearable && selectedOptions.length > 0
+            {#if clearable && isOpen && selectedOptions.length > 0
                     && !disabled}
                 <button
                     type="button"
