@@ -41,7 +41,7 @@ class FillDialog(SveltekitWebDialog):
     def _fill_in_sentences_request(self, data: bytes) -> bytes:
         request = FillInSentencesRequest.FromString(data)
         language = request.language
-        provider = request.provider
+        providers = list(request.providers)
         word_field = request.word_field
         sentences_field = request.sentences_field
         number_of_sentences = request.number_of_sentences
@@ -66,7 +66,7 @@ class FillDialog(SveltekitWebDialog):
                     sentences = get_sentences(
                         word=word,
                         language=language,
-                        providers=[provider],
+                        providers=providers,
                         limit=number_of_sentences,
                     )
                     note[sentences_field] = "<br>".join(
@@ -84,7 +84,7 @@ class FillDialog(SveltekitWebDialog):
         def success(changes: OpChangesWithCount) -> None:
             self.accept()
             config["lang_field"] = language
-            config["provider_field"] = provider
+            config["provider_field"] = providers[0] if providers else ""
             config["word_field"] = word_field
             config["sentences_field"] = sentences_field
             tooltip(f"Updated {changes.count} notes", parent=self.parentWidget())

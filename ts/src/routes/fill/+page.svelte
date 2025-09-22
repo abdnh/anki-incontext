@@ -9,6 +9,7 @@
     import Spinner from "$lib/Spinner.svelte";
     import { onMount } from "svelte";
 
+    import MultiSelect from "$lib/MultiSelect.svelte";
     import type { PageProps } from "./$types";
 
     let { data }: PageProps = $props();
@@ -20,7 +21,7 @@
     >();
     let providers = $state<Provider[]>([]);
     let selectedLanguage = $state<string>("");
-    let selectedProvider = $state<string>("");
+    let selectedProviders = $state<string[]>([]);
     let selectedWordField = $state<string>("");
     let selectedSentencesField = $state<string>("");
     let selectedNumberOfSentences = $state<bigint>(0n);
@@ -33,7 +34,7 @@
             providers = response.providers;
             selectedNumberOfSentences = response.numberOfSentences;
             selectedLanguage = response.language;
-            selectedProvider = response.provider;
+            selectedProviders = [response.provider];
             selectedWordField = response.wordField;
             selectedSentencesField = response.sentencesField;
         });
@@ -49,7 +50,7 @@
     async function onProcess() {
         await client.fillInSentences({
             language: selectedLanguage,
-            provider: selectedProvider,
+            providers: selectedProviders,
             wordField: selectedWordField,
             sentencesField: selectedSentencesField,
             numberOfSentences: selectedNumberOfSentences,
@@ -84,14 +85,14 @@
                 <label for="provider" class="col-sm-3 col-form-label"
                 >Providers</label>
                 <div class="col-sm-9">
-                    <Select
+                    <MultiSelect
                         id="provider"
                         options={providers.map(provider => ({
                             value: provider.code,
                             label: provider.name,
                         }))}
                         clearable={false}
-                        bind:value={selectedProvider}
+                        bind:selectedOptions={selectedProviders}
                     />
                 </div>
             </div>
