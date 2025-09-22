@@ -82,12 +82,12 @@ class FillDialog(SveltekitWebDialog):
             )
 
         def success(changes: OpChangesWithCount) -> None:
-            self.accept()
             config["lang_field"] = language
             config["provider_field"] = providers[0] if providers else ""
             config["word_field"] = word_field
             config["sentences_field"] = sentences_field
             tooltip(f"Updated {changes.count} notes", parent=self.parentWidget())
+            self.accept()
 
         collection_op = CollectionOp(parent=self, op=op).success(success)
         mw.taskman.run_on_main(collection_op.run_in_background)
