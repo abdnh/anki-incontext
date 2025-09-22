@@ -12,7 +12,6 @@ import requests
 
 from ..consts import consts
 from ..db import Sentence
-from ..vendor import pycountry
 from .langs import get_language_info
 from .provider import SentenceProvider
 
@@ -157,7 +156,7 @@ class TatoebaProvider(SentenceProvider):
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
-        alpha_3 = pycountry.languages.get(alpha_2=language).alpha_3.lower()
+        alpha_3 = get_language_info(language).alpha_3.lower()
         return (
             f"https://tatoeba.org/en/sentences/search?from={alpha_3}&query={word}&to="
         )

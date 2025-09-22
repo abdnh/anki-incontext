@@ -8,11 +8,11 @@
     import { onMount } from "svelte";
     import SearchField from "./SearchField.svelte";
     import SentenceCard from "./SentenceCard.svelte";
+
     let search = $state("");
     let selectedLanguage = $state("");
-
     let [languagesPromise, resolveLanguages] = promiseWithResolver<
-        Array<{ value: string; label: string }>
+        SelectOption[]
     >();
     let providers = $state<SelectOption[]>([]);
     let selectedProviders = $state<string[]>([]);
@@ -20,16 +20,27 @@
     let loadingSentences = $state(false);
 
     onMount(() => {
-        client.getLanguages({}).then((response) => {
+        client.getDefaultFillFields({}).then((response) => {
             resolveLanguages(response.languages.map(lang => ({
                 value: lang.code,
                 label: lang.name,
             })));
+            selectedLanguage = response.language;
+            providers = response.languageProviders.map(provider => ({
+                value: provider.code,
+                label: provider.name,
+            }));
+            selectedProviders = response.providers.length > 0
+                ? response.providers
+                : response.languageProviders.map(provider =>
+                    provider.code
+                );
         });
     });
 
     function onSearch() {
         loadingSentences = true;
+        console.log(selectedLanguage, selectedProviders);
         client.getSentences({
             word: search,
             language: selectedLanguage,
@@ -47,8 +58,8 @@
                     value: provider.code,
                     label: provider.name,
                 }));
-                selectedProviders = providers.map(provider =>
-                    provider.value
+                selectedProviders = selectedProviders.filter(provider =>
+                    response.providers.some(p => p.code === provider)
                 );
             },
         );
