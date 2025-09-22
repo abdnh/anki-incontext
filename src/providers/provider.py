@@ -39,17 +39,13 @@ class SentenceProvider(ABC):
         self,
         word: str,
         language: str | None,
-        use_cache: bool = True,
         limit: int | None = None,
     ) -> list[Sentence]:
         sentences = []
         if not language:
             # Default to first supported language
             language = self.supported_languages[0]
-        if use_cache:
-            sentences.extend(self.get_cached_sentences(word, language, limit))
-            if not limit:
-                return sentences
+        sentences.extend(self.get_cached_sentences(word, language, limit))
         if not limit or len(sentences) < limit:
             fetched = self.fetch(word, language)
             if fetched:

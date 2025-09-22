@@ -37,7 +37,6 @@ def get_sentences(
     word: str,
     language: str | None = None,
     providers: list[str] | None = None,
-    use_cache: bool = True,
     limit: int | None = None,
 ) -> list[Sentence]:
     # Default to English if no language and provider is given
@@ -59,9 +58,7 @@ def get_sentences(
     sentences: list[Sentence] = []
     while matched_providers and (not limit or len(sentences) < limit):
         chosen_provider = matched_providers.pop()
-        sentences.extend(
-            chosen_provider.get_sentences(word, language, use_cache, limit)
-        )
+        sentences.extend(chosen_provider.get_sentences(word, language, limit))
     if sentences and limit and len(sentences) > limit:
         sentences = random.sample(sentences, limit)
     return sentences
