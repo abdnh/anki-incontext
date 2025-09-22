@@ -19,7 +19,7 @@
         placeholder,
         searchPlaceholder,
         disabled = false,
-        clearable = true,
+        clearable = false,
         onSelected = () => {},
     }: Props = $props();
 

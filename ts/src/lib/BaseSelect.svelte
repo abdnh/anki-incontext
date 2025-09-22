@@ -25,7 +25,7 @@
         placeholder = "Select an option...",
         searchPlaceholder = "Search...",
         disabled = false,
-        clearable = true,
+        clearable = false,
         multiple = false,
         onSelected = () => {},
     }: Props = $props();
