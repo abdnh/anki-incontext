@@ -186,7 +186,7 @@
 </script>
 
 <div class="select-container" bind:this={containerElement}>
-    <div class="input-group">
+    <div class="input-group input-container">
         <input
             bind:this={inputElement}
             id={id}
@@ -275,7 +275,9 @@
     .select-container {
         position: relative;
     }
-
+    .input-container {
+        gap: 0.5rem;
+    }
     .dropdown-menu {
         max-height: 200px;
         overflow-y: auto;
