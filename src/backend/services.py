@@ -88,16 +88,20 @@ class BackendService(BackendServiceBase):
     def get_default_fill_fields(
         cls, request: GetDefaultFillFieldsRequest
     ) -> GetDefaultFillFieldsResponse:
+        provider_field = config["provider_field"]
+        providers = (
+            provider_field if isinstance(provider_field, list) else [provider_field]
+        )
         return GetDefaultFillFieldsResponse(
             language=config["lang_field"],
-            provider=config["provider_field"],
+            providers=providers,
             word_field=config["word_field"],
             sentences_field=config["sentences_field"],
             number_of_sentences=20,
             languages=[
                 Language(code=code, name=name) for code, name in get_languages()
             ],
-            providers=[
+            language_providers=[
                 Provider(code=provider.name, name=provider.human_name)
                 for provider in get_providers_for_language(config["lang_field"])
             ],

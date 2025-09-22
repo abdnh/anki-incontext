@@ -4,7 +4,10 @@
             "type": "string"
         },
         "provider_field": {
-            "type": "string"
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         },
         "report_errors": {
             "type": "boolean"

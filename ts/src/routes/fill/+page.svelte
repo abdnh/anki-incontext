@@ -31,10 +31,14 @@
             nids,
         }).then((response) => {
             resolveInitialData(response);
-            providers = response.providers;
+            providers = response.languageProviders;
             selectedNumberOfSentences = response.numberOfSentences;
             selectedLanguage = response.language;
-            selectedProviders = [response.provider];
+            selectedProviders = response.providers.length > 0
+                ? response.providers
+                : response.languageProviders.map(provider =>
+                    provider.code
+                );
             selectedWordField = response.wordField;
             selectedSentencesField = response.sentencesField;
         });

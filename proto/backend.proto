@@ -46,12 +46,12 @@ message GetDefaultFillFieldsRequest {
 
 message GetDefaultFillFieldsResponse {
   string language = 1;
-  string provider = 2;
+  repeated string providers = 2;
   string word_field = 3;
   string sentences_field = 4;
   int64 number_of_sentences = 5;
   repeated Language languages = 6;
-  repeated Provider providers = 7;
+  repeated Provider language_providers = 7;
   repeated string fields = 8;
 }
 

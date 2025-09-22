@@ -83,7 +83,7 @@ class FillDialog(SveltekitWebDialog):
 
         def success(changes: OpChangesWithCount) -> None:
             config["lang_field"] = language
-            config["provider_field"] = providers[0] if providers else ""
+            config["provider_field"] = providers
             config["word_field"] = word_field
             config["sentences_field"] = sentences_field
             tooltip(f"Updated {changes.count} notes", parent=self.parentWidget())
