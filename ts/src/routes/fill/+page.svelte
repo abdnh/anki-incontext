@@ -49,6 +49,9 @@
             language,
         });
         providers = response.providers;
+        selectedProviders = selectedProviders.filter(provider =>
+            response.providers.some(p => p.code === provider)
+        );
     }
 
     async function onProcess() {
