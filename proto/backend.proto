@@ -10,7 +10,10 @@ service BackendService {
   rpc GetDefaultFillFields(GetDefaultFillFieldsRequest) returns (GetDefaultFillFieldsResponse);
   rpc GetProvidersForLanguage(GetProvidersForLanguageRequest) returns (GetProvidersForLanguageResponse);
   rpc FillInSentences(FillInSentencesRequest) returns (generic.Empty);
+  rpc GetLanguages(generic.Empty) returns (GetLanguagesResponse);
+  rpc GetSentences(GetSentencesRequest) returns (GetSentencesResponse);
 }
+
 
 message GetTatoebaLanguagesResponse {
   repeated Language languages = 1;
@@ -67,4 +70,24 @@ message FillInSentencesRequest {
   string sentences_field = 4;
   int64 number_of_sentences = 5;
   repeated int64 nids = 6;
+}
+
+message GetLanguagesResponse {
+  repeated Language languages = 1;
+}
+
+message GetSentencesRequest {
+  string word = 1;
+  string language = 2;
+  repeated string providers = 3;
+}
+
+message GetSentencesResponse {
+  repeated Sentence sentences = 1;
+}
+
+message Sentence {
+  string text = 1;
+  string provider = 2;
+  string url = 3;
 }

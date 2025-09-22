@@ -36,12 +36,12 @@ def init_providers(db: SentenceDB) -> None:
 def get_sentences(
     word: str,
     language: str | None = None,
-    provider: str | None = None,
+    providers: list[str] | None = None,
     use_cache: bool = True,
     limit: int | None = None,
 ) -> list[Sentence]:
     # Default to English if no language and provider is given
-    if not (language or provider):
+    if not (language or providers):
         language = "en"
     matched_providers: list[SentenceProvider] = []
     for provider_obj in PROVIDERS:
@@ -51,13 +51,13 @@ def get_sentences(
                 language in provider_obj.supported_languages
                 or langcode_to_name(language) in provider_obj.supported_languages
             )
-        if provider:
-            matched &= provider == provider_obj.name
+        if providers:
+            matched &= provider_obj.name in providers
         if matched:
             matched_providers.append(provider_obj)
     random.shuffle(matched_providers)
     sentences: list[Sentence] = []
-    while matched_providers and len(sentences) < limit:
+    while matched_providers and (not limit or len(sentences) < limit):
         chosen_provider = matched_providers.pop()
         sentences.extend(
             chosen_provider.get_sentences(word, language, use_cache, limit)
@@ -110,3 +110,10 @@ def get_provider(name: str) -> SentenceProvider | None:
         if provider.name == name:
             return provider
     return None
+
+
+def get_sentence_source(sentence: Sentence) -> str:
+    provider = get_provider(sentence.provider)
+    if provider:
+        return provider.get_source(sentence.word, sentence.language)
+    return ""

@@ -64,7 +64,10 @@ class FillDialog(SveltekitWebDialog):
                 if word_field in note and sentences_field in note:
                     word = note[word_field]
                     sentences = get_sentences(
-                        word, language, provider, limit=number_of_sentences
+                        word=word,
+                        language=language,
+                        providers=[provider],
+                        limit=number_of_sentences,
                     )
                     note[sentences_field] = "<br>".join(
                         sentence.text for sentence in sentences

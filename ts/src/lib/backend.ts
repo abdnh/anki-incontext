@@ -4,9 +4,12 @@ import { createConnectTransport } from "@connectrpc/connect-web";
 import {
     BackendService,
     type GetDefaultFillFieldsResponse,
+    type GetLanguagesResponse,
     type GetProvidersForLanguageResponse,
+    type GetSentencesResponse,
     type GetTatoebaLanguagesResponse,
     type Provider,
+    type Sentence,
     type TatoebaDownloadProgress,
 } from "./generated/backend_pb";
 
@@ -29,8 +32,11 @@ export const client = createClient(BackendService, transport);
 
 export {
     type GetDefaultFillFieldsResponse,
+    type GetLanguagesResponse,
     type GetProvidersForLanguageResponse,
+    type GetSentencesResponse,
     type GetTatoebaLanguagesResponse,
     type Provider,
+    type Sentence,
     type TatoebaDownloadProgress,
 };

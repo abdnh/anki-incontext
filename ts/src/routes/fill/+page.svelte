@@ -60,7 +60,7 @@
 
 <div class="container">
     {#await initialDataPromise}
-        <Spinner label="Loading..." />
+        <Spinner />
     {:then initialData}
         <h1>Fill in sentences</h1>
         <form>
@@ -82,7 +82,7 @@
             </div>
             <div class="mb-3 row">
                 <label for="provider" class="col-sm-3 col-form-label"
-                >Provider</label>
+                >Providers</label>
                 <div class="col-sm-9">
                     <Select
                         id="provider"

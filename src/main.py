@@ -34,6 +34,7 @@ except ImportError:
 
 from .db import SentenceDB
 from .exceptions import InContextError
+from .gui.browse import BrowseDialog
 from .gui.fill import FillDialog
 from .gui.main import InContextDialog
 from .gui.tatoeba import TatoebaDialog
@@ -61,7 +62,12 @@ def get_active_card_context() -> CardContext:
 
 def get_formatted_sentence(text: str, lang: str | None, provider: str | None) -> str:
     try:
-        sentences = get_sentences(word=text, language=lang, provider=provider, limit=1)
+        sentences = get_sentences(
+            word=text,
+            language=lang,
+            providers=[provider] if provider else None,
+            limit=1,
+        )
         sentence = sentences[0] if sentences else None
         provider_obj = get_provider(sentence.provider) if sentence else None
         if not lang and provider_obj:
@@ -246,6 +252,10 @@ def open_tatoeba_dialog() -> None:
     TatoebaDialog(mw).show()
 
 
+def open_browse_dialog() -> None:
+    BrowseDialog(mw).show()
+
+
 def add_menu() -> None:
     menu = QMenu("InContext", mw)
     manage_action = QAction("Manage sentences", mw)
@@ -254,6 +264,9 @@ def add_menu() -> None:
     tatoeba_action = QAction("Download Tatoeba sentences", mw)
     qconnect(tatoeba_action.triggered, open_tatoeba_dialog)
     menu.addAction(tatoeba_action)
+    browse_action = QAction("Browse sentences", mw)
+    qconnect(browse_action.triggered, open_browse_dialog)
+    menu.addAction(browse_action)
     mw.form.menuTools.addMenu(menu)
 
 

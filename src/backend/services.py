@@ -15,16 +15,25 @@ from ..proto.backend_pb2 import (
     DownloadTatoebaSentencesRequest,
     GetDefaultFillFieldsRequest,
     GetDefaultFillFieldsResponse,
+    GetLanguagesResponse,
     GetProvidersForLanguageRequest,
     GetProvidersForLanguageResponse,
+    GetSentencesRequest,
+    GetSentencesResponse,
     GetTatoebaLanguagesResponse,
     Language,
     Provider,
+    Sentence,
     TatoebaDownloadProgress,
 )
 from ..proto.generic_pb2 import Empty
 from ..proto.services import BackendServiceBase
-from ..providers import get_languages, get_providers_for_language
+from ..providers import (
+    get_languages,
+    get_providers_for_language,
+    get_sentence_source,
+    get_sentences,
+)
 from ..providers.langs import get_all_languages
 from ..providers.tatoeba import download_tatoeba_sentences
 
@@ -103,5 +112,28 @@ class BackendService(BackendServiceBase):
             providers=[
                 Provider(code=provider.name, name=provider.human_name)
                 for provider in get_providers_for_language(request.language)
+            ]
+        )
+
+    @classmethod
+    def get_languages(cls, request: Empty) -> GetLanguagesResponse:
+        return GetLanguagesResponse(
+            languages=[Language(code=code, name=name) for code, name in get_languages()]
+        )
+
+    @classmethod
+    def get_sentences(cls, request: GetSentencesRequest) -> GetSentencesResponse:
+        return GetSentencesResponse(
+            sentences=[
+                Sentence(
+                    text=sentence.text,
+                    provider=sentence.provider,
+                    url=get_sentence_source(sentence),
+                )
+                for sentence in get_sentences(
+                    word=request.word,
+                    language=request.language,
+                    providers=list(request.providers),
+                )
             ]
         )

@@ -2,10 +2,10 @@
     import { pageTheme } from "$lib/theme.svelte";
 
     interface Props {
-        label: string;
+        label?: string;
     }
 
-    let { label }: Props = $props();
+    let { label = "Loading..." }: Props = $props();
 </script>
 
 <!-- spinner taken from https://loading.io/css/; CC0 -->
