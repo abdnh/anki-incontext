@@ -2,11 +2,11 @@
     import type { Sentence } from "$lib";
     import { client, promiseWithResolver } from "$lib";
     import { type SelectOption } from "$lib/BaseSelect.svelte";
-    import MultiSelect from "$lib/MultiSelect.svelte";
-    import Select from "$lib/Select.svelte";
     import Spinner from "$lib/Spinner.svelte";
     import { onMount } from "svelte";
     import SearchField from "./SearchField.svelte";
+    import SearchLanguageSelector from "./SearchLanguageSelector.svelte";
+    import SearchProviderDropdown from "./SearchProviderDropdown.svelte";
     import SentenceCard from "./SentenceCard.svelte";
 
     let search = $state("");
@@ -40,7 +40,6 @@
 
     function onSearch() {
         loadingSentences = true;
-        console.log(selectedLanguage, selectedProviders);
         client.getSentences({
             word: search,
             language: selectedLanguage,
@@ -51,18 +50,22 @@
         });
     }
 
-    function onLanguageSelected(language: string) {
-        client.getProvidersForLanguage({ language }).then(
-            (response) => {
-                providers = response.providers.map(provider => ({
-                    value: provider.code,
-                    label: provider.name,
-                }));
-                selectedProviders = selectedProviders.filter(provider =>
-                    response.providers.some(p => p.code === provider)
-                );
-            },
-        );
+    function onLanguageSelected() {
+        client.getProvidersForLanguage({ language: selectedLanguage })
+            .then(
+                (response) => {
+                    providers = response.providers.map(provider => ({
+                        value: provider.code,
+                        label: provider.name,
+                    }));
+                    selectedProviders = selectedProviders.filter(
+                        provider =>
+                            response.providers.some(p =>
+                                p.code === provider
+                            ),
+                    );
+                },
+            );
     }
 </script>
 
@@ -70,21 +73,28 @@
     {#await languagesPromise}
         <Spinner />
     {:then languages}
-        <h1>Browse sentences</h1>
-        <Select
-            options={languages}
-            bind:value={selectedLanguage}
-            placeholder="Select a language..."
-            searchPlaceholder="Search languages..."
-            onSelected={onLanguageSelected}
-        />
-        <MultiSelect
-            options={providers}
-            bind:selectedOptions={selectedProviders}
-            placeholder="Select a provider..."
-            searchPlaceholder="Search providers..."
-        />
-        <SearchField bind:value={search} onSearch={onSearch} />
+        <h1 class="text-center">Search for sentences across the web!</h1>
+        <div class="input-container">
+            <SearchLanguageSelector
+                bind:selectedLanguage={selectedLanguage}
+                languages={languages}
+                {onLanguageSelected}
+            />
+            <div class="search-field">
+                <SearchField
+                    bind:value={search}
+                    onSearch={onSearch}
+                />
+            </div>
+        </div>
+        <div class="filters-container">
+            <i class="bi bi-filter"></i>
+            <SearchProviderDropdown
+                label="Providers"
+                options={providers}
+                bind:selectedOptions={selectedProviders}
+            />
+        </div>
         {#if loadingSentences}
             <Spinner label="Loading sentences..." />
         {:else}
@@ -107,7 +117,19 @@
         flex-direction: column;
         gap: 0.5rem;
     }
+    .input-container {
+        display: flex;
+    }
 
+    .filters-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: 1.5em;
+    }
+    .search-field {
+        flex: 1;
+    }
     .sentences {
         display: flex;
         flex-direction: column;

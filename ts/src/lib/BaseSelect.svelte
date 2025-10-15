@@ -1,10 +1,8 @@
 <script lang="ts">
     import { tick } from "svelte";
-
-    export interface SelectOption {
-        value: string;
-        label: string;
-    }
+    import SelectOptions, {
+        type SelectOption,
+    } from "./SelectOptions.svelte";
 
     interface Props {
         id?: string;
@@ -57,45 +55,19 @@
             ).join(", ") || ""),
     );
 
-    async function openDropdown() {
-        if (disabled) return;
-        isOpen = true;
+    let selectOptionsComponent: SelectOptions | undefined = $state();
+
+    async function onOpenDropdown() {
         searchTerm = "";
-        optionElements = [];
-        const selectedIndex = selectedOptions[0]
-            ? filteredOptions.findIndex(option =>
-                option.value === selectedOptions[0]
-            )
-            : -1;
-        highlightedIndex = selectedIndex;
         await tick();
         inputElement?.focus();
-        if (selectedIndex >= 0) {
+        if (highlightedIndex >= 0) {
             scrollHighlightedIntoView();
         }
     }
 
-    function closeDropdown() {
-        isOpen = false;
+    function onCloseDropdown() {
         searchTerm = "";
-        highlightedIndex = -1;
-        optionElements = [];
-    }
-
-    function selectOption(option: SelectOption) {
-        if (multiple) {
-            if (selectedOptions.includes(option.value)) {
-                selectedOptions = selectedOptions.filter(o =>
-                    o !== option.value
-                );
-            } else {
-                selectedOptions.push(option.value);
-            }
-        } else {
-            selectedOptions = [option.value];
-            closeDropdown();
-        }
-        onSelected(selectedOptions);
     }
 
     function clearSelection() {
@@ -126,7 +98,7 @@
                 || event.key === "ArrowDown"
             ) {
                 event.preventDefault();
-                openDropdown();
+                selectOptionsComponent?.openDropdown();
             }
             return;
         }
@@ -134,7 +106,7 @@
         switch (event.key) {
             case "Escape":
                 event.preventDefault();
-                closeDropdown();
+                selectOptionsComponent?.closeDropdown();
                 break;
             case "ArrowDown":
                 event.preventDefault();
@@ -155,11 +127,13 @@
                     highlightedIndex >= 0
                     && filteredOptions[highlightedIndex]
                 ) {
-                    selectOption(filteredOptions[highlightedIndex]);
+                    selectOptionsComponent?.selectOption(
+                        filteredOptions[highlightedIndex],
+                    );
                 }
                 break;
             case "Tab":
-                closeDropdown();
+                selectOptionsComponent?.closeDropdown();
                 break;
         }
     }
@@ -169,7 +143,7 @@
             containerElement
             && !containerElement.contains(event.target as Node)
         ) {
-            closeDropdown();
+            selectOptionsComponent?.closeDropdown();
         }
     }
 
@@ -203,7 +177,7 @@
                     optionElements = [];
                 }
             }}
-            onclick={openDropdown}
+            onclick={() => isOpen = true}
             onkeydown={handleKeydown}
         />
 
@@ -223,7 +197,7 @@
                 type="button"
                 class="btn btn-outline-secondary"
                 class:disabled
-                onclick={() => isOpen ? closeDropdown() : openDropdown()}
+                onclick={() => isOpen = !isOpen}
                 aria-label="Toggle dropdown"
             >
                 <i class="bi bi-chevron-{isOpen ? 'up' : 'down'}"></i>
@@ -232,65 +206,25 @@
     </div>
 
     {#if isOpen}
-        <div
-            class="dropdown-menu show w-100 mt-1"
-            style="position: absolute; z-index: 1000"
-        >
-            {#if filteredOptions.length === 0}
-                <div class="dropdown-item-text text-muted">
-                    No options found
-                </div>
-            {:else}
-                {#each filteredOptions as option, index (option.value)}
-                    {#if multiple}
-                        <label class="dropdown-item">
-                            <input
-                                bind:this={optionElements[index]}
-                                type="checkbox"
-                                checked={selectedOptions.includes(option.value)}
-                                onclick={() => selectOption(option)}
-                                onmouseenter={() => highlightedIndex = index}
-                            >
-                            {option.label}
-                        </label>
-                    {:else}
-                        <button
-                            bind:this={optionElements[index]}
-                            type="button"
-                            class="dropdown-item"
-                            class:active={index === highlightedIndex}
-                            onclick={() => selectOption(option)}
-                            onmouseenter={() => highlightedIndex = index}
-                        >
-                            {option.label}
-                        </button>
-                    {/if}
-                {/each}
-            {/if}
-        </div>
+        <SelectOptions
+            bind:this={selectOptionsComponent}
+            bind:isOpen
+            options={filteredOptions}
+            bind:selectedOptions
+            {multiple}
+            {onSelected}
+            {onOpenDropdown}
+            {onCloseDropdown}
+        />
     {/if}
 </div>
 
-<style>
+<style lang="scss">
     .select-container {
         position: relative;
     }
     .input-container {
         gap: 0.5rem;
-    }
-    .dropdown-menu {
-        max-height: 200px;
-        overflow-y: auto;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-    }
-
-    .dropdown-item {
-        cursor: pointer;
-    }
-
-    .dropdown-item.active {
-        background-color: var(--bs-primary);
-        color: var(--bs-primary-text);
     }
 
     .form-control[readonly]:not([disabled]) {
