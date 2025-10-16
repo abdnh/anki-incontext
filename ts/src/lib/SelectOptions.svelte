@@ -66,7 +66,7 @@
 
 <div
     class="dropdown-menu show min mt-1"
-    style={`position: absolute; z-index: 1000;`}
+    style="position: absolute; z-index: 1000"
 >
     {#if options.length === 0}
         <div class="dropdown-item-text text-muted">

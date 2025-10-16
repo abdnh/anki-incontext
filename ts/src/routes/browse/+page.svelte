@@ -97,7 +97,7 @@
             <Spinner label="Loading sentences..." />
         {:else if sentences}
             <div class="sentences">
-                {#each sentences as sentence, i}
+                {#each sentences as sentence, i (sentence.text)}
                     <SentenceCard
                         text={sentence.text}
                         url={sentence.url}

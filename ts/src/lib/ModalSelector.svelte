@@ -83,7 +83,7 @@
                     placeholder="Search languages..."
                 />
                 <div class="options-container">
-                    {#each filteredLanguages as language, i}
+                    {#each filteredLanguages as language, i (language.value)}
                         <button
                             bind:this={optionElements[i]}
                             class={`option ${
