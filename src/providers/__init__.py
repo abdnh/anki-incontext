@@ -42,6 +42,8 @@ def get_sentences(
     # Default to English if no language and provider is given
     if not (language or providers):
         language = "en"
+    if len(providers) == 0:
+        return []
     matched_providers: list[SentenceProvider] = []
     for provider_obj in PROVIDERS:
         matched = True
