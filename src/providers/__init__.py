@@ -39,8 +39,8 @@ def get_sentences(
     providers: list[str] | None = None,
     limit: int | None = None,
 ) -> list[Sentence]:
-    # Default to English if no language and provider is given
-    if not (language or providers):
+    # Default to English if no language is given
+    if not language:
         language = "eng"
     if len(providers) == 0:
         return []
