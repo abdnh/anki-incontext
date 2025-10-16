@@ -105,6 +105,7 @@
                     <SentenceCard
                         text={sentence.text}
                         url={sentence.url}
+                        provider={sentence.provider}
                         alternativeColor={i % 2 === 0}
                     />
                 {/each}

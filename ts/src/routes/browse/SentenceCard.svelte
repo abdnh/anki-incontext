@@ -1,7 +1,8 @@
 <script lang="ts">
-    let { text, url, alternativeColor = false }: {
+    let { text, url, provider, alternativeColor = false }: {
         text: string;
         url: string;
+        provider: string;
         alternativeColor: boolean;
     } = $props();
 </script>
@@ -9,9 +10,12 @@
 <div class={`card sentence-card ${alternativeColor ? "primary" : "secondary"}`}>
     <div class="card-body sentence-body">
         <div>{text}</div>
-        <a href={url} target="_blank" aria-label="Open source">
-            <i class="bi bi-globe"></i>
-        </a>
+        <a
+            href={url}
+            target="_blank"
+            aria-label="Open source"
+            class="sentence-source"
+        >{provider}</a>
     </div>
 </div>
 
@@ -24,9 +28,10 @@
     }
     .sentence-body {
         display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
         gap: 0.5rem;
+    }
+    .sentence-source {
+        font-size: smaller;
     }
 </style>

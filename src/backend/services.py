@@ -30,6 +30,7 @@ from ..proto.generic_pb2 import Empty
 from ..proto.services import BackendServiceBase
 from ..providers import (
     get_languages,
+    get_provider,
     get_providers_for_language,
     get_sentence_source,
     get_sentences,
@@ -131,7 +132,7 @@ class BackendService(BackendServiceBase):
             sentences=[
                 Sentence(
                     text=sentence.text,
-                    provider=sentence.provider,
+                    provider=get_provider(sentence.provider).human_name,
                     url=get_sentence_source(sentence),
                 )
                 for sentence in get_sentences(
