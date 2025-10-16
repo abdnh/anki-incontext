@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Sentence } from "$lib";
     import { client, promiseWithResolver } from "$lib";
-    import { type SelectOption } from "$lib/BaseSelect.svelte";
+    import { type SelectOption } from "$lib/SelectOptions.svelte";
     import Spinner from "$lib/Spinner.svelte";
     import { onMount } from "svelte";
     import SearchField from "./SearchField.svelte";
@@ -16,7 +16,7 @@
     >();
     let providers = $state<SelectOption[]>([]);
     let selectedProviders = $state<string[]>([]);
-    let sentences = $state<Sentence[]>([]);
+    let sentences = $state<Sentence[] | undefined>([]);
     let loadingSentences = $state(false);
 
     onMount(() => {
@@ -45,7 +45,9 @@
             language: selectedLanguage,
             providers: selectedProviders,
         }).then((response) => {
-            sentences = response.sentences;
+            sentences = response.sentences.length
+                ? response.sentences
+                : undefined;
             loadingSentences = false;
         });
     }
@@ -97,7 +99,7 @@
         </div>
         {#if loadingSentences}
             <Spinner label="Loading sentences..." />
-        {:else}
+        {:else if sentences}
             <div class="sentences">
                 {#each sentences as sentence, i}
                     <SentenceCard
@@ -106,6 +108,11 @@
                         alternativeColor={i % 2 === 0}
                     />
                 {/each}
+            </div>
+        {:else}
+            <div class="empty">
+                <i class="bi bi-hdd"></i>
+                <div>No Results</div>
             </div>
         {/if}
     {/await}
@@ -135,5 +142,12 @@
         flex-direction: column;
         gap: 1rem;
         margin-top: 1rem;
+    }
+    .empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-inline: auto;
+        font-size: 1.5em;
     }
 </style>
