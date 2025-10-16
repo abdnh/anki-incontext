@@ -1,6 +1,6 @@
 <script lang="ts">
-    import BaseSelect, { type SelectOption } from "./BaseSelect.svelte";
-
+    import BaseSelect from "./BaseSelect.svelte";
+    import { type SelectOption } from "./SelectOptions.svelte";
     interface Props {
         id?: string;
         options: SelectOption[];
@@ -33,7 +33,7 @@
 <BaseSelect
     id={id}
     options={options}
-    selectedOptions={selectedOptions}
+    bind:selectedOptions={selectedOptions}
     placeholder={placeholder}
     searchPlaceholder={searchPlaceholder}
     disabled={disabled}
