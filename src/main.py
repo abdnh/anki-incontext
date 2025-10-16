@@ -20,7 +20,7 @@ from aqt import QMenu, gui_hooks, mw
 from aqt.addons import AddonManager, AddonsDialog
 from aqt.browser import Browser
 from aqt.clayout import CardLayout
-from aqt.qt import QAction, QApplication, Qt, qconnect
+from aqt.qt import QAction, QApplication, qconnect
 from aqt.reviewer import Reviewer
 from aqt.webview import AnkiWebView, WebContent
 
@@ -36,7 +36,6 @@ from .db import SentenceDB
 from .exceptions import InContextError
 from .gui.browse import BrowseDialog
 from .gui.fill import FillDialog
-from .gui.main import InContextDialog
 from .gui.tatoeba import TatoebaDialog
 from .providers import get_provider, get_sentences, init_providers
 
@@ -185,29 +184,6 @@ def on_webview_did_receive_js_message(
     return True, None
 
 
-dialog: InContextDialog | None = None
-
-
-def on_finished() -> None:
-    global dialog
-    dialog = None
-
-
-def open_manage_dialog() -> None:
-    global dialog
-    if not dialog:
-        dialog = InContextDialog(mw, sentences_db)
-        qconnect(dialog.finished, on_finished)
-        dialog.show()
-    else:
-        if dialog.windowState() & Qt.WindowState.WindowMinimized:
-            dialog.setWindowState(
-                dialog.windowState() & ~Qt.WindowState.WindowMinimized
-            )
-        dialog.activateWindow()
-        dialog.raise_()
-
-
 sentences_db: SentenceDB | None = None
 
 
@@ -239,8 +215,6 @@ def on_addon_manager_did_install_addon(
 ) -> None:
     if module == manager.addonFromModule(__name__):
         init_db()
-        if dialog is not None:
-            dialog.sentences_db = sentences_db
 
 
 def on_addons_dialog_will_delete_addons(dialog: AddonsDialog, ids: list[str]) -> None:
@@ -258,9 +232,6 @@ def open_browse_dialog() -> None:
 
 def add_menu() -> None:
     menu = QMenu("InContext", mw)
-    manage_action = QAction("Manage sentences", mw)
-    qconnect(manage_action.triggered, open_manage_dialog)
-    menu.addAction(manage_action)
     tatoeba_action = QAction("Download Tatoeba sentences", mw)
     qconnect(tatoeba_action.triggered, open_tatoeba_dialog)
     menu.addAction(tatoeba_action)
