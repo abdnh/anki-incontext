@@ -23,7 +23,7 @@ Here, the add-on will show a random English example sentence containing the word
 You can specify the language using the `lang` option:
 
 ```
-{{incontext lang=en:Front}}
+{{incontext lang=eng:Front}}
 ```
 
 All [language codes](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) supported by [Tatoeba](https://tatoeba.org/en/downloads) should work.
@@ -32,7 +32,7 @@ Sentences are fetched from multiple sources such as [Dictionary.com](https://www
 You can show sentences from only a certain source by using the `provider` option, like this:
 
 ```
-{{incontext lang=en provider=dictionary.com:Front}}
+{{incontext lang=eng provider=dictionary.com:Front}}
 ```
 
 For a list of supported sources, see the [providers](./src/providers/) folder.

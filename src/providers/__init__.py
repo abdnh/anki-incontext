@@ -6,7 +6,7 @@ from ..db import Sentence, SentenceDB
 from .dictionary_com import DictionaryProvider
 from .glosbe import GlosbeProvider
 from .jisho import JishoProvider
-from .langs import langcode_to_name
+from .langs import get_language_info, langcode_to_name
 from .oxford_learner import OxfordLearnerProvider
 from .provider import SentenceProvider
 from .seslisozluk import SesliSozlukProvider
@@ -41,9 +41,10 @@ def get_sentences(
 ) -> list[Sentence]:
     # Default to English if no language and provider is given
     if not (language or providers):
-        language = "en"
+        language = "eng"
     if len(providers) == 0:
         return []
+    language = get_language_info(language).alpha_3.lower()
     matched_providers: list[SentenceProvider] = []
     for provider_obj in PROVIDERS:
         matched = True
