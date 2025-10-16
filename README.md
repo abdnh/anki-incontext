@@ -1,10 +1,16 @@
 # InContext
 
-An [Anki](https://apps.ankiweb.net/) add-on that fetches and displays random example sentences in different languages from various sources.
+An [Anki](https://apps.ankiweb.net/) add-on that fetches and displays example sentences in different languages from various sources.
+
+## Fill-in option
+
+You can add sentences to a chosen field in multiple notes using the browser's _Notes > InContext: Add sentences_ menu item.
+
+![Fill-in dialog](images/fill.png)
 
 ## Template filter
 
-The add-on mainly works as a template filter to show random example sentences for vocabulary each time a card is viewed.
+The add-on also supports displaying random example sentences for vocabulary each time a card is viewed.
 
 You just have to put a filter like this in your [card template](https://docs.ankiweb.net/templates/intro.html):
 
@@ -20,13 +26,7 @@ You can specify the language using the `lang` option:
 {{incontext lang=en:Front}}
 ```
 
-Currently supported values are:
-
-- `en` English
-- `tr` Turkish
-- `ja` Japanese
-- `ko`: Korean
-- `zh`: Chinese
+All [language codes](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) supported by [Tatoeba](https://tatoeba.org/en/downloads) should work.
 
 Sentences are fetched from multiple sources such as [Dictionary.com](https://www.dictionary.com/) (for English) and [sozluk.gov.tr](https://sozluk.gov.tr) (for Turkish).
 You can show sentences from only a certain source by using the `provider` option, like this:
@@ -44,21 +44,13 @@ If both language and provider are not given, the default is English with all pro
 
 More sites and languages will be added in the future. Contributions are welcome!
 
-## Fill-in option
-
-You can also add sentences to a chosen field in multiple notes using the browser's _Notes > InContext: Add sentences_ menu item. This is useful if you review on mobile.
-
-![Fill-in dialog](images/fill.png)
-
 ## Importing Tatoeba databases
 
 Use _Tools > InContext > Download Tatoeba sentences_ to download sentences for your target language from [Tatoeba](https://tatoeba.org/).
 
-## Interface
+## Browsing sentences
 
-The add-on has an experimental graphical interface to manage sentences that can be accessed from **Tools > InContext**.
-
-![The add-on's interface](./images/dialog.png)
+You can search for sentences using the screen under _Tools > InContext > Browse sentences_.
 
 ## Demo
 
@@ -67,17 +59,6 @@ Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Er
 ## Download
 
 You can download the add-on from its page on AnkiWeb: https://ankiweb.net/shared/info/385420176
-
-## Storage
-
-In the first review of a card that has the InContext filter, sentences will be fetched from the language providers and saved in the `user_files/sentences.db` file. Subsequent reviews will use those saved sentences (if any) and avoid making more requests to the providers. You can anyway update saved sentences manually from the GUI.
-
-## Known Issues
-
-- **IMPORTANT**: In versions before 0.3.1, the add-on suffered from an [issue](https://github.com/ankitects/anki/pull/2518) preventing updates from being properly installed, which resulted in Anki prompting to update the add-on every time. To fix this, please follow the steps carefully:
-  1. Download version 0.3.1 from [this page](https://github.com/abdnh/anki-incontext/releases/tag/0.3.1). You should download the `incontext_ankiweb.ankiaddon` file or this won't work.
-  2. Close Anki then double click on the .ankiaddon file to install it and run Anki. Closing Anki is important for the update to work.
-  3. Go to _Tools > Add-ons_ and click _Check for Updates_. You should be prompted to update the add-on. The issue should be fixed after updating this time.
 
 ## Changelog
 

@@ -1,48 +1,51 @@
-An <a href="https://apps.ankiweb.net/">Anki</a> add-on that fetches and displays random example sentences in different languages from various sources.
+This add-on fetches and displays example sentences in different languages from various sources.
 
-<b>Template filter</b>
-The add-on mainly works as a template filter to show random example sentences for vocabulary each time a card is viewed.
-You just have to put a filter like this in your <a href="https://docs.ankiweb.net/templates/intro.html">card template</a>:
-<code>{{incontext:Front}}
-</code>
-Here, the add-on will show a random English example sentence containing the word in the <code>Front</code> field.
-You can specify the language using the <code>lang</code> option:
-<code>{{incontext lang=en:Front}}
-</code>
-Currently supported values are:
-<ul><li><code>en</code> English</li><li><code>tr</code> Turkish</li><li><code>ja</code> Japanese</li><li><code>ko</code>: Korean</li><li><code>zh</code>: Chinese</li></ul>
-Sentences are fetched from multiple sources such as <a href="https://www.dictionary.com/">Dictionary.com</a> (for English) and <a href="https://sozluk.gov.tr">sozluk.gov.tr</a> (for Turkish). You can show sentences from only a certain source by using the <code>provider</code> option, like this:
-<code>{{incontext lang=en provider=dictionary.com:Front}}
-</code>
-For a list of supported sources, see the <a href="https://github.com/abdnh/anki-incontext/blob/master/src/providers">providers</a> folder. The identifier of each provider is defined by a <code>name</code> variable inside each provider class. A list of available providers is also shown in the <a href="https://github.com/abdnh/anki-incontext/blob/master/#interface">interface</a>.
-If a provider is given but no language, the first supported language of the provider will be assumed. If both language and provider are not given, the default is English with all providers.
-More sites and languages will be added in the future. Contributions are welcome!
 
 <b>Fill-in option</b>
-You can also add sentences to a chosen field in multiple notes using the browser's <i>Notes &gt; InContext: Add sentences</i> menu item. This is useful if you review on mobile.
-<img src="https://raw.githubusercontent.com/abdnh/anki-incontext/master/images/fill.png" alt="Fill-in dialog">
+
+<p>You can add sentences to a chosen field in multiple notes using the browser's <i>Notes &gt; InContext: Add sentences</i> menu item.</p>
+<p><img src="https://raw.githubusercontent.com/abdnh/anki-incontext/master/images/fill.png" alt="Fill-in dialog"></p>
+
+<b>Template filter</b>
+
+<p>The add-on also supports displaying random example sentences for vocabulary each time a card is viewed.</p>
+<p>You just have to put a filter like this in your <a href="https://docs.ankiweb.net/templates/intro.html">card template</a>:</p>
+<code>{{incontext:Front}}
+</code>
+<p>Here, the add-on will show a random English example sentence containing the word in the <code>Front</code> field.</p>
+<p>You can specify the language using the <code>lang</code> option:</p>
+<code>{{incontext lang=en:Front}}
+</code>
+<p>All <a href="https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes">language codes</a> supported by <a href="https://tatoeba.org/en/downloads">Tatoeba</a> should work.</p>
+<p>Sentences are fetched from multiple sources such as <a href="https://www.dictionary.com/">Dictionary.com</a> (for English) and <a href="https://sozluk.gov.tr">sozluk.gov.tr</a> (for Turkish).
+You can show sentences from only a certain source by using the <code>provider</code> option, like this:</p>
+<code>{{incontext lang=en provider=dictionary.com:Front}}
+</code>
+<p>For a list of supported sources, see the <a href="https://github.com/abdnh/anki-incontext/blob/master/src/providers">providers</a> folder.
+The identifier of each provider is defined by a <code>name</code> variable inside each provider class.
+A list of available providers is also shown in the <a href="https://github.com/abdnh/anki-incontext/blob/master/#interface">interface</a>.</p>
+<p>If a provider is given but no language, the first supported language of the provider will be assumed.
+If both language and provider are not given, the default is English with all providers.</p>
+<p>More sites and languages will be added in the future. Contributions are welcome!</p>
 
 <b>Importing Tatoeba databases</b>
+
 <p>Use <i>Tools &gt; InContext &gt; Download Tatoeba sentences</i> to download sentences for your target language from <a href="https://tatoeba.org/">Tatoeba</a>.</p>
 
-<b>Interface</b>
-The add-on has an experimental graphical interface to manage sentences that can be accessed from <b>Tools &gt; InContext</b>.
-<img alt="The add-on's interface" src="https://raw.githubusercontent.com/abdnh/anki-incontext/master/images/dialog.png"/>
+<b>Browsing sentences</b>
+
+<p>You can search for sentences using the screen under <i>Tools &gt; InContext &gt; Browse sentences</i>.</p>
 
 <b>Demo</b>
+
 Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Era5ksSa59xjB3ZbVQsdoTbQEigzh6Bi/view?usp=sharing
 
-<b>Storage</b>
-In the first review of a card that has the InContext filter, sentences will be fetched from the language providers and saved in the <code>user_files/sentences.db</code> file. Subsequent reviews will use those saved sentences (if any) and avoid making more requests to the providers. You can anyway update saved sentences manually from the GUI.
-
-<b>Known Issues</b>
-<ul><li><b>IMPORTANT</b>: In versions before 0.3.1, the add-on suffered from an <a href="https://github.com/ankitects/anki/pull/2518">issue</a> preventing updates from being properly installed, which resulted in Anki prompting to update the add-on every time. To fix this, please follow the steps carefully:<ol><li>Download version 0.3.1 from <a href="https://github.com/abdnh/anki-incontext/releases/tag/0.3.1">this page</a>. You should download the <code>incontext_ankiweb.ankiaddon</code> file or this won't work.</li><li>Close Anki then double click on the .ankiaddon file to install it and run Anki. Closing Anki is important for the update to work.</li><li>Go to <i>Tools &gt; Add-ons</i> and click <i>Check for Updates</i>. You should be prompted to update the add-on. The issue should be fixed after updating this time.</li></ol>
-</li></ul>
-
 <b>Changelog</b>
+
 See <a href="https://github.com/abdnh/anki-incontext/blob/master/CHANGELOG.md">CHANGELOG.md</a> for a list of changes.
 
 <b>Credit</b>
+
 Some icons are adapted from <a href="https://icons.getbootstrap.com/">Bootstrap Icons</a>; licensed under the MIT.
 
 <b>Support &amp; feature requests</b>
