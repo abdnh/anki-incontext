@@ -42,7 +42,7 @@ def get_sentences(
     # Default to English if no language is given
     if not language:
         language = "eng"
-    if len(providers) == 0:
+    if providers and len(providers) == 0:
         return []
     language = get_language_info(language).alpha_3.lower()
     matched_providers: list[SentenceProvider] = []
