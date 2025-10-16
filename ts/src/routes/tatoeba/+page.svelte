@@ -1,29 +1,19 @@
 <script lang="ts">
-    import {
-        client,
-        promiseWithResolver,
-        type TatoebaDownloadProgress,
-    } from "$lib";
+    import { client, type TatoebaDownloadProgress } from "$lib";
+    import Error from "$lib/Error.svelte";
     import Select from "$lib/Select.svelte";
     import Spinner from "$lib/Spinner.svelte";
-
-    import { onMount } from "svelte";
-
-    let [languagesPromise, resolveLanguages] = promiseWithResolver<
-        Array<{ value: string; label: string }>
-    >();
 
     let selectedLanguage = $state("");
     let downloadProgress = $state<TatoebaDownloadProgress | null>(null);
 
-    onMount(() => {
-        client.getTatoebaLanguages({}).then((response) => {
-            resolveLanguages(response.languages.map(lang => ({
-                value: lang.code,
-                label: lang.name,
-            })));
-        });
-    });
+    async function getLanguages() {
+        const response = await client.getTatoebaLanguages({});
+        return response.languages.map(lang => ({
+            value: lang.code,
+            label: lang.name,
+        }));
+    }
 
     async function onDownload() {
         if (!selectedLanguage) {
@@ -44,7 +34,7 @@
 </script>
 
 <div class="container">
-    {#await languagesPromise}
+    {#await getLanguages()}
         <Spinner label="Fetching languages..." />
     {:then languages}
         <div class="mt-4">
@@ -88,8 +78,7 @@
                 </div>
             {/if}
         </div>
+    {:catch error}
+        <Error error={error.rawMessage} />
     {/await}
 </div>
-
-<style>
-</style>

@@ -1,14 +1,9 @@
 <script lang="ts">
-    import {
-        client,
-        type GetDefaultFillFieldsResponse,
-        promiseWithResolver,
-        type Provider,
-    } from "$lib";
+    import { client, type Provider } from "$lib";
     import Select from "$lib/Select.svelte";
     import Spinner from "$lib/Spinner.svelte";
-    import { onMount } from "svelte";
 
+    import Error from "$lib/Error.svelte";
     import MultiSelect from "$lib/MultiSelect.svelte";
     import type { PageProps } from "./$types";
 
@@ -16,9 +11,6 @@
 
     let nids = data.nids.map(nid => BigInt(nid));
 
-    let [initialDataPromise, resolveInitialData] = promiseWithResolver<
-        GetDefaultFillFieldsResponse
-    >();
     let providers = $state<Provider[]>([]);
     let selectedLanguage = $state<string>("");
     let selectedProviders = $state<string[]>([]);
@@ -26,23 +18,20 @@
     let selectedSentencesField = $state<string>("");
     let selectedNumberOfSentences = $state<bigint>(0n);
 
-    onMount(() => {
-        client.getDefaultFillFields({
+    async function getInitialData() {
+        const response = await client.getDefaultFillFields({
             nids,
-        }).then((response) => {
-            resolveInitialData(response);
-            providers = response.languageProviders;
-            selectedNumberOfSentences = response.numberOfSentences;
-            selectedLanguage = response.language;
-            selectedProviders = response.providers.length > 0
-                ? response.providers
-                : response.languageProviders.map(provider =>
-                    provider.code
-                );
-            selectedWordField = response.wordField;
-            selectedSentencesField = response.sentencesField;
         });
-    });
+        providers = response.languageProviders;
+        selectedNumberOfSentences = response.numberOfSentences;
+        selectedLanguage = response.language;
+        selectedProviders = response.providers.length > 0
+            ? response.providers
+            : response.languageProviders.map(provider => provider.code);
+        selectedWordField = response.wordField;
+        selectedSentencesField = response.sentencesField;
+        return response;
+    }
 
     async function onLanguageSelected(language: string) {
         const response = await client.getProvidersForLanguage({
@@ -67,7 +56,7 @@
 </script>
 
 <div class="container">
-    {#await initialDataPromise}
+    {#await getInitialData()}
         <Spinner />
     {:then initialData}
         <h1>Fill in sentences</h1>
@@ -153,6 +142,8 @@
                 </div>
             </div>
         </form>
+    {:catch error}
+        <Error error={error.rawMessage} />
     {/await}
 </div>
 

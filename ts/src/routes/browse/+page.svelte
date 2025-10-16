@@ -1,9 +1,9 @@
 <script lang="ts">
     import type { Sentence } from "$lib";
-    import { client, promiseWithResolver } from "$lib";
+    import { client } from "$lib";
+    import Error from "$lib/Error.svelte";
     import { type SelectOption } from "$lib/SelectOptions.svelte";
     import Spinner from "$lib/Spinner.svelte";
-    import { onMount } from "svelte";
     import SearchField from "./SearchField.svelte";
     import SearchLanguageSelector from "./SearchLanguageSelector.svelte";
     import SearchProviderDropdown from "./SearchProviderDropdown.svelte";
@@ -11,32 +11,11 @@
 
     let search = $state("");
     let selectedLanguage = $state("");
-    let [languagesPromise, resolveLanguages] = promiseWithResolver<
-        SelectOption[]
-    >();
+
     let providers = $state<SelectOption[]>([]);
     let selectedProviders = $state<string[]>([]);
     let sentences = $state<Sentence[] | undefined>([]);
     let loadingSentences = $state(false);
-
-    onMount(() => {
-        client.getDefaultFillFields({}).then((response) => {
-            resolveLanguages(response.languages.map(lang => ({
-                value: lang.code,
-                label: lang.name,
-            })));
-            selectedLanguage = response.language;
-            providers = response.languageProviders.map(provider => ({
-                value: provider.code,
-                label: provider.name,
-            }));
-            selectedProviders = response.providers.length > 0
-                ? response.providers
-                : response.languageProviders.map(provider =>
-                    provider.code
-                );
-        });
-    });
 
     function onSearch() {
         loadingSentences = true;
@@ -69,10 +48,27 @@
                 },
             );
     }
+
+    async function getLanguages() {
+        const response = await client.getDefaultFillFields({});
+        const languages = response.languages.map(lang => ({
+            value: lang.code,
+            label: lang.name,
+        }));
+        selectedLanguage = response.language;
+        providers = response.languageProviders.map(provider => ({
+            value: provider.code,
+            label: provider.name,
+        }));
+        selectedProviders = response.providers.length > 0
+            ? response.providers
+            : response.languageProviders.map(provider => provider.code);
+        return languages;
+    }
 </script>
 
 <div class="container search-container">
-    {#await languagesPromise}
+    {#await getLanguages()}
         <Spinner />
     {:then languages}
         <h1 class="text-center">Search for sentences across the web!</h1>
@@ -116,6 +112,8 @@
                 <div>No Results</div>
             </div>
         {/if}
+    {:catch error}
+        <Error error={error.rawMessage} />
     {/await}
 </div>
 
