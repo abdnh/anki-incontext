@@ -131,7 +131,8 @@
                 </div>
             </div>
             <div class="mb-3 row">
-                <div class="col-sm-9 offset-sm-2">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-9 text-end">
                     <button
                         type="button"
                         class="btn btn-primary"
