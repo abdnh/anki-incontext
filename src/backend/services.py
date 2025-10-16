@@ -90,9 +90,13 @@ class BackendService(BackendServiceBase):
         cls, request: GetDefaultFillFieldsRequest
     ) -> GetDefaultFillFieldsResponse:
         provider_field = config["provider_field"]
-        providers = (
-            provider_field if isinstance(provider_field, list) else [provider_field]
-        )
+        if not provider_field:
+            providers = []
+            config["provider_field"] = ""
+        else:
+            providers = (
+                provider_field if isinstance(provider_field, list) else [provider_field]
+            )
         return GetDefaultFillFieldsResponse(
             language=config["lang_field"],
             providers=providers,
