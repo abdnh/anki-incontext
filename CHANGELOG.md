@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-10-16
+
+### Changed
+
+- The Fill screen has been redesigned.
+
+### Removed
+
+- Removed Lexico provider.
+- Removed Manage screen.
+
+### Fixed
+
+- Fixed Dictionary.com provider
+
+### Added
+
+- Added an option to import Tatoeba databases(see [README.md](./README.md)).
+- Added a new screen to search for sentences (_Tools > InContext > Browse sentences_).
+
 ## [0.4.1] - 2023-09-23
 
 ### Fixed
@@ -77,6 +97,7 @@ Initial release to AnkiWeb
 
 Initial release
 
+[1.0.0]: https://github.com/abdnh/anki-incontext/compare/0.4.1...1.0.0
 [0.4.1]: https://github.com/abdnh/anki-incontext/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/abdnh/anki-incontext/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/abdnh/anki-incontext/compare/0.3.0...0.3.1
