@@ -227,7 +227,7 @@ def open_tatoeba_dialog() -> None:
 
 
 def open_browse_dialog() -> None:
-    BrowseDialog(mw).show()
+    BrowseDialog().show()
 
 
 def add_menu() -> None:
