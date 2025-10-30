@@ -39,6 +39,7 @@ def get_sentences(
     providers: list[str] | None = None,
     limit: int | None = None,
 ) -> list[Sentence]:
+    word = word.strip()
     # Default to English if no language is given
     if not language:
         language = "eng"
