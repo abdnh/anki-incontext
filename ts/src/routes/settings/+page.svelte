@@ -24,7 +24,7 @@
             GetSettingsResponse
         >();
     let providersForLanguage: {
-        [key: string]: Promise<SelectOption[]>;
+        [key: string]: Promise<SelectOption[] | undefined>;
     } = $state({});
 
     function onAddSearchShortcut() {
@@ -137,7 +137,7 @@
                             ...
                         {:then providers}
                             <MultiSelect
-                                options={providers}
+                                options={providers ? providers : []}
                                 bind:selectedOptions={searchShortcuts[i].providers}
                                 placeholder="Select providers"
                             />
