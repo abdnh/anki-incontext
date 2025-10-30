@@ -26,7 +26,7 @@ class BrowseDialog(SveltekitWebDialog):
         if language:
             self._kwargs["language"] = language
         if providers is not None:
-            self._kwargs["providers"] = providers
+            self._kwargs["providers"] = ",".join(providers)
 
         super().__init__(path="browse", parent=parent, subtitle="Browse Sentences")
 
