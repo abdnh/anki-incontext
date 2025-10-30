@@ -4,10 +4,6 @@
     }
 
     let { error }: Props = $props();
-
-    $effect(() => {
-        console.log("error", error);
-    });
 </script>
 
 <div class="error">Error: {error}</div>
