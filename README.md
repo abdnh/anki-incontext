@@ -52,6 +52,12 @@ Use _Tools > InContext > Download Tatoeba sentences_ to download sentences for y
 
 You can search for sentences using the screen under _Tools > InContext > Browse sentences_.
 
+![Browse screen](images/browse.png)
+
+You can also assign shortcuts to open the browse page for the selected word in the review screen from _Tools > InContext > Settings_.
+
+![Settings screen](images/settings.png)
+
 ## Demo
 
 Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Era5ksSa59xjB3ZbVQsdoTbQEigzh6Bi/view?usp=sharing
