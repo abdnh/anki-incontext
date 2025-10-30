@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import functools
+
+from aqt.main import MainWindowState
+
 from .patches import patch_certifi
 
 patch_certifi()
@@ -10,7 +14,7 @@ import html
 import json
 from concurrent.futures import Future
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import Any, Callable, cast
 
 from anki import hooks
 from anki.cards import Card
@@ -25,6 +29,7 @@ from aqt.reviewer import Reviewer
 from aqt.webview import AnkiWebView, WebContent
 
 from .backend.server import init_server
+from .config import config
 from .errors import setup_error_handler
 
 try:
@@ -36,6 +41,7 @@ from .db import SentenceDB
 from .exceptions import InContextError
 from .gui.browse import BrowseDialog
 from .gui.fill import FillDialog
+from .gui.settings import SettingsDialog
 from .gui.tatoeba import TatoebaDialog
 from .providers import get_provider, get_sentences, init_providers
 
@@ -230,6 +236,37 @@ def open_browse_dialog() -> None:
     BrowseDialog().show()
 
 
+def open_settings_dialog() -> None:
+    SettingsDialog().show()
+
+
+def on_state_shortcuts_will_change(
+    state: MainWindowState, shortcuts: list[tuple[str, Callable]]
+) -> None:
+    if state != "review":
+        return
+
+    def search(language: str, providers: list[str]) -> None:
+        BrowseDialog(
+            word=mw.web.selectedText(),
+            language=language,
+            providers=providers,
+            auto_search=True,
+        ).show()
+
+    for shortcut in config["search_shortcuts"]:
+        shortcuts.append(
+            (
+                shortcut["shortcut"],
+                functools.partial(
+                    search,
+                    language=shortcut["language"],
+                    providers=shortcut["providers"],
+                ),
+            )
+        )
+
+
 def add_menu() -> None:
     menu = QMenu("InContext", mw)
     tatoeba_action = QAction("Download Tatoeba sentences", mw)
@@ -238,6 +275,10 @@ def add_menu() -> None:
     browse_action = QAction("Browse sentences", mw)
     qconnect(browse_action.triggered, open_browse_dialog)
     menu.addAction(browse_action)
+    settings_action = QAction("Settings", mw)
+    qconnect(settings_action.triggered, open_settings_dialog)
+    menu.addAction(settings_action)
+
     mw.form.menuTools.addMenu(menu)
 
 
@@ -269,6 +310,7 @@ def init() -> None:
     gui_hooks.addons_dialog_will_delete_addons.append(
         on_addons_dialog_will_delete_addons
     )
+    gui_hooks.state_shortcuts_will_change.append(on_state_shortcuts_will_change)
     mw.addonManager.setWebExports(__name__, "web/.*")
     init_db()
     add_menu()

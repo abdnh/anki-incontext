@@ -8,10 +8,13 @@ service BackendService {
   rpc DownloadTatoebaSentences(DownloadTatoebaSentencesRequest) returns (generic.Empty);
   rpc GetTatoebaDownloadProgress(generic.Empty) returns (TatoebaDownloadProgress);
   rpc GetDefaultFillFields(GetDefaultFillFieldsRequest) returns (GetDefaultFillFieldsResponse);
+  rpc GetLanguagesAndProviders(GetLanguagesAndProvidersRequest) returns (GetLanguagesAndProvidersResponse);
   rpc GetProvidersForLanguage(GetProvidersForLanguageRequest) returns (GetProvidersForLanguageResponse);
   rpc FillInSentences(FillInSentencesRequest) returns (generic.Empty);
   rpc GetLanguages(generic.Empty) returns (GetLanguagesResponse);
   rpc GetSentences(GetSentencesRequest) returns (GetSentencesResponse);
+  rpc GetSettings(generic.Empty) returns (GetSettingsResponse);
+  rpc SaveSettings(SaveSettingsRequest) returns (generic.Empty);
 }
 
 
@@ -55,6 +58,15 @@ message GetDefaultFillFieldsResponse {
   repeated string fields = 8;
 }
 
+message GetLanguagesAndProvidersRequest {
+  string default_language = 1;
+}
+
+message GetLanguagesAndProvidersResponse {
+  repeated Language languages = 1;
+  repeated Provider default_providers = 2;
+}
+
 message GetProvidersForLanguageRequest {
   string language = 1;
 }
@@ -90,4 +102,21 @@ message Sentence {
   string text = 1;
   string provider = 2;
   string url = 3;
+}
+
+message SearchShortcut {
+  repeated string keys = 1;
+  string language = 2;
+  repeated Provider providers = 3;
+  repeated string selected_providers = 4;
+}
+
+
+message GetSettingsResponse {
+  repeated SearchShortcut search_shortcuts = 1;
+  repeated Language languages = 2;
+}
+
+message SaveSettingsRequest {
+  repeated SearchShortcut search_shortcuts = 1;
 }

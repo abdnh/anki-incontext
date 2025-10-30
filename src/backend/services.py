@@ -10,30 +10,39 @@ from aqt.main import AnkiQt
 from aqt.operations import QueryOp
 
 from ..config import config
+from ..keys import qt_key_to_js
 from ..log import logger
 from ..proto.backend_pb2 import (
     DownloadTatoebaSentencesRequest,
     GetDefaultFillFieldsRequest,
     GetDefaultFillFieldsResponse,
+    GetLanguagesAndProvidersRequest,
+    GetLanguagesAndProvidersResponse,
     GetLanguagesResponse,
     GetProvidersForLanguageRequest,
     GetProvidersForLanguageResponse,
     GetSentencesRequest,
     GetSentencesResponse,
+    GetSettingsResponse,
     GetTatoebaLanguagesResponse,
     Language,
     Provider,
+    SearchShortcut,
     Sentence,
     TatoebaDownloadProgress,
 )
 from ..proto.generic_pb2 import Empty
 from ..proto.services import BackendServiceBase
 from ..providers import (
-    get_languages,
+    get_languages as get_languages_base,
+)
+from ..providers import (
     get_provider,
-    get_providers_for_language,
     get_sentence_source,
     get_sentences,
+)
+from ..providers import (
+    get_providers_for_language as get_providers_for_language_base,
 )
 from ..providers.langs import get_all_languages
 from ..providers.tatoeba import download_tatoeba_sentences
@@ -44,6 +53,17 @@ def fields_for_notes(mw: AnkiQt, nids: Iterable[NoteId]) -> list[str]:
         "select distinct name from fields where ntid in"
         f" (select mid from notes where id in {ids2str(nids)})"
     )
+
+
+def get_languages() -> list[Language]:
+    return [Language(code=code, name=name) for code, name in get_languages_base()]
+
+
+def get_providers_for_language(lang: str) -> list[Provider]:
+    return [
+        Provider(code=provider.name, name=provider.human_name)
+        for provider in get_providers_for_language_base(lang)
+    ]
 
 
 class BackendService(BackendServiceBase):
@@ -103,13 +123,8 @@ class BackendService(BackendServiceBase):
             word_field=config["word_field"],
             sentences_field=config["sentences_field"],
             number_of_sentences=20,
-            languages=[
-                Language(code=code, name=name) for code, name in get_languages()
-            ],
-            language_providers=[
-                Provider(code=provider.name, name=provider.human_name)
-                for provider in get_providers_for_language(config["lang_field"])
-            ],
+            languages=get_languages(),
+            language_providers=get_providers_for_language(config["lang_field"]),
             fields=fields_for_notes(mw, [NoteId(nid) for nid in request.nids]),
         )
 
@@ -118,17 +133,21 @@ class BackendService(BackendServiceBase):
         cls, request: GetProvidersForLanguageRequest
     ) -> GetProvidersForLanguageResponse:
         return GetProvidersForLanguageResponse(
-            providers=[
-                Provider(code=provider.name, name=provider.human_name)
-                for provider in get_providers_for_language(request.language)
-            ]
+            providers=get_providers_for_language(request.language)
+        )
+
+    @classmethod
+    def get_languages_and_providers(
+        cls, request: GetLanguagesAndProvidersRequest
+    ) -> GetLanguagesAndProvidersResponse:
+        return GetLanguagesAndProvidersResponse(
+            languages=get_languages(),
+            default_providers=get_providers_for_language(request.default_language),
         )
 
     @classmethod
     def get_languages(cls, request: Empty) -> GetLanguagesResponse:
-        return GetLanguagesResponse(
-            languages=[Language(code=code, name=name) for code, name in get_languages()]
-        )
+        return GetLanguagesResponse(languages=get_languages())
 
     @classmethod
     def get_sentences(cls, request: GetSentencesRequest) -> GetSentencesResponse:
@@ -145,4 +164,20 @@ class BackendService(BackendServiceBase):
                     providers=list(request.providers),
                 )
             ]
+        )
+
+    @classmethod
+    def get_settings(cls, request: Empty) -> GetSettingsResponse:
+        search_shortcuts = []
+        for shortcut in config["search_shortcuts"]:
+            search_shortcuts.append(
+                SearchShortcut(
+                    keys=qt_key_to_js(shortcut["shortcut"]),
+                    language=shortcut["language"],
+                    selected_providers=shortcut["providers"],
+                    providers=get_providers_for_language(shortcut["language"]),
+                )
+            )
+        return GetSettingsResponse(
+            search_shortcuts=search_shortcuts, languages=get_languages()
         )

@@ -3,5 +3,6 @@
     "provider_field": [],
     "report_errors": true,
     "sentences_field": "",
-    "word_field": ""
+    "word_field": "",
+    "search_shortcuts": []
 }

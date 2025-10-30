@@ -17,6 +17,25 @@
         },
         "word_field": {
             "type": "string"
+        },
+        "search_shortcuts": {
+            "type": "array",
+            "items": {
+                "shortcut": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "providers": {
+                    "type": [
+                        "array"
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
         }
     },
     "type": "object"

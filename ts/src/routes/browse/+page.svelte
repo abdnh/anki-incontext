@@ -1,19 +1,30 @@
 <script lang="ts">
     import type { Sentence } from "$lib";
-    import { client } from "$lib";
+    import {
+        client,
+        type GetLanguagesAndProvidersResponse,
+        promiseWithResolver,
+    } from "$lib";
     import Error from "$lib/Error.svelte";
     import { type SelectOption } from "$lib/SelectOptions.svelte";
     import Spinner from "$lib/Spinner.svelte";
+    import { onMount } from "svelte";
+    import type { PageProps } from "./$types";
     import SearchField from "./SearchField.svelte";
     import SearchLanguageSelector from "./SearchLanguageSelector.svelte";
     import SearchProviderDropdown from "./SearchProviderDropdown.svelte";
     import SentenceCard from "./SentenceCard.svelte";
 
-    let search = $state("");
-    let selectedLanguage = $state("");
+    let { data }: PageProps = $props();
 
+    let [languagesPromise, resolveLanguages, rejectLanguages] =
+        promiseWithResolver<
+            SelectOption[]
+        >();
+    let search = $state(data.word);
+    let selectedLanguage = $state(data.language);
     let providers = $state<SelectOption[]>([]);
-    let selectedProviders = $state<string[]>([]);
+    let selectedProviders = $state<string[]>(data.providers ?? []);
     let sentences = $state<Sentence[] | undefined>([]);
     let loadingSentences = $state(false);
 
@@ -39,36 +50,37 @@
                         value: provider.code,
                         label: provider.name,
                     }));
-                    selectedProviders = selectedProviders.filter(
-                        provider =>
-                            response.providers.some(p =>
-                                p.code === provider
-                            ),
-                    );
+                    selectedProviders = providers.map(p => p.value);
                 },
             );
     }
 
-    async function getLanguages() {
-        const response = await client.getDefaultFillFields({});
+    onMount(async () => {
+        let response: GetLanguagesAndProvidersResponse;
+        try {
+            response = await client.getLanguagesAndProviders({
+                defaultLanguage: selectedLanguage,
+            });
+        } catch (error) {
+            rejectLanguages(error);
+            return;
+        }
         const languages = response.languages.map(lang => ({
             value: lang.code,
             label: lang.name,
         }));
-        selectedLanguage = response.language;
-        providers = response.languageProviders.map(provider => ({
+        providers = response.defaultProviders.map(provider => ({
             value: provider.code,
             label: provider.name,
         }));
-        selectedProviders = response.providers.length > 0
-            ? response.providers
-            : response.languageProviders.map(provider => provider.code);
-        return languages;
-    }
+        selectedProviders = data.providers
+            ?? response.defaultProviders.map(provider => provider.code);
+        resolveLanguages(languages);
+    });
 </script>
 
 <div class="container search-container">
-    {#await getLanguages()}
+    {#await languagesPromise}
         <Spinner />
     {:then languages}
         <h1 class="text-center">Search for sentences across the web!</h1>
@@ -82,6 +94,7 @@
                 <SearchField
                     bind:value={search}
                     onSearch={onSearch}
+                    autoTrigger={data.autoSearch}
                 />
             </div>
         </div>
@@ -97,7 +110,7 @@
             <Spinner label="Loading sentences..." />
         {:else if sentences}
             <div class="sentences">
-                {#each sentences as sentence, i (sentence.text)}
+                {#each sentences as sentence, i (i)}
                     <SentenceCard
                         text={sentence.text}
                         url={sentence.url}

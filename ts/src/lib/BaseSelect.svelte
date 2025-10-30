@@ -52,7 +52,7 @@
             ? searchTerm
             : (selectedOptions.map(option =>
                 options.find(o => o.value === option)?.label
-            ).join(", ") || ""),
+            ).filter(o => o?.trim()).join(", ") || ""),
     );
 
     let selectOptionsComponent: SelectOptions | undefined = $state();

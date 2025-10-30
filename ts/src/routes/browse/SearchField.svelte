@@ -1,7 +1,10 @@
 <script lang="ts">
-    let { onSearch, value = $bindable("") }: {
+    import { onMount } from "svelte";
+
+    let { onSearch, value = $bindable(""), autoTrigger = false }: {
         onSearch: () => void;
         value: string;
+        autoTrigger: boolean;
     } = $props();
 
     function onKeyDown(event: KeyboardEvent) {
@@ -9,6 +12,12 @@
             onSearch();
         }
     }
+
+    onMount(() => {
+        if (autoTrigger && value) {
+            onSearch();
+        }
+    });
 </script>
 
 <div class="search-field">
