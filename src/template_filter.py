@@ -38,7 +38,6 @@ def get_active_card_context() -> CardContext:
         return CardContext(dialog.rendered_card, dialog.preview_web)
     window = QApplication.activeWindow()
     if isinstance(window, Previewer):
-        # pylint: disable=protected-access
         return CardContext(window.card(), window._web)
     return CardContext(mw.reviewer.card, mw.reviewer.web)
 
