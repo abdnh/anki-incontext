@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import dataclasses
 import sqlite3
+from pathlib import Path
 from threading import Lock
+from types import TracebackType
 
 from .consts import consts
 
@@ -20,7 +22,7 @@ class SentenceDB:
     SCHEMA_STARTING_VERSION = 1
     SCHEMA_MAX_VERSION = 1
 
-    def __init__(self, path: str | None = None):
+    def __init__(self, path: Path | None = None):
         self.con = sqlite3.connect(
             path or consts.dir / "user_files" / "sentences.db", check_same_thread=False
         )
@@ -29,6 +31,17 @@ class SentenceDB:
 
     def close(self) -> None:
         self.con.close()
+
+    def __enter__(self) -> SentenceDB:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type | None,
+        exc_value: Exception | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        self.close()
 
     def _schema_version(self) -> tuple[bool, int]:
         with self.con:
