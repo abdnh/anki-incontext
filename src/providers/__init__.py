@@ -68,29 +68,6 @@ def get_sentences(
     return sentences
 
 
-def sync_sentences(
-    word: str,
-    language: str | None = None,
-    provider: str | None = None,
-) -> None:
-    matched_providers: list[SentenceProvider] = []
-    for provider_obj in PROVIDERS:
-        matched = True
-        if language:
-            matched &= (
-                language in provider_obj.supported_languages
-                or langcode_to_name(language) in provider_obj.supported_languages
-            )
-        if provider:
-            matched &= provider == provider_obj.name
-        if matched:
-            matched_providers.append(provider_obj)
-    random.shuffle(matched_providers)
-    while matched_providers:
-        chosen_provider = matched_providers.pop()
-        chosen_provider.get_sentences(word, language)
-
-
 def get_languages() -> list[tuple[str, str]]:
     langs = set()
     for provider in PROVIDERS:
