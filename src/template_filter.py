@@ -21,6 +21,7 @@ except ImportError:
     from aqt.previewer import Previewer  # type: ignore
 
 from .exceptions import InContextError
+from .gui.operations import run_task_in_background
 from .providers import get_provider, get_sentences
 
 WEB_BASE = f"/_addons/{mw.addonManager.addonFromModule(__name__)}/web"
@@ -98,7 +99,7 @@ def incontext_filter(
                 f"incontext.saveAndRenderSentence({filter_id}, {json.dumps(result)})"
             )
 
-    mw.taskman.run_in_background(task, on_done)
+    run_task_in_background(task, on_done, uses_collection=False)
     ctx.extra_state["incontext_id"] += 1
 
     refresh_icon = f"{WEB_BASE}/arrow-clockwise.svg"
@@ -162,7 +163,7 @@ def on_webview_did_receive_js_message(
                 )
 
         card_context.web.eval(f"incontext.setLoading({filter_id});")
-        mw.taskman.run_in_background(task, on_done)
+        run_task_in_background(task, on_done, uses_collection=False)
 
     return True, None
 

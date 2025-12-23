@@ -7,9 +7,9 @@ from anki.notes import NoteId
 from anki.utils import ids2str
 from aqt import mw
 from aqt.main import AnkiQt
-from aqt.operations import QueryOp
 
 from ..config import config
+from ..gui.operations import AddonQueryOp
 from ..keys import qt_key_to_js
 from ..log import logger
 from ..proto.backend_pb2 import (
@@ -95,7 +95,11 @@ class BackendService(BackendServiceBase):
             )
             logger.exception("Error downloading Tatoeba sentences", exc_info=exc)
 
-        query_op = QueryOp(parent=mw, op=op, success=lambda _: None).failure(on_failure)
+        query_op = (
+            AddonQueryOp(parent=mw, op=op, success=lambda _: None)
+            .failure(on_failure)
+            .without_collection()
+        )
         mw.taskman.run_on_main(query_op.run_in_background)
         return Empty()
 
