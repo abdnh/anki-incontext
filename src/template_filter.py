@@ -67,6 +67,9 @@ def get_formatted_sentence(text: str, lang: str | None, provider: str | None) ->
     return ret
 
 
+incontext_id = 0
+
+
 def incontext_filter(
     field_text: str,
     field_name: str,
@@ -76,8 +79,8 @@ def incontext_filter(
     if not filter_name.lower().startswith("incontext"):
         return field_text
 
-    ctx.extra_state.setdefault("incontext_id", 0)
-    filter_id = ctx.extra_state["incontext_id"]
+    global incontext_id
+    filter_id = incontext_id
 
     options = dict(map(lambda o: o.split("="), filter_name.split()[1:]))
     lang = options.get("lang", None)
@@ -100,7 +103,7 @@ def incontext_filter(
             )
 
     run_task_in_background(task, on_done, uses_collection=False)
-    ctx.extra_state["incontext_id"] += 1
+    incontext_id += 1
 
     refresh_icon = f"{WEB_BASE}/arrow-clockwise.svg"
     return f"""
