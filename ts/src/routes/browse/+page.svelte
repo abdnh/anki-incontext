@@ -28,7 +28,7 @@
     let selectedProviders = $state<string[]>(data.providers ?? []);
     let sentences = $state<Sentence[] | undefined>([]);
     let loadingSentences = $state(false);
-    let clipboardMonitor = new ClipboardMonitor();
+    const clipboardMonitor = new ClipboardMonitor();
     let clipboardMonitorEnabled = $state(false);
     let clipboardIcon = $derived.by(() =>
         clipboardMonitorEnabled ? "clipboard-pulse" : "clipboard"
@@ -36,13 +36,19 @@
     let clipboardButtonType = $derived.by(() =>
         clipboardMonitorEnabled ? "btn-success" : "btn-secondary"
     );
+    let abortController: AbortController | null = $state(null);
+
     function onSearch() {
+        if (abortController) {
+            abortController.abort();
+        }
         loadingSentences = true;
+        abortController = new AbortController();
         client.getSentences({
             word: search,
             language: selectedLanguage,
             providers: selectedProviders,
-        }).then((response) => {
+        }, { signal: abortController.signal }).then((response) => {
             sentences = response.sentences.length
                 ? response.sentences
                 : undefined;
