@@ -5,6 +5,7 @@
         type GetLanguagesAndProvidersResponse,
         promiseWithResolver,
     } from "$lib";
+    import { ClipboardMonitor } from "$lib/clipboard-monitor";
     import Error from "$lib/Error.svelte";
     import { type SelectOption } from "$lib/SelectOptions.svelte";
     import Spinner from "$lib/Spinner.svelte";
@@ -27,7 +28,14 @@
     let selectedProviders = $state<string[]>(data.providers ?? []);
     let sentences = $state<Sentence[] | undefined>([]);
     let loadingSentences = $state(false);
-
+    let clipboardMonitor = new ClipboardMonitor();
+    let clipboardMonitorEnabled = $state(false);
+    let clipboardIcon = $derived.by(() =>
+        clipboardMonitorEnabled ? "clipboard-pulse" : "clipboard"
+    );
+    let clipboardButtonType = $derived.by(() =>
+        clipboardMonitorEnabled ? "btn-success" : "btn-secondary"
+    );
     function onSearch() {
         loadingSentences = true;
         client.getSentences({
@@ -53,6 +61,18 @@
                     selectedProviders = providers.map(p => p.value);
                 },
             );
+    }
+
+    function toggleClipboardMonitor() {
+        clipboardMonitorEnabled = !clipboardMonitorEnabled;
+        if (clipboardMonitorEnabled) {
+            clipboardMonitor.start((text) => {
+                search = text;
+                onSearch();
+            });
+        } else {
+            clipboardMonitor.stop();
+        }
     }
 
     onMount(async () => {
@@ -97,6 +117,14 @@
                     autoTrigger={data.autoSearch}
                 />
             </div>
+            <button
+                class="btn {clipboardButtonType}"
+                aria-label="Toggle clipboard monitor"
+                title="Toggle clipboard monitor"
+                onclick={toggleClipboardMonitor}
+            >
+                <i class="bi bi-{clipboardIcon}"></i>
+            </button>
         </div>
         <div class="filters-container">
             <i class="bi bi-filter"></i>
@@ -138,6 +166,7 @@
     }
     .input-container {
         display: flex;
+        gap: 0.5rem;
     }
 
     .filters-container {

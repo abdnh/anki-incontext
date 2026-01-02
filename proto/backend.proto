@@ -15,8 +15,8 @@ service BackendService {
   rpc GetSentences(GetSentencesRequest) returns (GetSentencesResponse);
   rpc GetSettings(generic.Empty) returns (GetSettingsResponse);
   rpc SaveSettings(SaveSettingsRequest) returns (generic.Empty);
+  rpc GetClipboardText(generic.Empty) returns (GetClipboardTextResponse);
 }
-
 
 message GetTatoebaLanguagesResponse {
   repeated Language languages = 1;
@@ -37,10 +37,10 @@ message DownloadTatoebaSentencesRequest {
 }
 
 message TatoebaDownloadProgress {
-  float progress = 1;
-  string message = 2;
-  bool is_error = 3;
-  bool finished = 4;
+  float  progress = 1;
+  string message  = 2;
+  bool   is_error = 3;
+  bool   finished = 4;
 }
 
 message GetDefaultFillFieldsRequest {
@@ -48,14 +48,14 @@ message GetDefaultFillFieldsRequest {
 }
 
 message GetDefaultFillFieldsResponse {
-  string language = 1;
-  repeated string providers = 2;
-  string word_field = 3;
-  string sentences_field = 4;
-  int64 number_of_sentences = 5;
-  repeated Language languages = 6;
-  repeated Provider language_providers = 7;
-  repeated string fields = 8;
+  string            language            = 1;
+  repeated string   providers           = 2;
+  string            word_field          = 3;
+  string            sentences_field     = 4;
+  int64             number_of_sentences = 5;
+  repeated Language languages           = 6;
+  repeated Provider language_providers  = 7;
+  repeated string   fields              = 8;
 }
 
 message GetLanguagesAndProvidersRequest {
@@ -63,7 +63,7 @@ message GetLanguagesAndProvidersRequest {
 }
 
 message GetLanguagesAndProvidersResponse {
-  repeated Language languages = 1;
+  repeated Language languages         = 1;
   repeated Provider default_providers = 2;
 }
 
@@ -76,12 +76,12 @@ message GetProvidersForLanguageResponse {
 }
 
 message FillInSentencesRequest {
-  string language = 1;
-  repeated string providers = 2;
-  string word_field = 3;
-  string sentences_field = 4;
-  int64 number_of_sentences = 5;
-  repeated int64 nids = 6;
+  string          language            = 1;
+  repeated string providers           = 2;
+  string          word_field          = 3;
+  string          sentences_field     = 4;
+  int64           number_of_sentences = 5;
+  repeated int64  nids                = 6;
 }
 
 message GetLanguagesResponse {
@@ -89,8 +89,8 @@ message GetLanguagesResponse {
 }
 
 message GetSentencesRequest {
-  string word = 1;
-  string language = 2;
+  string          word      = 1;
+  string          language  = 2;
   repeated string providers = 3;
 }
 
@@ -99,24 +99,27 @@ message GetSentencesResponse {
 }
 
 message Sentence {
-  string text = 1;
+  string text     = 1;
   string provider = 2;
-  string url = 3;
+  string url      = 3;
 }
 
 message SearchShortcut {
-  repeated string keys = 1;
-  string language = 2;
-  repeated Provider providers = 3;
-  repeated string selected_providers = 4;
+  repeated string   keys               = 1;
+  string            language           = 2;
+  repeated Provider providers          = 3;
+  repeated string   selected_providers = 4;
 }
-
 
 message GetSettingsResponse {
   repeated SearchShortcut search_shortcuts = 1;
-  repeated Language languages = 2;
+  repeated Language       languages        = 2;
 }
 
 message SaveSettingsRequest {
   repeated SearchShortcut search_shortcuts = 1;
+}
+
+message GetClipboardTextResponse {
+  string text = 1;
 }
