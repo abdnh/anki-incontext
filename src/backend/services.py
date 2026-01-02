@@ -7,7 +7,6 @@ from anki.notes import NoteId
 from anki.utils import ids2str
 from aqt import mw
 from aqt.main import AnkiQt
-from aqt.qt import QClipboard
 
 from ..config import config
 from ..gui.operations import AddonQueryOp
@@ -15,7 +14,6 @@ from ..keys import qt_key_to_js
 from ..log import logger
 from ..proto.backend_pb2 import (
     DownloadTatoebaSentencesRequest,
-    GetClipboardTextResponse,
     GetDefaultFillFieldsRequest,
     GetDefaultFillFieldsResponse,
     GetLanguagesAndProvidersRequest,
@@ -186,10 +184,4 @@ class BackendService(BackendServiceBase):
             )
         return GetSettingsResponse(
             search_shortcuts=search_shortcuts, languages=get_languages()
-        )
-
-    @classmethod
-    def get_clipboard_text(cls, request: Empty) -> GetClipboardTextResponse:
-        return GetClipboardTextResponse(
-            text=mw.app.clipboard().text(QClipboard.Mode.Clipboard)
         )
