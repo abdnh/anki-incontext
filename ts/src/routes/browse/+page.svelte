@@ -37,6 +37,7 @@
         clipboardMonitorEnabled ? "btn-success" : "btn-secondary"
     );
     let abortController: AbortController | null = $state(null);
+    let ignoreNextClipboardUpdate = $state(false);
 
     function onSearch() {
         if (abortController) {
@@ -73,12 +74,20 @@
         clipboardMonitorEnabled = !clipboardMonitorEnabled;
         if (clipboardMonitorEnabled) {
             clipboardMonitor.start((text) => {
+                if (ignoreNextClipboardUpdate) {
+                    ignoreNextClipboardUpdate = false;
+                    return;
+                }
                 search = text;
                 onSearch();
             });
         } else {
             clipboardMonitor.stop();
         }
+    }
+
+    function onCopy(event: ClipboardEvent) {
+        ignoreNextClipboardUpdate = true;
     }
 
     onMount(async () => {
@@ -104,6 +113,8 @@
         resolveLanguages(languages);
     });
 </script>
+
+<svelte:window oncopy={onCopy}></svelte:window>
 
 <div class="container search-container">
     {#await languagesPromise}
