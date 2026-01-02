@@ -11,7 +11,7 @@ export class ClipboardMonitor {
         }
         this.intervalId = setInterval(async () => {
             const text = await this.getClipboardText();
-            if (text !== this.text) {
+            if (text.trim() && text !== this.text) {
                 this.text = text;
                 changeCallback(text);
             }
