@@ -1,4 +1,5 @@
 import { client } from "$lib";
+import { Code, ConnectError } from "@connectrpc/connect";
 
 export class ClipboardMonitor {
     private interval = 1000;
@@ -26,6 +27,18 @@ export class ClipboardMonitor {
     }
 
     private async getClipboardText() {
-        return (await client.getClipboardText({})).text;
+        try {
+            return (
+                await client.getClipboardText({}, { timeoutMs: this.interval })
+            ).text;
+        } catch (err) {
+            if (
+                err instanceof ConnectError
+                && err.code === Code.DeadlineExceeded
+            ) {
+                return "";
+            }
+            throw err;
+        }
     }
 }
