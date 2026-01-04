@@ -33,5 +33,6 @@
     }
     .sentence-source {
         font-size: smaller;
+        align-self: flex-end;
     }
 </style>
