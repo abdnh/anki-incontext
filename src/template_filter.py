@@ -43,12 +43,14 @@ def get_active_card_context() -> CardContext:
     return CardContext(mw.reviewer.card, mw.reviewer.web)
 
 
-def get_formatted_sentence(text: str, lang: str | None, provider: str | None) -> str:
+def get_formatted_sentence(
+    text: str, lang: str | None, providers: list[str] | None = None
+) -> str:
     try:
         sentences = get_sentences(
             word=text,
             language=lang,
-            providers=[provider] if provider else None,
+            providers=providers,
             limit=1,
         )
         sentence = sentences[0] if sentences else None
@@ -84,11 +86,11 @@ def incontext_filter(
 
     options = dict(map(lambda o: o.split("="), filter_name.split()[1:]))
     lang = options.get("lang", None)
-    # TODO: support multiple comma-separated providers
-    provider = options.get("provider", None)
+    provider_option = options.get("provider", None)
+    providers = provider_option.split(",") if provider_option else None
 
     def task() -> str:
-        return get_formatted_sentence(field_text, lang, provider)
+        return get_formatted_sentence(field_text, lang, providers)
 
     def on_done(fut: Future) -> None:
         result = fut.result()
@@ -112,7 +114,7 @@ def incontext_filter(
       id='incontext-sentence-{filter_id}'
       data-query='{html.escape(field_text)}'
       data-lang='{html.escape(lang) if lang else ""}'
-      data-provider='{html.escape(provider) if provider else ""}'>
+      data-provider='{html.escape(",".join(providers)) if providers else ""}'>
         InContext: fetching sentence...
     </div>
     <img

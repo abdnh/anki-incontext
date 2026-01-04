@@ -19,7 +19,7 @@ class InContext {
             id: filterId,
             query: sentenceElement.dataset.query,
             lang: sentenceElement.dataset.lang,
-            provider: sentenceElement.dataset.provider,
+            provider: sentenceElement.dataset.provider.split(","),
         };
         sentenceElement.innerHTML = "InContext: refreshing sentence...";
         pycmd(`incontext:refresh:${JSON.stringify(payload)}`);
