@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from aqt import mw
-from aqt.qt import QClipboard, QWidget, qconnect
+from aqt.qt import QClipboard, QWidget, qconnect, sip
 
 from ..backend.server import get_server
 from ..proto.backend_pb2 import GetClipboardTextResponse
@@ -12,6 +13,13 @@ from .sveltekit_web import SveltekitWebDialog
 
 class BrowseDialog(SveltekitWebDialog):
     key = "browse"
+    active_instance: BrowseDialog | None = None
+
+    @classmethod
+    def get_active_instance(cls) -> BrowseDialog | None:
+        if cls.active_instance and not sip.isdeleted(cls.active_instance):
+            return cls.active_instance
+        return None
 
     def __init__(
         self,
@@ -39,6 +47,7 @@ class BrowseDialog(SveltekitWebDialog):
             self._get_clipboard_text,
         )
         qconnect(mw.app.clipboard().dataChanged, self._on_clipboard_data_changed)
+        BrowseDialog.active_instance = self
 
     def get_query_params(self) -> dict[str, Any]:
         return {
@@ -52,3 +61,11 @@ class BrowseDialog(SveltekitWebDialog):
     def _get_clipboard_text(self, data: bytes) -> bytes:
         response = GetClipboardTextResponse(text=self._clipboard_text)
         return response.SerializeToString()
+
+    def query(self, word: str, language: str, providers: list[str]) -> None:
+        payload = {
+            "word": word,
+            "language": language,
+            "providers": providers,
+        }
+        self.web.eval(f"incontext.runQuery({json.dumps(payload)})")

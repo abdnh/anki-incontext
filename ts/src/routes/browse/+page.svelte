@@ -30,6 +30,28 @@
     let ignoreNextClipboardUpdate = $state(false);
     let abortController: AbortController | null = $state(null);
 
+    async function runQuery(
+        query: {
+            word: string;
+            language: string;
+            providers: string[];
+        },
+    ) {
+        search = query.word;
+        const oldLanguage = selectedLanguage;
+        selectedLanguage = query.language;
+        if (query.language != oldLanguage) {
+            await onLanguageSelected();
+            selectedProviders = query.providers;
+        } else {
+            selectedProviders = query.providers;
+        }
+        onSearch();
+    }
+
+    window.incontext = window.incontext || {};
+    window.incontext.runQuery = runQuery;
+
     function onSearch() {
         if (abortController) {
             abortController.abort();
@@ -53,16 +75,14 @@
             });
     }
 
-    function onLanguageSelected() {
-        client
-            .getProvidersForLanguage({ language: selectedLanguage })
-            .then((response) => {
-                providers = response.providers.map((provider) => ({
-                    value: provider.code,
-                    label: provider.name,
-                }));
-                selectedProviders = providers.map((p) => p.value);
-            });
+    async function onLanguageSelected() {
+        const response = await client
+            .getProvidersForLanguage({ language: selectedLanguage });
+        providers = response.providers.map((provider) => ({
+            value: provider.code,
+            label: provider.name,
+        }));
+        selectedProviders = providers.map((p) => p.value);
     }
 
     function onCopy(_event: ClipboardEvent) {

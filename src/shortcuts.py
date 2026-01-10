@@ -3,7 +3,7 @@ from __future__ import annotations
 import functools
 from typing import Callable
 
-from aqt import gui_hooks, mw
+from aqt import Qt, gui_hooks, mw
 from aqt.main import MainWindowState
 
 from .config import config
@@ -15,12 +15,20 @@ def on_state_shortcuts_will_change(state: MainWindowState, shortcuts: list[tuple
         return
 
     def search(language: str, providers: list[str]) -> None:
-        BrowseDialog(
-            word=mw.web.selectedText(),
-            language=language,
-            providers=providers,
-            auto_search=True,
-        ).show()
+        word = mw.web.selectedText()
+        if dialog := BrowseDialog.get_active_instance():
+            if dialog.windowState() & Qt.WindowState.WindowMinimized:
+                dialog.setWindowState(dialog.windowState() & ~Qt.WindowState.WindowMinimized)
+            dialog.activateWindow()
+            dialog.raise_()
+            dialog.query(word, language, providers)
+        else:
+            BrowseDialog(
+                word=word,
+                language=language,
+                providers=providers,
+                auto_search=True,
+            ).show()
 
     for shortcut in config["search_shortcuts"]:
         shortcuts.append(
