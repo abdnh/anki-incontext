@@ -1,8 +1,7 @@
 <script lang="ts">
     import { client, type TatoebaDownloadProgress } from "$lib";
     import Error from "$lib/Error.svelte";
-    import Spinner from "$lib/Spinner.svelte";
-    import { Select } from "ankiutils";
+    import { Select, Spinner } from "ankiutils";
 
     let selectedLanguage = $state("");
     let downloadProgress = $state<TatoebaDownloadProgress | null>(null);

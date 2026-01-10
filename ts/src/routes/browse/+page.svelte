@@ -5,8 +5,11 @@
         type GetLanguagesAndProvidersResponse,
     } from "$lib";
     import Error from "$lib/Error.svelte";
-    import Spinner from "$lib/Spinner.svelte";
-    import { promiseWithResolver, type SelectOption } from "ankiutils";
+    import {
+        promiseWithResolver,
+        type SelectOption,
+        Spinner,
+    } from "ankiutils";
     import { onMount } from "svelte";
     import type { PageProps } from "./$types";
     import SearchField from "./SearchField.svelte";

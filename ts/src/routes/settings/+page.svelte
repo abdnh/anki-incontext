@@ -1,12 +1,12 @@
 <script lang="ts">
     import { client, type GetSettingsResponse } from "$lib";
     import Error from "$lib/Error.svelte";
-    import Spinner from "$lib/Spinner.svelte";
-    import type { SelectOption } from "ankiutils";
     import {
         MultiSelect,
         promiseWithResolver,
         Select,
+        type SelectOption,
+        Spinner,
     } from "ankiutils";
     import { onMount } from "svelte";
     import SearchShortcut from "./SearchShortcut.svelte";

@@ -1,7 +1,6 @@
 <script lang="ts">
     import { client, type Provider } from "$lib";
-    import Spinner from "$lib/Spinner.svelte";
-    import { MultiSelect, Select } from "ankiutils";
+    import { MultiSelect, Select, Spinner } from "ankiutils";
 
     import Error from "$lib/Error.svelte";
     import type { PageProps } from "./$types";
