@@ -73,7 +73,7 @@
         <Spinner />
     {:then settings}
         <div class="flex-1">
-            <div class="flex flex-row justify-between">
+            <div class="flex flex-row justify-between items-center">
                 <h2 class="font-bold text-4xl my-4">Search Shortcuts</h2>
                 <button
                     class="btn btn-primary"
