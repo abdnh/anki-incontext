@@ -61,11 +61,10 @@
     {:then initialData}
         <h1 class="font-bold text-2xl my-2">Fill in sentences</h1>
         <div class="flex flex-col gap-2">
-            <div class="form-control">
-                <label for="language" class="label">Language</label>
+            <label class="form-control">
+                <span class="label">Language</span>
                 <div class="input-container">
                     <Select
-                        id="language"
                         options={initialData.languages.map((lang) => ({
                             value: lang.code,
                             label: lang.name,
@@ -74,12 +73,12 @@
                         onSelected={onLanguageSelected}
                     />
                 </div>
-            </div>
-            <div class="form-control">
-                <label for="providers" class="label">Providers</label>
+            </label>
+
+            <label class="form-control">
+                <span class="label">Providers</span>
                 <div class="input-container">
                     <MultiSelect
-                        id="providers"
                         options={providers.map((provider) => ({
                             value: provider.code,
                             label: provider.name,
@@ -87,12 +86,11 @@
                         bind:selectedOptions={selectedProviders}
                     />
                 </div>
-            </div>
-            <div class="form-control">
-                <label for="word" class="label">Word field</label>
+            </label>
+            <label class="form-control">
+                <span class="label">Word field</span>
                 <div class="input-container">
                     <Select
-                        id="word"
                         options={initialData.fields.map((field) => ({
                             value: field,
                             label: field,
@@ -100,12 +98,11 @@
                         bind:value={selectedWordField}
                     />
                 </div>
-            </div>
-            <div class="form-control">
-                <label for="sentences" class="label">Sentences field</label>
+            </label>
+            <label class="form-control">
+                <span class="label">Sentences field</span>
                 <div class="input-container">
                     <Select
-                        id="sentences"
                         options={initialData.fields.map((field) => ({
                             value: field,
                             label: field,
@@ -113,16 +110,15 @@
                         bind:value={selectedSentencesField}
                     />
                 </div>
-            </div>
-            <div class="form-control">
-                <label for="number" class="label">Number of sentences</label>
+            </label>
+            <label class="form-control">
+                <span class="label">Number of sentences</span>
                 <input
                     type="number"
-                    id="number"
                     class="input"
                     bind:value={selectedNumberOfSentences}
                 />
-            </div>
+            </label>
             <button
                 type="button"
                 class="btn btn-primary self-end"
