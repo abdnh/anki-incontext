@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type { Option } from "$lib/ModalSelector.svelte";
-    import ModalSelector from "$lib/ModalSelector.svelte";
+    import { ModalSelector, type SelectOption } from "ankiutils";
 
     interface Props {
         selectedLanguage: string;
-        languages: Option[];
+        languages: SelectOption[];
         onLanguageSelected?: () => void;
     }
 
@@ -17,7 +16,7 @@
     let selector: ModalSelector;
 </script>
 
-<button class="btn lang-button" onclick={() => selector.show()}>
+<button class="btn btn-neutral" onclick={() => selector.show()}>
     {selectedLanguage.toUpperCase()}
 </button>
 
@@ -27,13 +26,3 @@
     onSelected={onLanguageSelected}
     bind:this={selector}
 />
-
-<style lang="scss">
-    .lang-button {
-        background-color: #d9d9d9;
-        border: none;
-        border-radius: 4px;
-        margin-inline: 4px;
-        box-shadow: -1px 0px 5px 0px #898181;
-    }
-</style>

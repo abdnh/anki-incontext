@@ -1,5 +1,10 @@
 <script lang="ts">
-    let { text, url, provider, alternativeColor = false }: {
+    let {
+        text,
+        url,
+        provider,
+        alternativeColor = false,
+    }: {
         text: string;
         url: string;
         provider: string;
@@ -7,32 +12,18 @@
     } = $props();
 </script>
 
-<div class={`card sentence-card ${alternativeColor ? "primary" : "secondary"}`}>
-    <div class="card-body sentence-body">
-        <div>{text}</div>
+<div
+    class={`sentence-card card bg-base-100 ${
+        alternativeColor ? "bg-base-200" : "bg-base-300"
+    }`}
+>
+    <div class="card-body flex flex-col gap-2">
+        <div class="text-xl">{text}</div>
         <a
             href={url}
             target="_blank"
             aria-label="Open source"
-            class="sentence-source"
+            class="link link-primary self-end"
         >{provider}</a>
     </div>
 </div>
-
-<style lang="scss">
-    .sentence-card.primary {
-        background: var(--bs-dark-bg-subtle);
-    }
-    .sentence-card.secondary {
-        background: var(--bs-primary-bg-subtle);
-    }
-    .sentence-body {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    .sentence-source {
-        font-size: smaller;
-        align-self: flex-end;
-    }
-</style>

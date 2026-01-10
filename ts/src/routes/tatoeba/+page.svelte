@@ -1,15 +1,20 @@
 <script lang="ts">
     import { client, type TatoebaDownloadProgress } from "$lib";
     import Error from "$lib/Error.svelte";
-    import Select from "$lib/Select.svelte";
     import Spinner from "$lib/Spinner.svelte";
+    import { Select } from "ankiutils";
 
     let selectedLanguage = $state("");
     let downloadProgress = $state<TatoebaDownloadProgress | null>(null);
+    let statusClass = $derived.by(() => {
+        if (downloadProgress?.isError) return "alert-error";
+        if (downloadProgress?.finished) return "alert-success";
+        return "alert-info";
+    });
 
     async function getLanguages() {
         const response = await client.getTatoebaLanguages({});
-        return response.languages.map(lang => ({
+        return response.languages.map((lang) => ({
             value: lang.code,
             label: lang.name,
         }));
@@ -33,47 +38,36 @@
     }
 </script>
 
-<div class="container">
+<div class="container mx-auto min-h-screen p-4">
     {#await getLanguages()}
         <Spinner label="Fetching languages..." />
     {:then languages}
         <div class="mt-4">
-            <p>Select a language to download sentences from Tatoeba.</p>
-            <Select
-                options={languages}
-                bind:value={selectedLanguage}
-                placeholder="Select a language..."
-                searchPlaceholder="Search languages..."
-            />
-            <button class="btn btn-primary mt-3" onclick={onDownload}>
-                Download
-            </button>
+            <p class="text-center text-xl">
+                Select a language to download sentences from Tatoeba.
+            </p>
+            <div class="flex items-center gap-2 mt-4 justify-center">
+                <Select
+                    options={languages}
+                    bind:value={selectedLanguage}
+                    placeholder="Select a language..."
+                    searchPlaceholder="Search languages..."
+                />
+                <button class="btn btn-primary" onclick={onDownload}>
+                    Download
+                </button>
+            </div>
             {#if downloadProgress}
                 {#if !downloadProgress.finished}
-                    <div
-                        class="progress mt-3"
-                        role="progressbar"
+                    <progress
+                        class="progress progress-primary mt-4"
                         aria-label="Tatoeba download progress"
-                        aria-valuenow={downloadProgress.progress}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
+                        value={downloadProgress.progress}
+                        max="100"
                     >
-                        <div
-                            class={`progress-bar progress-bar-striped ${
-                                downloadProgress.finished
-                                    ? ""
-                                    : "progress-bar-animated"
-                            }`}
-                            style={`width: ${downloadProgress.progress * 100}%`}
-                        >
-                        </div>
-                    </div>
+                    </progress>
                 {/if}
-                <div
-                    class={`alert alert-${
-                        downloadProgress.isError ? "danger" : "info"
-                    } mt-3`}
-                >
+                <div class={`alert ${statusClass} mt-4`}>
                     {downloadProgress.message}
                 </div>
             {/if}
@@ -82,3 +76,9 @@
         <Error error={error.rawMessage} />
     {/await}
 </div>
+
+<style lang="scss">
+    :global(html) {
+        font-size: 20px;
+    }
+</style>

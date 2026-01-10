@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+    themes: corporate --default, dark --prefersdark;
+}
+@source "../../../node_modules/ankiutils";
+
+@import "bootstrap-icons";

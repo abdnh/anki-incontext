@@ -3,12 +3,10 @@
     import {
         client,
         type GetLanguagesAndProvidersResponse,
-        promiseWithResolver,
     } from "$lib";
-    import { ClipboardMonitor } from "$lib/clipboard-monitor";
     import Error from "$lib/Error.svelte";
-    import { type SelectOption } from "$lib/SelectOptions.svelte";
     import Spinner from "$lib/Spinner.svelte";
+    import { promiseWithResolver, type SelectOption } from "ankiutils";
     import { onMount } from "svelte";
     import type { PageProps } from "./$types";
     import SearchField from "./SearchField.svelte";
@@ -19,25 +17,15 @@
     let { data }: PageProps = $props();
 
     let [languagesPromise, resolveLanguages, rejectLanguages] =
-        promiseWithResolver<
-            SelectOption[]
-        >();
+        promiseWithResolver<SelectOption[]>();
     let search = $state(data.word);
     let selectedLanguage = $state(data.language);
     let providers = $state<SelectOption[]>([]);
     let selectedProviders = $state<string[]>(data.providers ?? []);
     let sentences = $state<Sentence[] | undefined>([]);
     let loadingSentences = $state(false);
-    const clipboardMonitor = new ClipboardMonitor();
-    let clipboardMonitorEnabled = $state(false);
-    let clipboardIcon = $derived.by(() =>
-        clipboardMonitorEnabled ? "clipboard-pulse" : "clipboard"
-    );
-    let clipboardButtonType = $derived.by(() =>
-        clipboardMonitorEnabled ? "btn-success" : "btn-secondary"
-    );
-    let abortController: AbortController | null = $state(null);
     let ignoreNextClipboardUpdate = $state(false);
+    let abortController: AbortController | null = $state(null);
 
     function onSearch() {
         if (abortController) {
@@ -45,45 +33,33 @@
         }
         loadingSentences = true;
         abortController = new AbortController();
-        client.getSentences({
-            word: search,
-            language: selectedLanguage,
-            providers: selectedProviders,
-        }, { signal: abortController.signal }).then((response) => {
-            sentences = response.sentences.length
-                ? response.sentences
-                : undefined;
-            loadingSentences = false;
-        });
+        client
+            .getSentences(
+                {
+                    word: search,
+                    language: selectedLanguage,
+                    providers: selectedProviders,
+                },
+                { signal: abortController.signal },
+            )
+            .then((response) => {
+                sentences = response.sentences.length
+                    ? response.sentences
+                    : undefined;
+                loadingSentences = false;
+            });
     }
 
     function onLanguageSelected() {
-        client.getProvidersForLanguage({ language: selectedLanguage })
-            .then(
-                (response) => {
-                    providers = response.providers.map(provider => ({
-                        value: provider.code,
-                        label: provider.name,
-                    }));
-                    selectedProviders = providers.map(p => p.value);
-                },
-            );
-    }
-
-    function toggleClipboardMonitor() {
-        clipboardMonitorEnabled = !clipboardMonitorEnabled;
-        if (clipboardMonitorEnabled) {
-            clipboardMonitor.start((text) => {
-                if (ignoreNextClipboardUpdate) {
-                    ignoreNextClipboardUpdate = false;
-                    return;
-                }
-                search = text;
-                onSearch();
+        client
+            .getProvidersForLanguage({ language: selectedLanguage })
+            .then((response) => {
+                providers = response.providers.map((provider) => ({
+                    value: provider.code,
+                    label: provider.name,
+                }));
+                selectedProviders = providers.map((p) => p.value);
             });
-        } else {
-            clipboardMonitor.stop();
-        }
     }
 
     function onCopy(event: ClipboardEvent) {
@@ -100,50 +76,47 @@
             rejectLanguages(error);
             return;
         }
-        const languages = response.languages.map(lang => ({
+        const languages = response.languages.map((lang) => ({
             value: lang.code,
             label: lang.name,
         }));
-        providers = response.defaultProviders.map(provider => ({
+        providers = response.defaultProviders.map((provider) => ({
             value: provider.code,
             label: provider.name,
         }));
         selectedProviders = data.providers
-            ?? response.defaultProviders.map(provider => provider.code);
+            ?? response.defaultProviders.map((provider) =>
+                provider.code
+            );
         resolveLanguages(languages);
     });
 </script>
 
-<svelte:window oncopy={onCopy}></svelte:window>
+<svelte:window oncopy={onCopy} />
 
-<div class="container search-container">
+<div class="container mx-auto min-h-screen flex-col gap-2 p-2">
     {#await languagesPromise}
         <Spinner />
     {:then languages}
-        <h1 class="text-center">Search for sentences across the web!</h1>
-        <div class="input-container">
+        <h1 class="text-center font-bold text-4xl my-2">
+            Search for sentences across the web
+        </h1>
+        <div class="flex gap-2 items-center mb-2">
             <SearchLanguageSelector
-                bind:selectedLanguage={selectedLanguage}
-                languages={languages}
+                bind:selectedLanguage
+                {languages}
                 {onLanguageSelected}
             />
-            <div class="search-field">
+            <div class="flex-1">
                 <SearchField
                     bind:value={search}
-                    onSearch={onSearch}
+                    bind:ignoreNextClipboardUpdate
+                    {onSearch}
                     autoTrigger={data.autoSearch}
                 />
             </div>
-            <button
-                class="btn {clipboardButtonType}"
-                aria-label="Toggle clipboard monitor"
-                title="Toggle clipboard monitor"
-                onclick={toggleClipboardMonitor}
-            >
-                <i class="bi bi-{clipboardIcon}"></i>
-            </button>
         </div>
-        <div class="filters-container">
+        <div class="flex justify-start items-center text-2xl gap-2">
             <i class="bi bi-filter"></i>
             <SearchProviderDropdown
                 label="Providers"
@@ -154,7 +127,7 @@
         {#if loadingSentences}
             <Spinner label="Loading sentences..." />
         {:else if sentences}
-            <div class="sentences">
+            <div class="flex flex-col gap-4 mt-4">
                 {#each sentences as sentence, i (i)}
                     <SentenceCard
                         text={sentence.text}
@@ -165,7 +138,7 @@
                 {/each}
             </div>
         {:else}
-            <div class="empty">
+            <div class="flex flex-col items-center mx-auto text-2xl">
                 <i class="bi bi-hdd"></i>
                 <div>No Results</div>
             </div>
@@ -174,38 +147,3 @@
         <Error error={error.rawMessage} />
     {/await}
 </div>
-
-<style lang="scss">
-    .search-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    .input-container {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .filters-container {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        font-size: 1.5em;
-    }
-    .search-field {
-        flex: 1;
-    }
-    .sentences {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-    .empty {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-inline: auto;
-        font-size: 1.5em;
-    }
-</style>

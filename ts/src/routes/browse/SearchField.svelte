@@ -1,13 +1,30 @@
 <script lang="ts">
+    import { ClipboardMonitor } from "$lib/clipboard-monitor";
     import { onMount } from "svelte";
-
     let inputElement: HTMLInputElement;
 
-    let { onSearch, value = $bindable(""), autoTrigger = false }: {
+    interface Props {
         onSearch: () => void;
         value: string;
         autoTrigger: boolean;
-    } = $props();
+        ignoreNextClipboardUpdate: boolean;
+    }
+
+    let {
+        onSearch,
+        value = $bindable(""),
+        autoTrigger = false,
+        ignoreNextClipboardUpdate = $bindable(false),
+    }: Props = $props();
+
+    const clipboardMonitor = new ClipboardMonitor();
+    let clipboardMonitorEnabled = $state(false);
+    let clipboardIcon = $derived.by(() =>
+        clipboardMonitorEnabled ? "clipboard-pulse" : "clipboard"
+    );
+    let clipboardButtonType = $derived.by(() =>
+        clipboardMonitorEnabled ? "btn-success" : "btn-neutral"
+    );
 
     function onKeyDown(event: KeyboardEvent) {
         if (event.key === "Enter") {
@@ -18,6 +35,22 @@
         }
     }
 
+    function toggleClipboardMonitor() {
+        clipboardMonitorEnabled = !clipboardMonitorEnabled;
+        if (clipboardMonitorEnabled) {
+            clipboardMonitor.start((text) => {
+                if (ignoreNextClipboardUpdate) {
+                    ignoreNextClipboardUpdate = false;
+                    return;
+                }
+                value = text;
+                onSearch();
+            });
+        } else {
+            clipboardMonitor.stop();
+        }
+    }
+
     onMount(() => {
         if (autoTrigger && value) {
             onSearch();
@@ -25,25 +58,29 @@
     });
 </script>
 
-<svelte:document onkeydown={onKeyDown}></svelte:document>
+<svelte:document onkeydown={onKeyDown} />
 
-<div class="search-field">
+<div class="flex items-center gap-2 join">
     <input
         type="text"
-        class="form-control"
+        class="join-item input input-primary input-xl w-full"
         placeholder="Type a word to search..."
         bind:this={inputElement}
-        bind:value={value}
+        bind:value
     />
-    <button class="btn btn-primary" onclick={onSearch} aria-label="Search">
+    <button
+        class="join-item btn btn-primary"
+        onclick={onSearch}
+        aria-label="Search"
+    >
         <i class="bi bi-search"></i>
     </button>
+    <button
+        class="join-item btn {clipboardButtonType}"
+        aria-label="Toggle clipboard monitor"
+        title="Toggle clipboard monitor"
+        onclick={toggleClipboardMonitor}
+    >
+        <i class="bi bi-{clipboardIcon}"></i>
+    </button>
 </div>
-
-<style lang="scss">
-    .search-field {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-</style>

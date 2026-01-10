@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Dropdown from "$lib/Dropdown.svelte";
-    import type { SelectOption } from "$lib/SelectOptions.svelte";
+    import type { SelectOption } from "ankiutils";
+    import { Dropdown } from "ankiutils";
 
     interface Props {
         label: string;

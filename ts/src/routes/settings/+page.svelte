@@ -1,14 +1,13 @@
 <script lang="ts">
-    import {
-        client,
-        type GetSettingsResponse,
-        promiseWithResolver,
-    } from "$lib";
+    import { client, type GetSettingsResponse } from "$lib";
     import Error from "$lib/Error.svelte";
-    import MultiSelect from "$lib/MultiSelect.svelte";
-    import Select from "$lib/Select.svelte";
-    import type { SelectOption } from "$lib/SelectOptions.svelte";
     import Spinner from "$lib/Spinner.svelte";
+    import type { SelectOption } from "ankiutils";
+    import {
+        MultiSelect,
+        promiseWithResolver,
+        Select,
+    } from "ankiutils";
     import { onMount } from "svelte";
     import SearchShortcut from "./SearchShortcut.svelte";
 
@@ -20,9 +19,7 @@
 
     let searchShortcuts = $state<Shortcut[]>([]);
     let [settingsPromise, resolveSettings, rejectSettings] =
-        promiseWithResolver<
-            GetSettingsResponse
-        >();
+        promiseWithResolver<GetSettingsResponse>();
     let providersForLanguage: {
         [key: string]: Promise<SelectOption[] | undefined>;
     } = $state({});
@@ -33,7 +30,7 @@
 
     function onSave() {
         client.saveSettings({
-            searchShortcuts: searchShortcuts.map(shortcut => {
+            searchShortcuts: searchShortcuts.map((shortcut) => {
                 return {
                     keys: shortcut.keys,
                     language: shortcut.language,
@@ -52,12 +49,14 @@
             return;
         }
         resolveSettings(response);
-        searchShortcuts = response.searchShortcuts.map(s => {
+        searchShortcuts = response.searchShortcuts.map((s) => {
             providersForLanguage[s.language] = new Promise(
                 (resolve, _) => {
-                    resolve(s.providers.map(p => {
-                        return { label: p.name, value: p.code };
-                    }));
+                    resolve(
+                        s.providers.map((p) => {
+                            return { label: p.name, value: p.code };
+                        }),
+                    );
                 },
             );
             return {
@@ -69,13 +68,13 @@
     });
 </script>
 
-<div class="container page">
+<div class="container mx-auto min-h-screen flex flex-col gap-4 p-4">
     {#await settingsPromise}
         <Spinner />
     {:then settings}
-        <div class="search-shortcuts">
-            <div class="search-shortcuts-header">
-                <h2>Search Shortcuts</h2>
+        <div class="flex-1">
+            <div class="flex flex-row justify-between">
+                <h2 class="font-bold text-4xl my-4">Search Shortcuts</h2>
                 <button
                     class="btn btn-primary"
                     aria-label="Add search shortcut"
@@ -84,16 +83,16 @@
                     <i class="bi bi-plus"></i>
                 </button>
             </div>
-            <div class="search-shortcuts-container">
+            <div class="flex flex-col gap-4">
                 <p>
                     Assign shortcuts to search for sentences for the selected
                     word in any language
                 </p>
                 {#each searchShortcuts as _, i}
-                    <div class="search-shortcut-widget">
+                    <div class="search-shortcut-widget flex gap-4">
                         <SearchShortcut bind:keys={searchShortcuts[i].keys} />
                         <Select
-                            options={settings.languages.map(lang => {
+                            options={settings.languages.map((lang) => {
                                 return {
                                     label: lang.name,
                                     value: lang.code,
@@ -108,10 +107,10 @@
                                             .getProvidersForLanguage({
                                                 language: lang,
                                             })
-                                            .then(response => {
+                                            .then((response) => {
                                                 const providers =
                                                     response.providers
-                                                        .map(p => {
+                                                        .map((p) => {
                                                             return {
                                                                 label:
                                                                     p.name,
@@ -122,8 +121,8 @@
                                                 searchShortcuts[i]
                                                     .providers =
                                                         providers.map(
-                                                            p => p
-                                                                .value,
+                                                            (p) =>
+                                                                p.value,
                                                         );
                                                 return providers;
                                             });
@@ -155,7 +154,7 @@
                 {/each}
             </div>
         </div>
-        <div class="action-buttons">
+        <div class="flex flex-row-reverse border-t border-t-accent pt-2">
             <button class="btn btn-primary" onclick={onSave}>Save</button>
         </div>
     {:catch error}
@@ -164,40 +163,10 @@
 </div>
 
 <style lang="scss">
-    :global(body) {
-        height: 100vh;
-    }
-    .page {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        height: 100%;
-    }
-    .search-shortcuts {
-        flex: 1;
-    }
-    .search-shortcuts-header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-    .search-shortcuts-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-    .search-shortcut-widget {
-        display: flex;
-        flex-direction: row;
-        gap: 16px;
+    :global(html) {
+        font-size: 20px;
     }
     .search-shortcut-widget > :global(:not(button)) {
         flex: 1;
-    }
-    .action-buttons {
-        display: flex;
-        flex-direction: row-reverse;
-        border-top: 1px solid rgb(161, 156, 156);
-        padding-top: 8px;
     }
 </style>

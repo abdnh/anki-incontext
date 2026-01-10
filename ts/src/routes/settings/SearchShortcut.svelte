@@ -1,5 +1,5 @@
 <script lang="ts">
-    import KeyboardInput from "$lib/KeyboardInput.svelte";
+    import { KeyboardInput } from "ankiutils";
 
     interface Props {
         keys: string[];

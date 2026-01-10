@@ -8,15 +8,15 @@ authors = [{ name = "Abdo", email = "abdo@abdnh.net" }]
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
-    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
+license = "AGPL-3.0-or-later"
 dynamic = ["version"]
 dependencies = [
     "ankiutils",
     "pycountry>=24.6.1",
-    "sentry-sdk>=1.14.0",
+    "sentry-sdk>=2.35.0",
     "skell-downloader",
     "tdk",
     "protobuf",
@@ -44,6 +44,7 @@ dev = [
     "ruff>=0.11.7",
     "sentry-sdk>=1.14.0",
     "types-requests",
+    "types-protobuf",
 ]
 
 [tool.uv]
@@ -61,7 +62,9 @@ extend-exclude = [
     "user_files",
     "build",
     "node_modules",
+    "proto",
 ]
+line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "PL", "TRY", "FA"]

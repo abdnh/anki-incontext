@@ -1,15 +1,14 @@
 <script lang="ts">
     import { client, type Provider } from "$lib";
-    import Select from "$lib/Select.svelte";
     import Spinner from "$lib/Spinner.svelte";
+    import { MultiSelect, Select } from "ankiutils";
 
     import Error from "$lib/Error.svelte";
-    import MultiSelect from "$lib/MultiSelect.svelte";
     import type { PageProps } from "./$types";
 
     let { data }: PageProps = $props();
 
-    let nids = data.nids.map(nid => BigInt(nid));
+    let nids = data.nids.map((nid) => BigInt(nid));
 
     let providers = $state<Provider[]>([]);
     let selectedLanguage = $state<string>("");
@@ -27,7 +26,9 @@
         selectedLanguage = response.language;
         selectedProviders = response.providers.length > 0
             ? response.providers
-            : response.languageProviders.map(provider => provider.code);
+            : response.languageProviders.map((provider) =>
+                provider.code
+            );
         selectedWordField = response.wordField;
         selectedSentencesField = response.sentencesField;
         return response;
@@ -38,8 +39,8 @@
             language,
         });
         providers = response.providers;
-        selectedProviders = selectedProviders.filter(provider =>
-            response.providers.some(p => p.code === provider)
+        selectedProviders = selectedProviders.filter((provider) =>
+            response.providers.some((p) => p.code === provider)
         );
     }
 
@@ -67,7 +68,7 @@
                 <div class="col-sm-9">
                     <Select
                         id="language"
-                        options={initialData.languages.map(lang => ({
+                        options={initialData.languages.map((lang) => ({
                             value: lang.code,
                             label: lang.name,
                         }))}
@@ -82,7 +83,7 @@
                 <div class="col-sm-9">
                     <MultiSelect
                         id="provider"
-                        options={providers.map(provider => ({
+                        options={providers.map((provider) => ({
                             value: provider.code,
                             label: provider.name,
                         }))}
@@ -96,7 +97,7 @@
                 <div class="col-sm-9">
                     <Select
                         id="word"
-                        options={initialData.fields.map(field => ({
+                        options={initialData.fields.map((field) => ({
                             value: field,
                             label: field,
                         }))}
@@ -110,7 +111,7 @@
                 <div class="col-sm-9">
                     <Select
                         id="sentences"
-                        options={initialData.fields.map(field => ({
+                        options={initialData.fields.map((field) => ({
                             value: field,
                             label: field,
                         }))}

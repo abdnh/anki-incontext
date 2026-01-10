@@ -7,7 +7,7 @@ from .gui.tatoeba import TatoebaDialog
 
 
 def open_tatoeba_dialog() -> None:
-    TatoebaDialog(mw).show()
+    TatoebaDialog().show()
 
 
 def open_browse_dialog() -> None:

@@ -55,6 +55,7 @@ dev = [
     { name = "pytest-cov" },
     { name = "ruff" },
     { name = "sentry-sdk" },
+    { name = "types-protobuf" },
     { name = "types-requests" },
 ]
 
@@ -63,7 +64,7 @@ requires-dist = [
     { name = "ankiutils", git = "https://github.com/abdnh/ankiutils?branch=master" },
     { name = "protobuf" },
     { name = "pycountry", specifier = ">=24.6.1" },
-    { name = "sentry-sdk", specifier = ">=1.14.0" },
+    { name = "sentry-sdk", specifier = ">=2.35.0" },
     { name = "skell-downloader", git = "https://github.com/abdnh/skell-downloader?branch=master" },
     { name = "tdk", git = "https://github.com/abdnh/tdk?branch=master" },
 ]
@@ -80,6 +81,7 @@ dev = [
     { name = "pytest-cov", specifier = ">=6.1.1" },
     { name = "ruff", specifier = ">=0.11.7" },
     { name = "sentry-sdk", specifier = ">=1.14.0" },
+    { name = "types-protobuf" },
     { name = "types-requests" },
 ]
 
@@ -115,8 +117,8 @@ forms = [
 
 [[package]]
 name = "ankiutils"
-version = "0.1.dev93+gf2bb740a8"
-source = { git = "https://github.com/abdnh/ankiutils?branch=master#f2bb740a8c87e1b1b17b7545155e1aa68e4847dc" }
+version = "0.1.dev100+gd68372ee1"
+source = { git = "https://github.com/abdnh/ankiutils?branch=master#d68372ee15e553b65eb5a3c0a32336287322ad45" }
 dependencies = [
     { name = "sentry-sdk" },
     { name = "structlog" },
@@ -1618,15 +1620,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.34.1"
+version = "2.49.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3a/38/10d6bfe23df1bfc65ac2262ed10b45823f47f810b0057d3feeea1ca5c7ed/sentry_sdk-2.34.1.tar.gz", hash = "sha256:69274eb8c5c38562a544c3e9f68b5be0a43be4b697f5fd385bf98e4fbe672687", size = 336969, upload-time = "2025-07-30T11:13:37.93Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/02/94/23ac26616a883f492428d9ee9ad6eee391612125326b784dbfc30e1e7bab/sentry_sdk-2.49.0.tar.gz", hash = "sha256:c1878599cde410d481c04ef50ee3aedd4f600e4d0d253f4763041e468b332c30", size = 387228, upload-time = "2026-01-08T09:56:25.642Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2d/3e/bb34de65a5787f76848a533afbb6610e01fbcdd59e76d8679c254e02255c/sentry_sdk-2.34.1-py2.py3-none-any.whl", hash = "sha256:b7a072e1cdc5abc48101d5146e1ae680fa81fe886d8d95aaa25a0b450c818d32", size = 357743, upload-time = "2025-07-30T11:13:36.145Z" },
+    { url = "https://files.pythonhosted.org/packages/88/43/1c586f9f413765201234541857cb82fda076f4b0f7bad4a0ec248da39cf3/sentry_sdk-2.49.0-py2.py3-none-any.whl", hash = "sha256:6ea78499133874445a20fe9c826c9e960070abeb7ae0cdf930314ab16bb97aa0", size = 415693, upload-time = "2026-01-08T09:56:21.872Z" },
 ]
 
 [[package]]
