@@ -56,16 +56,15 @@
     }
 </script>
 
-<div class="container">
+<div class="container mx-auto min-h-screen p-4">
     {#await getInitialData()}
         <Spinner />
     {:then initialData}
-        <h1>Fill in sentences</h1>
-        <form>
-            <div class="mb-3 row">
-                <label for="language" class="col-sm-3 col-form-label"
-                >Language</label>
-                <div class="col-sm-9">
+        <h1 class="font-bold text-2xl my-2">Fill in sentences</h1>
+        <div class="flex flex-col gap-2">
+            <div class="form-control">
+                <label for="language" class="label">Language</label>
+                <div class="input-container">
                     <Select
                         id="language"
                         options={initialData.languages.map((lang) => ({
@@ -77,12 +76,11 @@
                     />
                 </div>
             </div>
-            <div class="mb-3 row">
-                <label for="provider" class="col-sm-3 col-form-label"
-                >Providers</label>
-                <div class="col-sm-9">
+            <div class="form-control">
+                <label for="providers" class="label">Providers</label>
+                <div class="input-container">
                     <MultiSelect
-                        id="provider"
+                        id="providers"
                         options={providers.map((provider) => ({
                             value: provider.code,
                             label: provider.name,
@@ -91,10 +89,9 @@
                     />
                 </div>
             </div>
-            <div class="mb-3 row">
-                <label for="word" class="col-sm-3 col-form-label"
-                >Word field</label>
-                <div class="col-sm-9">
+            <div class="form-control">
+                <label for="word" class="label">Word field</label>
+                <div class="input-container">
                     <Select
                         id="word"
                         options={initialData.fields.map((field) => ({
@@ -105,10 +102,9 @@
                     />
                 </div>
             </div>
-            <div class="mb-3 row">
-                <label for="sentences" class="col-sm-3 col-form-label"
-                >Sentences field</label>
-                <div class="col-sm-9">
+            <div class="form-control">
+                <label for="sentences" class="label">Sentences field</label>
+                <div class="input-container">
                     <Select
                         id="sentences"
                         options={initialData.fields.map((field) => ({
@@ -119,35 +115,54 @@
                     />
                 </div>
             </div>
-            <div class="mb-3 row">
-                <label for="number" class="col-sm-3 col-form-label"
-                >Number of sentences</label>
-                <div class="col-sm-9">
-                    <input
-                        type="number"
-                        id="number"
-                        class="form-control"
-                        bind:value={selectedNumberOfSentences}
-                    />
-                </div>
+            <div class="form-control">
+                <label for="number" class="label">Number of sentences</label>
+                <input
+                    type="number"
+                    id="number"
+                    class="input"
+                    bind:value={selectedNumberOfSentences}
+                />
             </div>
-            <div class="mb-3 row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-9 text-end">
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        onclick={onProcess}
-                    >
-                        Process
-                    </button>
-                </div>
-            </div>
-        </form>
+            <button
+                type="button"
+                class="btn btn-primary self-end"
+                onclick={onProcess}
+            >
+                Process
+            </button>
+        </div>
     {:catch error}
         <Error error={error.rawMessage} />
     {/await}
 </div>
 
 <style lang="scss">
+    :global(html) {
+        font-size: 24px;
+    }
+
+    .form-control {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+
+        .label {
+            grid-column: span 1 / span 1;
+        }
+        .input-container,
+        input {
+            grid-column: span 3 / span 3;
+            width: 100%;
+        }
+        .input-container {
+            & > :global(*) {
+                width: 100%;
+            }
+
+            :global(input) {
+                flex-grow: 1;
+            }
+        }
+    }
 </style>
