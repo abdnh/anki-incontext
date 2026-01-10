@@ -35,13 +35,9 @@ class TatoebaDB:
         self.language = get_language_info(lang_code)
         self.alpha_3 = self.language.alpha_3.lower() if self.language else lang_code
         self.alpha_2 = (
-            self.language.alpha_2.lower()
-            if self.language and hasattr(self.language, "alpha_2")
-            else lang_code
+            self.language.alpha_2.lower() if self.language and hasattr(self.language, "alpha_2") else lang_code
         )
-        self.conn = sqlite3.connect(
-            tatoeba_db_path(self.alpha_3), check_same_thread=False
-        )
+        self.conn = sqlite3.connect(tatoeba_db_path(self.alpha_3), check_same_thread=False)
         self.conn.executescript(
             """
             CREATE TABLE IF NOT EXISTS sentences (text TEXT);
@@ -89,9 +85,7 @@ class TatoebaDB:
         return [row[0] for row in self.conn.execute(query, params)]
 
 
-def download_tatoeba_sentences(
-    lang_code: str, on_progress: Callable[[float, str, bool], None]
-) -> None:
+def download_tatoeba_sentences(lang_code: str, on_progress: Callable[[float, str, bool], None]) -> None:
     language = get_language_info(lang_code)
     alpha_3 = language.alpha_3.lower() if language else lang_code
     chunk_size = 8192
@@ -125,9 +119,7 @@ def download_tatoeba_sentences(
                 db.add_sentences(
                     [row[2] for row in csv.reader(tsv_file2, delimiter="\t")],
                 )
-        on_progress(
-            1.0, f"Finished downloading Tatoeba sentences for {language.name}", True
-        )
+        on_progress(1.0, f"Finished downloading Tatoeba sentences for {language.name}", True)
 
 
 class TatoebaProvider(SentenceProvider):
@@ -147,16 +139,11 @@ class TatoebaProvider(SentenceProvider):
         word = word.lower()
         try:
             with TatoebaDB(language) as db:
-                sentences.extend(
-                    Sentence(sentence, word, language, self.name)
-                    for sentence in db.get_sentences(word)
-                )
+                sentences.extend(Sentence(sentence, word, language, self.name) for sentence in db.get_sentences(word))
         except FileNotFoundError:
             pass
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
         alpha_3 = get_language_info(language).alpha_3.lower()
-        return (
-            f"https://tatoeba.org/en/sentences/search?from={alpha_3}&query={word}&to="
-        )
+        return f"https://tatoeba.org/en/sentences/search?from={alpha_3}&query={word}&to="

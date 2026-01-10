@@ -43,9 +43,7 @@ def get_active_card_context() -> CardContext:
     return CardContext(mw.reviewer.card, mw.reviewer.web)
 
 
-def get_formatted_sentence(
-    text: str, lang: str | None, providers: list[str] | None = None
-) -> str:
+def get_formatted_sentence(text: str, lang: str | None, providers: list[str] | None = None) -> str:
     try:
         sentences = get_sentences(
             word=text,
@@ -58,8 +56,7 @@ def get_formatted_sentence(
         if not lang and provider_obj:
             lang = provider_obj.supported_languages[0]
         source = (
-            f'<br><br>Source: <a href="{provider_obj.get_source(text, lang)}">'
-            f"{provider_obj.human_name}</a>"
+            f'<br><br>Source: <a href="{provider_obj.get_source(text, lang)}">{provider_obj.human_name}</a>'
             if provider_obj
             else ""
         )
@@ -95,14 +92,8 @@ def incontext_filter(
     def on_done(fut: Future) -> None:
         result = fut.result()
         card_context = get_active_card_context()
-        if (
-            card_context.card
-            and card_context.web
-            and card_context.card.id == ctx.card().id
-        ):
-            card_context.web.eval(
-                f"incontext.saveAndRenderSentence({filter_id}, {json.dumps(result)})"
-            )
+        if card_context.card and card_context.web and card_context.card.id == ctx.card().id:
+            card_context.web.eval(f"incontext.saveAndRenderSentence({filter_id}, {json.dumps(result)})")
 
     run_task_in_background(task, on_done, uses_collection=False)
     incontext_id += 1
@@ -141,9 +132,7 @@ def on_webview_will_set_content(web_content: WebContent, context: Any | None) ->
     web_content.js.append(f"{WEB_BASE}/incontext.js")
 
 
-def on_webview_did_receive_js_message(
-    handled: tuple[bool, Any], message: str, context: Any
-) -> tuple[bool, Any]:
+def on_webview_did_receive_js_message(handled: tuple[bool, Any], message: str, context: Any) -> tuple[bool, Any]:
     if not message.startswith("incontext:"):
         return handled
     _, subcmd, data = message.split(":", maxsplit=2)
@@ -153,9 +142,7 @@ def on_webview_did_receive_js_message(
         card_context = get_active_card_context()
 
         def task() -> str:
-            return get_formatted_sentence(
-                options["query"], options["lang"], options["provider"]
-            )
+            return get_formatted_sentence(options["query"], options["lang"], options["provider"])
 
         def on_done(fut: Future) -> None:
             sentence = fut.result()

@@ -50,8 +50,7 @@ from ..providers.tatoeba import download_tatoeba_sentences
 
 def fields_for_notes(mw: AnkiQt, nids: Iterable[NoteId]) -> list[str]:
     return mw.col.db.list(
-        "select distinct name from fields where ntid in"
-        f" (select mid from notes where id in {ids2str(nids)})"
+        f"select distinct name from fields where ntid in (select mid from notes where id in {ids2str(nids)})"
     )
 
 
@@ -61,8 +60,7 @@ def get_languages() -> list[Language]:
 
 def get_providers_for_language(lang: str) -> list[Provider]:
     return [
-        Provider(code=provider.name, name=provider.human_name)
-        for provider in get_providers_for_language_base(lang)
+        Provider(code=provider.name, name=provider.human_name) for provider in get_providers_for_language_base(lang)
     ]
 
 
@@ -72,15 +70,11 @@ class BackendService(BackendServiceBase):
     @classmethod
     def get_tatoeba_languages(cls, request: Empty) -> GetTatoebaLanguagesResponse:
         return GetTatoebaLanguagesResponse(
-            languages=[
-                Language(code=code, name=name) for code, name in get_all_languages()
-            ]
+            languages=[Language(code=code, name=name) for code, name in get_all_languages()]
         )
 
     @classmethod
-    def download_tatoeba_sentences(
-        cls, request: DownloadTatoebaSentencesRequest
-    ) -> Empty:
+    def download_tatoeba_sentences(cls, request: DownloadTatoebaSentencesRequest) -> Empty:
         def on_progress(progress: float, message: str, finished: bool) -> None:
             cls.tatoeba_download_progress = TatoebaDownloadProgress(
                 progress=progress, message=message, is_error=False, finished=finished
@@ -90,37 +84,25 @@ class BackendService(BackendServiceBase):
             download_tatoeba_sentences(request.language, on_progress)
 
         def on_failure(exc: Exception) -> None:
-            cls.tatoeba_download_progress = TatoebaDownloadProgress(
-                progress=0.0, message=str(exc), is_error=True
-            )
+            cls.tatoeba_download_progress = TatoebaDownloadProgress(progress=0.0, message=str(exc), is_error=True)
             logger.exception("Error downloading Tatoeba sentences", exc_info=exc)
 
-        query_op = (
-            AddonQueryOp(parent=mw, op=op, success=lambda _: None)
-            .failure(on_failure)
-            .without_collection()
-        )
+        query_op = AddonQueryOp(parent=mw, op=op, success=lambda _: None).failure(on_failure).without_collection()
         mw.taskman.run_on_main(query_op.run_in_background)
         return Empty()
 
     @classmethod
     def get_tatoeba_download_progress(cls, request: Empty) -> TatoebaDownloadProgress:
-        return cls.tatoeba_download_progress or TatoebaDownloadProgress(
-            progress=0.0, message="", is_error=False
-        )
+        return cls.tatoeba_download_progress or TatoebaDownloadProgress(progress=0.0, message="", is_error=False)
 
     @classmethod
-    def get_default_fill_fields(
-        cls, request: GetDefaultFillFieldsRequest
-    ) -> GetDefaultFillFieldsResponse:
+    def get_default_fill_fields(cls, request: GetDefaultFillFieldsRequest) -> GetDefaultFillFieldsResponse:
         provider_field = config["provider_field"]
         if not provider_field:
             providers = []
             config["provider_field"] = ""
         else:
-            providers = (
-                provider_field if isinstance(provider_field, list) else [provider_field]
-            )
+            providers = provider_field if isinstance(provider_field, list) else [provider_field]
         return GetDefaultFillFieldsResponse(
             language=config["lang_field"],
             providers=providers,
@@ -133,17 +115,11 @@ class BackendService(BackendServiceBase):
         )
 
     @classmethod
-    def get_providers_for_language(
-        cls, request: GetProvidersForLanguageRequest
-    ) -> GetProvidersForLanguageResponse:
-        return GetProvidersForLanguageResponse(
-            providers=get_providers_for_language(request.language)
-        )
+    def get_providers_for_language(cls, request: GetProvidersForLanguageRequest) -> GetProvidersForLanguageResponse:
+        return GetProvidersForLanguageResponse(providers=get_providers_for_language(request.language))
 
     @classmethod
-    def get_languages_and_providers(
-        cls, request: GetLanguagesAndProvidersRequest
-    ) -> GetLanguagesAndProvidersResponse:
+    def get_languages_and_providers(cls, request: GetLanguagesAndProvidersRequest) -> GetLanguagesAndProvidersResponse:
         return GetLanguagesAndProvidersResponse(
             languages=get_languages(),
             default_providers=get_providers_for_language(request.default_language),
@@ -182,6 +158,4 @@ class BackendService(BackendServiceBase):
                     providers=get_providers_for_language(shortcut["language"]),
                 )
             )
-        return GetSettingsResponse(
-            search_shortcuts=search_shortcuts, languages=get_languages()
-        )
+        return GetSettingsResponse(search_shortcuts=search_shortcuts, languages=get_languages())

@@ -69,17 +69,13 @@ class FillDialog(SveltekitWebDialog):
                         providers=providers,
                         limit=number_of_sentences,
                     )
-                    note[sentences_field] = "<br>".join(
-                        sentence.text for sentence in sentences
-                    )
+                    note[sentences_field] = "<br>".join(sentence.text for sentence in sentences)
                     updated_notes.append(note)
                 if time.time() - last_progress >= 0.1:
                     last_progress = time.time()
                     mw.taskman.run_on_main(functools.partial(update_progress, i=i))
 
-            return OpChangesWithCount(
-                count=len(updated_notes), changes=col.update_notes(updated_notes)
-            )
+            return OpChangesWithCount(count=len(updated_notes), changes=col.update_notes(updated_notes))
 
         def success(changes: OpChangesWithCount) -> None:
             config["lang_field"] = language

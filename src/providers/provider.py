@@ -20,9 +20,7 @@ class SentenceProvider(ABC):
     def supported_languages(self) -> list[str]:
         return []
 
-    def get_cached_sentences(
-        self, word: str, language: str, limit: int | None = None
-    ) -> list[Sentence]:
+    def get_cached_sentences(self, word: str, language: str, limit: int | None = None) -> list[Sentence]:
         try:
             with self.db.lock:
                 return self.db.get_random_sentences(word, language, self.name, limit)

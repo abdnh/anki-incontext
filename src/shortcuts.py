@@ -10,9 +10,7 @@ from .config import config
 from .gui.browse import BrowseDialog
 
 
-def on_state_shortcuts_will_change(
-    state: MainWindowState, shortcuts: list[tuple[str, Callable]]
-) -> None:
+def on_state_shortcuts_will_change(state: MainWindowState, shortcuts: list[tuple[str, Callable]]) -> None:
     if state != "review":
         return
 

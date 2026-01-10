@@ -437,9 +437,7 @@ ALL_LANGS = [
 
 
 def get_language_info(lang_code: str) -> pycountry.db.Country | None:
-    return pycountry.languages.get(alpha_2=lang_code) or pycountry.languages.get(
-        alpha_3=lang_code
-    )
+    return pycountry.languages.get(alpha_2=lang_code) or pycountry.languages.get(alpha_3=lang_code)
 
 
 def langcode_to_name(lang_code: str) -> str:

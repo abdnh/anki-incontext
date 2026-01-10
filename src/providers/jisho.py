@@ -25,9 +25,7 @@ class JishoProvider(SentenceProvider):
             for sentence_element in sentence_elements:
                 for el in sentence_element.select(".furigana"):
                     el.decompose()
-                sentences.append(
-                    Sentence(sentence_element.get_text(), word, language, self.name)
-                )
+                sentences.append(Sentence(sentence_element.get_text(), word, language, self.name))
             page += 1
         return sentences
 

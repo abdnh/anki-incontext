@@ -23,9 +23,7 @@ class SentenceDB:
     SCHEMA_MAX_VERSION = 1
 
     def __init__(self, path: Path | None = None):
-        self.con = sqlite3.connect(
-            path or consts.dir / "user_files" / "sentences.db", check_same_thread=False
-        )
+        self.con = sqlite3.connect(path or consts.dir / "user_files" / "sentences.db", check_same_thread=False)
         self.lock = Lock()
         self._open_or_create_db()
 
@@ -45,9 +43,7 @@ class SentenceDB:
 
     def _schema_version(self) -> tuple[bool, int]:
         with self.con:
-            row = self.con.execute(
-                "select null from sqlite_master where type = 'table' and name = 'col'"
-            ).fetchall()
+            row = self.con.execute("select null from sqlite_master where type = 'table' and name = 'col'").fetchall()
             if not row:
                 return (True, self.SCHEMA_STARTING_VERSION)
             return (False, self.con.execute("select ver from col").fetchone()[0])
@@ -77,9 +73,7 @@ class SentenceDB:
             # if create or upgrade:
             #     self._upgrade_to_latest_schema(ver)
 
-    def get_random_sentences(
-        self, word: str, language: str, provider: str, limit: int | None = None
-    ) -> list[Sentence]:
+    def get_random_sentences(self, word: str, language: str, provider: str, limit: int | None = None) -> list[Sentence]:
         sentences = []
         with self.con:
             query = "SELECT * from sentences WHERE word = ? AND language = ?"
