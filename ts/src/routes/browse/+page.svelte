@@ -62,7 +62,7 @@
             });
     }
 
-    function onCopy(event: ClipboardEvent) {
+    function onCopy(_event: ClipboardEvent) {
         ignoreNextClipboardUpdate = true;
     }
 

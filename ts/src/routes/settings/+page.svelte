@@ -88,7 +88,7 @@
                     Assign shortcuts to search for sentences for the selected
                     word in any language
                 </p>
-                {#each searchShortcuts as _, i}
+                {#each searchShortcuts as _, i (i)}
                     <div class="search-shortcut-widget flex gap-4">
                         <SearchShortcut bind:keys={searchShortcuts[i].keys} />
                         <Select
