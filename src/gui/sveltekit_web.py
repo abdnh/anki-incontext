@@ -9,6 +9,8 @@ from ..vendor.ankiutils.gui import sveltekit_web
 
 
 class SveltekitWebDialog(sveltekit_web.SveltekitWebDialog):
+    default_size = (800, 800)
+
     def __init__(self, path: str, parent: QWidget | None = None, subtitle: str = ""):
         self.path = path
         super().__init__(
