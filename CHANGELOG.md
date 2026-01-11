@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-01-11
+
+### Changed
+
+- Redesign UI for more consistent colors and dark mode support.
+- Search shortcuts now do not open a new Browse window if there's already one open.
+
+### Added
+
+- Add options to set default language and providers for Browse and Fill-in windows.
+
 ## [1.2.3] - 2026-01-06
 
 ### Added
@@ -156,6 +167,7 @@ Initial release to AnkiWeb
 
 Initial release
 
+[1.3.0]: https://github.com/abdnh/anki-incontext/compare/1.2.3...1.3.0
 [1.2.3]: https://github.com/abdnh/anki-incontext/compare/1.2.2...1.2.3
 [1.2.2]: https://github.com/abdnh/anki-incontext/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/abdnh/anki-incontext/compare/1.2.0...1.2.1
