@@ -59,12 +59,14 @@ message GetDefaultFillFieldsResponse {
 }
 
 message GetLanguagesAndProvidersRequest {
-  string default_language = 1;
+  optional string default_language = 1;
 }
 
 message GetLanguagesAndProvidersResponse {
-  repeated Language languages         = 1;
-  repeated Provider default_providers = 2;
+  string            default_language  = 1;
+  repeated Language languages         = 2;
+  repeated Provider providers         = 3;
+  repeated string   default_providers = 4;
 }
 
 message GetProvidersForLanguageRequest {
@@ -112,12 +114,17 @@ message SearchShortcut {
 }
 
 message GetSettingsResponse {
-  repeated SearchShortcut search_shortcuts = 1;
-  repeated Language       languages        = 2;
+  repeated SearchShortcut search_shortcuts   = 1;
+  repeated Language       languages          = 2;
+  string                  default_language   = 3;
+  repeated string         default_providers  = 4;
+  repeated Provider       language_providers = 5;
 }
 
 message SaveSettingsRequest {
-  repeated SearchShortcut search_shortcuts = 1;
+  repeated SearchShortcut search_shortcuts  = 1;
+  string                  default_language  = 2;
+  repeated string         default_providers = 3;
 }
 
 message GetClipboardTextResponse {

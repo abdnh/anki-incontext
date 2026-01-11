@@ -1,6 +1,7 @@
 <script lang="ts">
     import { client, type GetSettingsResponse } from "$lib";
     import Error from "$lib/Error.svelte";
+    import SelectControl from "$lib/SelectControl.svelte";
     import {
         MultiSelect,
         promiseWithResolver,
@@ -16,7 +17,10 @@
         language: string;
         providers: string[];
     }
-
+    let languages = $state<SelectOption[]>([]);
+    let providers = $state<SelectOption[]>([]);
+    let defaultLanguage = $state("");
+    let defaultProviders = $state<string[]>([]);
     let searchShortcuts = $state<Shortcut[]>([]);
     let [settingsPromise, resolveSettings, rejectSettings] =
         promiseWithResolver<GetSettingsResponse>();
@@ -37,7 +41,24 @@
                     selectedProviders: shortcut.providers,
                 };
             }),
+            defaultLanguage,
+            defaultProviders,
         });
+    }
+
+    async function onLanguageSelected(language: string) {
+        const response = await client.getProvidersForLanguage({
+            language,
+        });
+        providers = response.providers.map((provider) => {
+            return {
+                label: provider.name,
+                value: provider.code,
+            };
+        });
+        defaultProviders = defaultProviders.filter((provider) =>
+            response.providers.some((p) => p.code === provider)
+        );
     }
 
     onMount(async () => {
@@ -49,6 +70,20 @@
             return;
         }
         resolveSettings(response);
+        languages = response.languages.map((lang) => {
+            return {
+                label: lang.name,
+                value: lang.code,
+            };
+        });
+        providers = response.languageProviders.map((provider) => {
+            return {
+                label: provider.name,
+                value: provider.code,
+            };
+        });
+        defaultLanguage = response.defaultLanguage;
+        defaultProviders = response.defaultProviders;
         searchShortcuts = response.searchShortcuts.map((s) => {
             providersForLanguage[s.language] = new Promise(
                 (resolve, _) => {
@@ -71,8 +106,28 @@
 <div class="container mx-auto min-h-screen flex flex-col gap-4 p-4">
     {#await settingsPromise}
         <Spinner />
-    {:then settings}
+    {:then}
         <div class="flex-1">
+            <div class="flex flex-col gap-4">
+                <h2 class="font-bold text-4xl my-4">Defaults</h2>
+                <p>
+                    These options control the defaults used for the Browse and
+                    the Fill-in pages
+                </p>
+                <SelectControl label="Language">
+                    <Select
+                        onSelected={onLanguageSelected}
+                        options={languages}
+                        bind:value={defaultLanguage}
+                    />
+                </SelectControl>
+                <SelectControl label="Providers">
+                    <MultiSelect
+                        options={providers}
+                        bind:selectedOptions={defaultProviders}
+                    ></MultiSelect>
+                </SelectControl>
+            </div>
             <div class="flex flex-row justify-between items-center">
                 <h2 class="font-bold text-4xl my-4">Search Shortcuts</h2>
                 <button
@@ -92,12 +147,7 @@
                     <div class="search-shortcut-widget flex gap-4">
                         <SearchShortcut bind:keys={searchShortcuts[i].keys} />
                         <Select
-                            options={settings.languages.map((lang) => {
-                                return {
-                                    label: lang.name,
-                                    value: lang.code,
-                                };
-                            })}
+                            options={languages}
                             bind:value={searchShortcuts[i].language}
                             placeholder="Select language"
                             onSelected={(lang) => {

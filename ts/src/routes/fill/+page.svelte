@@ -3,6 +3,7 @@
     import { MultiSelect, Select, Spinner } from "ankiutils";
 
     import Error from "$lib/Error.svelte";
+    import SelectControl from "$lib/SelectControl.svelte";
     import type { PageProps } from "./$types";
 
     let { data }: PageProps = $props();
@@ -61,64 +62,48 @@
     {:then initialData}
         <h1 class="font-bold text-2xl my-2">Fill in sentences</h1>
         <div class="flex flex-col gap-2">
-            <label class="form-control">
-                <span class="label">Language</span>
-                <div class="input-container">
-                    <Select
-                        options={initialData.languages.map((lang) => ({
-                            value: lang.code,
-                            label: lang.name,
-                        }))}
-                        bind:value={selectedLanguage}
-                        onSelected={onLanguageSelected}
-                    />
-                </div>
-            </label>
-
-            <label class="form-control">
-                <span class="label">Providers</span>
-                <div class="input-container">
-                    <MultiSelect
-                        options={providers.map((provider) => ({
-                            value: provider.code,
-                            label: provider.name,
-                        }))}
-                        bind:selectedOptions={selectedProviders}
-                    />
-                </div>
-            </label>
-            <label class="form-control">
-                <span class="label">Word field</span>
-                <div class="input-container">
-                    <Select
-                        options={initialData.fields.map((field) => ({
-                            value: field,
-                            label: field,
-                        }))}
-                        bind:value={selectedWordField}
-                    />
-                </div>
-            </label>
-            <label class="form-control">
-                <span class="label">Sentences field</span>
-                <div class="input-container">
-                    <Select
-                        options={initialData.fields.map((field) => ({
-                            value: field,
-                            label: field,
-                        }))}
-                        bind:value={selectedSentencesField}
-                    />
-                </div>
-            </label>
-            <label class="form-control">
-                <span class="label">Number of sentences</span>
+            <SelectControl label="Language">
+                <Select
+                    options={initialData.languages.map((lang) => ({
+                        value: lang.code,
+                        label: lang.name,
+                    }))}
+                    bind:value={selectedLanguage}
+                    onSelected={onLanguageSelected}
+                />
+            </SelectControl>
+            <SelectControl label="Providers">
+                <MultiSelect
+                    options={providers.map((provider) => ({
+                        value: provider.code,
+                        label: provider.name,
+                    }))}
+                    bind:selectedOptions={selectedProviders}
+                />
+            </SelectControl>
+            <SelectControl label="Word field">
+                <Select
+                    options={initialData.fields.map((field) => ({
+                        value: field,
+                        label: field,
+                    }))}
+                    bind:value={selectedWordField}
+                />
+            </SelectControl>
+            <SelectControl label="Sentences field"><Select
+                    options={initialData.fields.map((field) => ({
+                        value: field,
+                        label: field,
+                    }))}
+                    bind:value={selectedSentencesField}
+                /></SelectControl>
+            <SelectControl label="Number of sentences">
                 <input
                     type="number"
                     class="input"
                     bind:value={selectedNumberOfSentences}
                 />
-            </label>
+            </SelectControl>
             <button
                 type="button"
                 class="btn btn-primary self-end"
@@ -135,29 +120,5 @@
 <style lang="scss">
     :global(html) {
         font-size: 24px;
-    }
-
-    .form-control {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 1rem;
-
-        .label {
-            grid-column: span 1 / span 1;
-        }
-        .input-container,
-        input {
-            grid-column: span 3 / span 3;
-            width: 100%;
-        }
-        .input-container {
-            & > :global(*) {
-                width: 100%;
-            }
-
-            :global(input) {
-                flex-grow: 1;
-            }
-        }
     }
 </style>

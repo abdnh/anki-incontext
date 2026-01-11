@@ -64,6 +64,16 @@ def get_providers_for_language(lang: str) -> list[Provider]:
     ]
 
 
+def get_provider_field() -> list[str]:
+    provider_field = config["provider_field"]
+    if not provider_field:
+        providers = []
+        config["provider_field"] = ""
+    else:
+        providers = provider_field if isinstance(provider_field, list) else [provider_field]
+    return providers
+
+
 class BackendService(BackendServiceBase):
     tatoeba_download_progress: TatoebaDownloadProgress | None = None
 
@@ -97,12 +107,7 @@ class BackendService(BackendServiceBase):
 
     @classmethod
     def get_default_fill_fields(cls, request: GetDefaultFillFieldsRequest) -> GetDefaultFillFieldsResponse:
-        provider_field = config["provider_field"]
-        if not provider_field:
-            providers = []
-            config["provider_field"] = ""
-        else:
-            providers = provider_field if isinstance(provider_field, list) else [provider_field]
+        providers = get_provider_field()
         return GetDefaultFillFieldsResponse(
             language=config["lang_field"],
             providers=providers,
@@ -120,9 +125,13 @@ class BackendService(BackendServiceBase):
 
     @classmethod
     def get_languages_and_providers(cls, request: GetLanguagesAndProvidersRequest) -> GetLanguagesAndProvidersResponse:
+        language = request.default_language if request.HasField("default_language") else config["lang_field"]
+        providers = get_provider_field()
         return GetLanguagesAndProvidersResponse(
+            default_language=language,
             languages=get_languages(),
-            default_providers=get_providers_for_language(request.default_language),
+            providers=get_providers_for_language(language),
+            default_providers=providers,
         )
 
     @classmethod
@@ -149,6 +158,7 @@ class BackendService(BackendServiceBase):
     @classmethod
     def get_settings(cls, request: Empty) -> GetSettingsResponse:
         search_shortcuts = []
+        providers = get_provider_field()
         for shortcut in config["search_shortcuts"]:
             search_shortcuts.append(
                 SearchShortcut(
@@ -158,4 +168,10 @@ class BackendService(BackendServiceBase):
                     providers=get_providers_for_language(shortcut["language"]),
                 )
             )
-        return GetSettingsResponse(search_shortcuts=search_shortcuts, languages=get_languages())
+        return GetSettingsResponse(
+            search_shortcuts=search_shortcuts,
+            languages=get_languages(),
+            default_language=config["lang_field"],
+            default_providers=providers,
+            language_providers=get_providers_for_language(config["lang_field"]),
+        )

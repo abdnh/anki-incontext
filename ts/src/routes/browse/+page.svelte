@@ -22,7 +22,8 @@
     let [languagesPromise, resolveLanguages, rejectLanguages] =
         promiseWithResolver<SelectOption[]>();
     let search = $state(data.word);
-    let selectedLanguage = $state(data.language);
+    let initialLanguage = data.language ?? undefined;
+    let selectedLanguage = $state(initialLanguage ?? "eng");
     let providers = $state<SelectOption[]>([]);
     let selectedProviders = $state<string[]>(data.providers ?? []);
     let sentences = $state<Sentence[] | undefined>([]);
@@ -30,13 +31,11 @@
     let ignoreNextClipboardUpdate = $state(false);
     let abortController: AbortController | null = $state(null);
 
-    async function runQuery(
-        query: {
-            word: string;
-            language: string;
-            providers: string[];
-        },
-    ) {
+    async function runQuery(query: {
+        word: string;
+        language: string;
+        providers: string[];
+    }) {
         search = query.word;
         const oldLanguage = selectedLanguage;
         selectedLanguage = query.language;
@@ -76,8 +75,9 @@
     }
 
     async function onLanguageSelected() {
-        const response = await client
-            .getProvidersForLanguage({ language: selectedLanguage });
+        const response = await client.getProvidersForLanguage({
+            language: selectedLanguage,
+        });
         providers = response.providers.map((provider) => ({
             value: provider.code,
             label: provider.name,
@@ -93,24 +93,22 @@
         let response: GetLanguagesAndProvidersResponse;
         try {
             response = await client.getLanguagesAndProviders({
-                defaultLanguage: selectedLanguage,
+                defaultLanguage: initialLanguage,
             });
         } catch (error) {
             rejectLanguages(error);
             return;
         }
+        selectedLanguage = response.defaultLanguage;
         const languages = response.languages.map((lang) => ({
             value: lang.code,
             label: lang.name,
         }));
-        providers = response.defaultProviders.map((provider) => ({
+        providers = response.providers.map((provider) => ({
             value: provider.code,
             label: provider.name,
         }));
-        selectedProviders = data.providers
-            ?? response.defaultProviders.map((provider) =>
-                provider.code
-            );
+        selectedProviders = data.providers ?? response.defaultProviders;
         resolveLanguages(languages);
     });
 </script>

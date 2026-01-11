@@ -35,6 +35,8 @@ class SettingsDialog(SveltekitWebDialog):
                 }
             )
         config["search_shortcuts"] = search_shortcuts
+        config["lang_field"] = request.default_language
+        config["provider_field"] = list(request.default_providers)
 
         def on_main() -> None:
             self.close()
