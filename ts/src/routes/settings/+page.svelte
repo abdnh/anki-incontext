@@ -152,36 +152,30 @@
                             placeholder="Select language"
                             onSelected={(lang) => {
                                 if (!providersForLanguage[lang]) {
-                                    providersForLanguage[lang] =
-                                        client
-                                            .getProvidersForLanguage({
-                                                language: lang,
-                                            })
-                                            .then((response) => {
-                                                const providers =
-                                                    response.providers
-                                                        .map((p) => {
-                                                            return {
-                                                                label:
-                                                                    p.name,
-                                                                value:
-                                                                    p.code,
-                                                            };
-                                                        });
-                                                searchShortcuts[i]
-                                                    .providers =
-                                                        providers.map(
-                                                            (p) =>
-                                                                p.value,
-                                                        );
-                                                return providers;
-                                            });
+                                    providersForLanguage[lang] = client
+                                        .getProvidersForLanguage({
+                                            language: lang,
+                                        })
+                                        .then((response) => {
+                                            const providers = response.providers
+                                                .map((p) => {
+                                                    return {
+                                                        label: p.name,
+                                                        value: p.code,
+                                                    };
+                                                });
+                                            searchShortcuts[i]
+                                                .providers = providers.map(
+                                                    (p) => p.value,
+                                                );
+                                            return providers;
+                                        });
                                 }
                             }}
                         />
                         {#await providersForLanguage[
-                        searchShortcuts[i].language
-                    ]
+    searchShortcuts[i].language
+]
                         }
                             ...
                         {:then providers}

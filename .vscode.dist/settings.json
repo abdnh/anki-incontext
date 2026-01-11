@@ -9,8 +9,16 @@
     "[proto]": {
         "editor.defaultFormatter": "DrBlury.protobuf-vsc"
     },
+    "protobuf.formatter.preset": "buf",
+    "protobuf.buf.path": "${workspaceFolder}\\ts\\node_modules\\@bufbuild\\buf-win32-x64\\bin\\buf.exe",
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit"
     },
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "[json]": {
+        "editor.defaultFormatter": "dprint.dprint"
+    },
+    "[svelte]": {
+        "editor.defaultFormatter": "dprint.dprint"
+    }
 }

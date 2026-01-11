@@ -1,15 +1,8 @@
 <script lang="ts">
     import type { Sentence } from "$lib";
-    import {
-        client,
-        type GetLanguagesAndProvidersResponse,
-    } from "$lib";
+    import { client, type GetLanguagesAndProvidersResponse } from "$lib";
     import Error from "$lib/Error.svelte";
-    import {
-        promiseWithResolver,
-        type SelectOption,
-        Spinner,
-    } from "ankiutils";
+    import { promiseWithResolver, type SelectOption, Spinner } from "ankiutils";
     import { onMount } from "svelte";
     import type { PageProps } from "./$types";
     import SearchField from "./SearchField.svelte";

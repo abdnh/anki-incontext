@@ -16,33 +16,41 @@ zip:
 
 # Install dependencies to src/vendor
 vendor:
-	{{UV_RUN}} python -m ankiscripts.vendor --exclude pycountry/locales
+	{{UV_RUN}} python -m ankiscripts.vendor
 
 # Format using Ruff
-ruff:
-	{{UV_RUN}} pre-commit run -a ruff-format
+ruff *files:
+	{{UV_RUN}} ruff format --force-exclude {{files}}
 
-# Check formatting using Ruff
-ruff-check:
-	{{UV_RUN}} ruff check
+# Check formatting and lints using Ruff
+ruff-check *files:
+	{{UV_RUN}} ruff check --force-exclude --fix {{files}}
 
 # Format using dprint
-dprint:
-	{{UV_RUN}} pre-commit run -a dprint
+dprint *files:
+	dprint fmt --allow-no-files {{files}}
 
 # Check type hints using mypy
-mypy:
-	-{{UV_RUN}} pre-commit run -a mypy
+mypy *files:
+	{{UV_RUN}} mypy {{files}}
 
 # Run ts+svelte checks
 ts-check:
   {{ if path_exists("ts") == "true" { "cd ts && npm run check && npm run lint" } else { "" } }}
 
-# Fix formatting issues
-fix: ruff dprint
+# Check proto files for formatting issues
+proto-check *files:
+  {{ if path_exists("ts") == "true" { "cd ts && npm run check_proto" } else { "" } }}
 
-# Run mypy+formatting+ts checks
-lint: mypy ruff-check ts-check
+# Format proto files
+proto:
+  {{ if path_exists("ts") == "true" { "cd ts && npm run format_proto" } else { "" } }}
+
+# Fix formatting issues
+fix: ruff dprint proto
+
+# Run mypy+formatting+ts+proto checks
+lint: mypy ruff-check ts-check proto-check
 
 # Run pytest
 pytest:
@@ -51,6 +59,7 @@ pytest:
 # Run ts tests
 ts-test:
   {{ if path_exists("ts") == "true" { "cd ts && npm run test" } else { "" } }}
+
 
 # Run pytest+ts tests
 test: pytest ts-test

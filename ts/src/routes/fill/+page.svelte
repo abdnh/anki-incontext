@@ -26,9 +26,7 @@
         selectedLanguage = response.language;
         selectedProviders = response.providers.length > 0
             ? response.providers
-            : response.languageProviders.map((provider) =>
-                provider.code
-            );
+            : response.languageProviders.map((provider) => provider.code);
         selectedWordField = response.wordField;
         selectedSentencesField = response.sentencesField;
         return response;
