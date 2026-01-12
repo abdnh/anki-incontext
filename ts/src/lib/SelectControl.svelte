@@ -6,11 +6,22 @@
         label: string;
     }
     const { children, label }: Props = $props();
+
+    let inputContainer = $state<HTMLDivElement>();
+
+    function handleLabelClick(event: MouseEvent) {
+        if (inputContainer?.contains(event.target as Node)) {
+            // If the click was inside the input container, prevent the label's default behavior from reopening the selector
+            event.preventDefault();
+        }
+    }
 </script>
 
-<label class="form-control">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<label class="form-control" onclick={handleLabelClick}>
     <span class="label">{label}</span>
-    <div class="input-container">
+    <div class="input-container" bind:this={inputContainer}>
         {@render children?.()}
     </div>
 </label>
