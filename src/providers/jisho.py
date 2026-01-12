@@ -8,7 +8,8 @@ from .provider import SentenceProvider
 class JishoProvider(SentenceProvider):
     name = "jisho"
     human_name = "Jisho"
-    url = "https://jisho.org/search/{word} %23sentences"
+    url = "https://jisho.org"
+    search_url = "{url}/search/{word} %23sentences"
 
     @property
     def supported_languages(self) -> list[str]:
@@ -18,7 +19,7 @@ class JishoProvider(SentenceProvider):
         sentences = super().fetch(word, language)
         page = 1
         while True:
-            soup = get_soup(f"{self.url}?page={page}".format(word=word, page=page))
+            soup = get_soup(f"{self.search_url}?page={page}".format(url=self.url, word=word, page=page))
             sentence_elements = soup.select(".japanese_sentence ")
             if not sentence_elements:
                 break
@@ -30,4 +31,4 @@ class JishoProvider(SentenceProvider):
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
-        return self.url.format(word=word)
+        return self.search_url.format(url=self.url, word=word)

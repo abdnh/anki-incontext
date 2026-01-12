@@ -8,7 +8,8 @@ from .provider import SentenceProvider
 class SesliSozlukProvider(SentenceProvider):
     name = "sesli_sozluk"
     human_name = "Sesli Sözlük"
-    url = "https://www.seslisozluk.net/{word}-nedir-ne-demek/"
+    url = "https://www.seslisozluk.net"
+    search_url = "{url}/{word}-nedir-ne-demek/"
 
     @property
     def supported_languages(self) -> list[str]:
@@ -16,10 +17,10 @@ class SesliSozlukProvider(SentenceProvider):
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
-        soup = get_soup(self.url.format(word=word))
+        soup = get_soup(self.search_url.format(url=self.url, word=word))
         for e in soup.select('.ordered-list q[lang="tr"]'):
             sentences.append(Sentence(e.get_text(), word, language, self.name))
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
-        return self.url.format(word=word)
+        return self.search_url.format(url=self.url, word=word)

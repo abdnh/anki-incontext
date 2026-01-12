@@ -10,7 +10,8 @@ from .provider import SentenceProvider
 class DictionaryProvider(SentenceProvider):
     name = "dictionary.com"
     human_name = "Dictionary.com"
-    url = "https://www.dictionary.com/browse/{word}"
+    url = "https://www.dictionary.com"
+    search_url = "{url}/browse/{word}"
 
     @property
     def supported_languages(self) -> list[str]:
@@ -18,11 +19,11 @@ class DictionaryProvider(SentenceProvider):
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
-        soup = get_soup(self.url.format(word=word))
+        soup = get_soup(self.search_url.format(url=self.url, word=word))
         nodes = soup.select('[data-type="example-sentences-module"] div p')
         for n in nodes:
             sentences.append(Sentence(n.get_text(), word, language, self.name))
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
-        return self.url.format(word=word)
+        return self.search_url.format(url=self.url, word=word)

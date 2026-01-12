@@ -8,7 +8,8 @@ from .provider import SentenceProvider
 class MassifProvider(SentenceProvider):
     name = "massif"
     human_name = "Massif"
-    url = "https://massif.la/ja/search?q={word}"
+    url = "https://massif.la/ja"
+    search_url = "{url}?q={word}"
 
     @property
     def supported_languages(self) -> list[str]:
@@ -17,7 +18,7 @@ class MassifProvider(SentenceProvider):
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
 
-        soup = get_soup(self.url.format(word=word))
+        soup = get_soup(self.search_url.format(url=self.url, word=word))
         for sentence_li in soup.select("li.text-japanese"):
             sentence_div = sentence_li.select_one("div")
             if not sentence_div:
@@ -27,4 +28,4 @@ class MassifProvider(SentenceProvider):
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
-        return self.url.format(word=word)
+        return self.search_url.format(url=self.url, word=word)

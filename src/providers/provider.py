@@ -12,6 +12,8 @@ class SentenceProvider(ABC):
     name: str
     # Name shown to the user in the GUI
     human_name: str
+    # Website URL
+    url: str
 
     def __init__(self, db: SentenceDB):
         self.db = db

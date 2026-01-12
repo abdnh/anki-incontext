@@ -26,8 +26,6 @@ You can specify the language using the `lang` option:
 {{incontext lang=eng:Front}}
 ```
 
-All [language codes](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) supported by [Tatoeba](https://tatoeba.org/en/downloads) should work.
-
 Sentences are fetched from multiple sources such as [Dictionary.com](https://www.dictionary.com/) (for English) and [sozluk.gov.tr](https://sozluk.gov.tr) (for Turkish).
 You can show sentences from only a certain source by using the `provider` option, like this:
 
@@ -35,9 +33,7 @@ You can show sentences from only a certain source by using the `provider` option
 {{incontext lang=eng provider=dictionary.com:Front}}
 ```
 
-For a list of supported sources, see the [providers](./src/providers/) folder.
-The identifier of each provider is defined by a `name` variable inside each provider class.
-A list of available providers is also shown in the [interface](#interface).
+Go to _Tools > InContext > Help_ for a complete list of supported languages and providers with their template filter codes.
 
 If a provider is given but no language, the first supported language of the provider will be assumed.
 If both language and provider are not given, the default is English with all providers.

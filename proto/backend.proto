@@ -30,6 +30,7 @@ message Language {
 message Provider {
   string code = 1;
   string name = 2;
+  string url = 3;
 }
 
 message DownloadTatoebaSentencesRequest {

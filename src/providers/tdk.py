@@ -9,6 +9,7 @@ from .provider import SentenceProvider
 class TDKProvider(SentenceProvider):
     name = "tdk"
     human_name = "Türk Dil Kurumu Sözlükleri"
+    url = "https://sozluk.gov.tr"
 
     @property
     def supported_languages(self) -> list[str]:
@@ -23,4 +24,4 @@ class TDKProvider(SentenceProvider):
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
-        return "https://sozluk.gov.tr/"
+        return self.url

@@ -8,7 +8,8 @@ from .provider import SentenceProvider
 class OxfordLearnerProvider(SentenceProvider):
     name = "oxford_learner"
     human_name = "Oxford Learner's Dictionaries"
-    url = "https://www.oxfordlearnersdictionaries.com/definition/english/{word}"
+    url = "https://www.oxfordlearnersdictionaries.com"
+    search_url = "{url}/definition/english/{word}"
 
     @property
     def supported_languages(self) -> list[str]:
@@ -16,7 +17,7 @@ class OxfordLearnerProvider(SentenceProvider):
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
-        soup = get_soup(self.url.format(word=word))
+        soup = get_soup(self.search_url.format(url=self.url, word=word))
         # FIXME: report errors
         nodes = soup.select(".x")
         for n in nodes:
@@ -24,4 +25,4 @@ class OxfordLearnerProvider(SentenceProvider):
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
-        return self.url.format(word=word)
+        return self.search_url.format(url=self.url, word=word)

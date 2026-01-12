@@ -125,6 +125,7 @@ def download_tatoeba_sentences(lang_code: str, on_progress: Callable[[float, str
 class TatoebaProvider(SentenceProvider):
     name = "tatoeba"
     human_name = "Tatoeba"
+    url = "https://tatoeba.org"
 
     @property
     def supported_languages(self) -> list[str]:
@@ -146,4 +147,4 @@ class TatoebaProvider(SentenceProvider):
 
     def get_source(self, word: str, language: str) -> str:
         alpha_3 = get_language_info(language).alpha_3.lower()
-        return f"https://tatoeba.org/en/sentences/search?from={alpha_3}&query={word}&to="
+        return f"{self.url}/en/sentences/search?from={alpha_3}&query={word}&to="

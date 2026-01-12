@@ -8,6 +8,7 @@ from .provider import SentenceProvider
 class SkellProvider(SentenceProvider):
     name = "skell"
     human_name = "SkELL"
+    url = "https://skell.sketchengine.eu"
 
     # TODO: add all languages supported by Skell
     @property
@@ -23,4 +24,4 @@ class SkellProvider(SentenceProvider):
         return sentences
 
     def get_source(self, word: str, language: str) -> str:
-        return f"https://skell.sketchengine.eu/#result?lang={language}&query={word}&f=concordance"
+        return f"{self.url}/#result?lang={language}&query={word}&f=concordance"

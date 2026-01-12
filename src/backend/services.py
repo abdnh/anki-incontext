@@ -60,7 +60,8 @@ def get_languages() -> list[Language]:
 
 def get_providers_for_language(lang: str) -> list[Provider]:
     return [
-        Provider(code=provider.name, name=provider.human_name) for provider in get_providers_for_language_base(lang)
+        Provider(code=provider.name, name=provider.human_name, url=provider.url)
+        for provider in get_providers_for_language_base(lang)
     ]
 
 
