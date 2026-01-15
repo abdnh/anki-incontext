@@ -3,6 +3,7 @@
     import { MultiSelect, Select, Spinner } from "ankiutils";
 
     import Error from "$lib/Error.svelte";
+    import LanguageSelect from "$lib/LanguageSelect.svelte";
     import SelectControl from "$lib/SelectControl.svelte";
     import type { PageProps } from "./$types";
 
@@ -61,7 +62,7 @@
         <h1 class="font-bold text-2xl my-2">Fill in sentences</h1>
         <div class="flex flex-col gap-2">
             <SelectControl label="Language">
-                <Select
+                <LanguageSelect
                     options={initialData.languages.map((lang) => ({
                         value: lang.code,
                         label: lang.name,

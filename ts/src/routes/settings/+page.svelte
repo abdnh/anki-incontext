@@ -1,6 +1,7 @@
 <script lang="ts">
     import { client, type GetSettingsResponse } from "$lib";
     import Error from "$lib/Error.svelte";
+    import LanguageSelect from "$lib/LanguageSelect.svelte";
     import SelectControl from "$lib/SelectControl.svelte";
     import {
         MultiSelect,
@@ -140,7 +141,7 @@
                     the Fill-in pages
                 </p>
                 <SelectControl label="Language">
-                    <Select
+                    <LanguageSelect
                         onSelected={onLanguageSelected}
                         options={languages}
                         bind:value={defaultLanguage}
@@ -171,7 +172,7 @@
                 {#each searchShortcuts as _, i (i)}
                     <div class="search-shortcut-widget flex gap-4">
                         <SearchShortcut bind:keys={searchShortcuts[i].keys} />
-                        <Select
+                        <LanguageSelect
                             options={languages}
                             bind:value={searchShortcuts[i].language}
                             placeholder="Select language"

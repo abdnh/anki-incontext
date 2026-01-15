@@ -5,14 +5,10 @@
         type Provider,
     } from "$lib";
     import Error from "$lib/Error.svelte";
+    import LanguageSelect from "$lib/LanguageSelect.svelte";
     // import { type GetLanguagesAndProvidersResponse, type Provider } from "$lib/generated/backend_pb";
     import SelectControl from "$lib/SelectControl.svelte";
-    import {
-        promiseWithResolver,
-        Select,
-        type SelectOption,
-        Spinner,
-    } from "ankiutils";
+    import { promiseWithResolver, type SelectOption, Spinner } from "ankiutils";
     import { onMount } from "svelte";
 
     let [languagesPromise, resolveLanguages, _] = promiseWithResolver<
@@ -55,7 +51,7 @@
         <Spinner label="Loading languages..." />
     {:then _}
         <SelectControl label="Language">
-            <Select
+            <LanguageSelect
                 options={languages}
                 onSelected={onLanguageSelected}
                 bind:value={language}

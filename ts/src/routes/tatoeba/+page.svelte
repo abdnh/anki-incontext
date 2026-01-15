@@ -1,7 +1,8 @@
 <script lang="ts">
     import { client, type TatoebaDownloadProgress } from "$lib";
     import Error from "$lib/Error.svelte";
-    import { Select, Spinner } from "ankiutils";
+    import LanguageSelect from "$lib/LanguageSelect.svelte";
+    import { Spinner } from "ankiutils";
 
     let selectedLanguage = $state("");
     let downloadProgress = $state<TatoebaDownloadProgress | null>(null);
@@ -46,7 +47,7 @@
                 Select a language to download sentences from Tatoeba.
             </p>
             <div class="flex items-center gap-2 mt-4 justify-center">
-                <Select
+                <LanguageSelect
                     options={languages}
                     bind:value={selectedLanguage}
                     placeholder="Select a language..."

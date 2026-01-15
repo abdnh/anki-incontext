@@ -5,3 +5,7 @@
 @source "../../../node_modules/ankiutils";
 
 @import "bootstrap-icons";
+
+.language-selector .menu {
+    @apply max-h-58;
+}
