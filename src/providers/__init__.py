@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import random
 
+from ..config import config
 from ..db import Sentence, SentenceDB
 from .dictionary_com import DictionaryProvider
 from .glosbe import GlosbeProvider
@@ -34,7 +35,7 @@ PROVIDERS: list[SentenceProvider] = []
 def init_providers(db: SentenceDB) -> None:
     PROVIDERS.clear()
     for cls in PROVIDER_CLASSES:
-        PROVIDERS.append(cls(db))
+        PROVIDERS.append(cls(db, config.get("provider_options", {}).get(cls.name, {})))
 
 
 def get_sentences(
@@ -77,6 +78,10 @@ def get_languages() -> list[tuple[str, str]]:
     for provider in PROVIDERS:
         langs.update(provider.supported_languages)
     return [(code, langcode_to_name(code)) for code in langs]
+
+
+def get_providers() -> list[SentenceProvider]:
+    return PROVIDERS
 
 
 def get_providers_for_language(language: str) -> list[SentenceProvider]:

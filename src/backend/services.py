@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections.abc import Iterable
 
 from anki.collection import Collection
@@ -27,6 +28,7 @@ from ..proto.backend_pb2 import (
     GetTatoebaLanguagesResponse,
     Language,
     Provider,
+    ProviderOptions,
     SearchShortcut,
     Sentence,
     TatoebaDownloadProgress,
@@ -38,12 +40,11 @@ from ..providers import (
 )
 from ..providers import (
     get_provider,
+    get_providers,
     get_sentence_source,
     get_sentences,
 )
-from ..providers import (
-    get_providers_for_language as get_providers_for_language_base,
-)
+from ..providers import get_providers_for_language as get_providers_for_language_base
 from ..providers.langs import get_all_languages
 from ..providers.tatoeba import download_tatoeba_sentences
 
@@ -169,10 +170,18 @@ class BackendService(BackendServiceBase):
                     providers=get_providers_for_language(shortcut["language"]),
                 )
             )
+        provider_options = [
+            ProviderOptions(
+                provider=Provider(code=provider.name, name=provider.human_name),
+                options=json.dumps(config["provider_options"].get(provider.name, {})),
+            )
+            for provider in get_providers()
+        ]
         return GetSettingsResponse(
             search_shortcuts=search_shortcuts,
             languages=get_languages(),
             default_language=config["lang_field"],
             default_providers=providers,
             language_providers=get_providers_for_language(config["lang_field"]),
+            provider_options=provider_options,
         )

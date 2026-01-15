@@ -114,18 +114,25 @@ message SearchShortcut {
   repeated string selected_providers = 4;
 }
 
+message ProviderOptions {
+  Provider provider = 1;
+  string options = 2;
+}
+
 message GetSettingsResponse {
   repeated SearchShortcut search_shortcuts = 1;
   repeated Language languages = 2;
   string default_language = 3;
   repeated string default_providers = 4;
   repeated Provider language_providers = 5;
+  repeated ProviderOptions provider_options = 6;
 }
 
 message SaveSettingsRequest {
   repeated SearchShortcut search_shortcuts = 1;
   string default_language = 2;
   repeated string default_providers = 3;
+  repeated ProviderOptions provider_options = 4;
 }
 
 message GetClipboardTextResponse {

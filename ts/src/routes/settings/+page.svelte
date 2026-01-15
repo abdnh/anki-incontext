@@ -9,8 +9,10 @@
         type SelectOption,
         Spinner,
     } from "ankiutils";
-    import { onMount } from "svelte";
+    import { type Component, onMount } from "svelte";
+    import Nadeshiko from "./Nadeshiko.svelte";
     import SearchShortcut from "./SearchShortcut.svelte";
+    import type { ProviderOptions } from "./types";
 
     interface Shortcut {
         keys: string[];
@@ -27,6 +29,17 @@
     let providersForLanguage: {
         [key: string]: Promise<SelectOption[] | undefined>;
     } = $state({});
+    let providerOptions = $state<ProviderOptions[]>([]);
+    let configuredProvider = $state("");
+    let providerOptionComponents: Record<
+        string,
+        Component
+    > = {
+        "nadeshiko": Nadeshiko,
+    };
+    let ConfiguredProviderOptions = $derived(
+        providerOptionComponents[configuredProvider],
+    );
 
     function onAddSearchShortcut() {
         searchShortcuts.push({ keys: [], language: "", providers: [] });
@@ -43,6 +56,12 @@
             }),
             defaultLanguage,
             defaultProviders,
+            providerOptions: providerOptions.map(item => {
+                return {
+                    provider: item.provider,
+                    options: JSON.stringify(item.options),
+                };
+            }),
         });
     }
 
@@ -98,6 +117,12 @@
                 keys: s.keys,
                 language: s.language,
                 providers: s.selectedProviders,
+            };
+        });
+        providerOptions = response.providerOptions.map(item => {
+            return {
+                provider: item.provider!,
+                options: JSON.parse(item.options),
             };
         });
     });
@@ -196,6 +221,23 @@
                         </button>
                     </div>
                 {/each}
+            </div>
+            <div class="flex flex-col gap-4">
+                <h2 class="font-bold text-4xl my-4">Provider Settings</h2>
+                <p>
+                    Some providers require configuration to work (e.g. API keys)
+                </p>
+                <SelectControl label="Provider">
+                    <Select
+                        options={providerOptions.filter(item =>
+                            Object.keys(providerOptionComponents).includes(item.provider!.code)
+                        ).map(item => {
+                            return { label: item.provider!.name, value: item.provider!.code };
+                        })}
+                        bind:value={configuredProvider}
+                    />
+                </SelectControl>
+                <ConfiguredProviderOptions bind:allOptions={providerOptions} />
             </div>
         </div>
         <div class="flex flex-row-reverse border-t border-t-accent pt-2">

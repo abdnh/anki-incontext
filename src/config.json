@@ -4,5 +4,6 @@
     "report_errors": true,
     "sentences_field": "",
     "word_field": "",
-    "search_shortcuts": []
+    "search_shortcuts": [],
+    "provider_options": {}
 }

@@ -1,23 +1,29 @@
 from __future__ import annotations
 
-import os
+from dataclasses import dataclass
+from typing import Any
 
 from ..db import Sentence, SentenceDB
 from ..exceptions import InContextError
 from ..vendor.nadeshiko_api_client import ApiClient, ApiException, Configuration, SearchApi, SentenceSearchRequest
-from .provider import SentenceProvider
+from .provider import ProviderConfig, SentenceProvider
 
 
-class NadeshikoProvider(SentenceProvider):
+@dataclass
+class NadeshikoConfig(ProviderConfig):
+    api_key: str
+
+
+class NadeshikoProvider(SentenceProvider[NadeshikoConfig]):
     name = "nadeshiko"
     human_name = "Nadeshiko"
     url = "https://nadeshiko.co"
+    config_class = NadeshikoConfig
 
-    def __init__(self, db: SentenceDB):
-        super().__init__(db)
+    def __init__(self, db: SentenceDB, config: dict[str, Any]):
+        super().__init__(db, config)
         configuration = Configuration()
-        # TODO: Add provider-specific settings
-        configuration.api_key["apiKeyHeader"] = os.environ["NADESHIKO_API_KEY"]
+        configuration.api_key["apiKeyHeader"] = self.config.api_key
         self.client = ApiClient(configuration)
 
     @property

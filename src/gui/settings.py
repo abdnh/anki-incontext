@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from aqt import mw
 from aqt.qt import QWidget
 from aqt.utils import tooltip
@@ -37,6 +39,12 @@ class SettingsDialog(SveltekitWebDialog):
         config["search_shortcuts"] = search_shortcuts
         config["lang_field"] = request.default_language
         config["provider_field"] = list(request.default_providers)
+        provider_options = {}
+        for item in request.provider_options:
+            options = json.loads(item.options)
+            if options:
+                provider_options[item.provider.code] = options
+        config["provider_options"] = provider_options
 
         def on_main() -> None:
             self.close()

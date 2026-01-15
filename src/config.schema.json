@@ -36,6 +36,16 @@
                     }
                 }
             }
+        },
+        "provider_options": {
+            "patternProperties": {
+                ".*": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                }
+            }
         }
     },
     "type": "object"

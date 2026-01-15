@@ -22,4 +22,8 @@ def transform_code(path: Path, code: str) -> str:
             code,
             flags=re.MULTILINE,
         )
+    if path.name == "api_client.py" and path.parent.name == "nadeshiko_api_client":
+        # Work around a limitation in import rewriting logic
+        code = re.sub("nadeshiko_api_client.models", "models", code)
+
     return code

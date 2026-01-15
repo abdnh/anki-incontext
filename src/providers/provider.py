@@ -2,21 +2,33 @@ from __future__ import annotations
 
 import random
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import Any, Generic, TypeVar, cast
 
 from ..db import Sentence, SentenceDB
 from ..exceptions import InContextUnsupportedLanguageError
 
 
-class SentenceProvider(ABC):
+@dataclass
+class ProviderConfig:
+    pass
+
+
+T = TypeVar("T", bound=ProviderConfig)
+
+
+class SentenceProvider(Generic[T], ABC):
     # Name used for identifying the provider in template filters and other places
     name: str
     # Name shown to the user in the GUI
     human_name: str
     # Website URL
     url: str
+    config_class: type[T] = cast(type[T], ProviderConfig)
 
-    def __init__(self, db: SentenceDB):
+    def __init__(self, db: SentenceDB, config: dict[str, Any]):
         self.db = db
+        self.config = self.config_class(**config)
 
     @property
     def supported_languages(self) -> list[str]:
