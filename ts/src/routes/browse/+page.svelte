@@ -2,6 +2,7 @@
     import type { Sentence } from "$lib";
     import { client, type GetLanguagesAndProvidersResponse } from "$lib";
     import Error from "$lib/Error.svelte";
+    import type { ConnectError } from "@connectrpc/connect";
     import { promiseWithResolver, type SelectOption, Spinner } from "ankiutils";
     import { onMount } from "svelte";
     import type { PageProps } from "./$types";
@@ -19,8 +20,9 @@
     let selectedLanguage = $state(initialLanguage ?? "eng");
     let providers = $state<SelectOption[]>([]);
     let selectedProviders = $state<string[]>(data.providers ?? []);
-    let sentences = $state<Sentence[] | undefined>([]);
+    let sentences = $state<Sentence[] | null>([]);
     let loadingSentences = $state(false);
+    let searchError = $state<string | null>(null);
     let ignoreNextClipboardUpdate = $state(false);
     let abortController: AbortController | null = $state(null);
 
@@ -44,27 +46,33 @@
     window.incontext = window.incontext || {};
     window.incontext.runQuery = runQuery;
 
-    function onSearch() {
+    async function onSearch() {
         if (abortController) {
             abortController.abort();
         }
         loadingSentences = true;
         abortController = new AbortController();
-        client
-            .getSentences(
-                {
-                    word: search,
-                    language: selectedLanguage,
-                    providers: selectedProviders,
-                },
-                { signal: abortController.signal },
-            )
-            .then((response) => {
-                sentences = response.sentences.length
-                    ? response.sentences
-                    : undefined;
-                loadingSentences = false;
-            });
+        try {
+            const response = await client
+                .getSentences(
+                    {
+                        word: search,
+                        language: selectedLanguage,
+                        providers: selectedProviders,
+                    },
+                    { signal: abortController.signal },
+                );
+
+            sentences = response.sentences.length
+                ? response.sentences
+                : null;
+
+            searchError = null;
+        } catch (error) {
+            searchError = (error as ConnectError).rawMessage;
+            sentences = null;
+        }
+        loadingSentences = false;
     }
 
     async function onLanguageSelected() {
@@ -151,6 +159,8 @@
                     />
                 {/each}
             </div>
+        {:else if searchError}
+            <Error error={searchError} />
         {:else}
             <div class="flex flex-col items-center mx-auto text-2xl">
                 <i class="bi bi-hdd"></i>
