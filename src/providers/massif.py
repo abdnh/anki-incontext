@@ -9,7 +9,7 @@ class MassifProvider(SentenceProvider):
     name = "massif"
     human_name = "Massif"
     url = "https://massif.la/ja"
-    search_url = "{url}?q={word}"
+    search_url = "{url}/search?q={word}"
 
     @property
     def supported_languages(self) -> list[str]:
