@@ -16,7 +16,7 @@ class NadeshikoApiKeyError(InContextError):
 
 @dataclass
 class NadeshikoConfig(ProviderConfig):
-    api_key: str
+    api_key: str = ""
 
 
 class NadeshikoProvider(SentenceProvider[NadeshikoConfig]):
