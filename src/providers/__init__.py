@@ -8,6 +8,7 @@ from .glosbe import GlosbeProvider
 from .jisho import JishoProvider
 from .langs import get_language_info, langcode_to_name
 from .massif import MassifProvider
+from .nadeshiko import NadeshikoProvider
 from .oxford_learner import OxfordLearnerProvider
 from .provider import SentenceProvider
 from .seslisozluk import SesliSozlukProvider
@@ -25,6 +26,7 @@ PROVIDER_CLASSES: list[type[SentenceProvider]] = [
     DictionaryProvider,
     JishoProvider,
     MassifProvider,
+    NadeshikoProvider,
 ]
 PROVIDERS: list[SentenceProvider] = []
 

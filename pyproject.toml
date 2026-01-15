@@ -20,6 +20,7 @@ dependencies = [
     "skell-downloader",
     "tdk",
     "protobuf",
+    "nadeshiko-api-client",
 ]
 
 [tool.setuptools]
@@ -30,6 +31,7 @@ ankiscripts = { git = "https://github.com/abdnh/ankiscripts", branch = "master" 
 ankiutils = { git = "https://github.com/abdnh/ankiutils", branch = "master" }
 skell-downloader = { git = "https://github.com/abdnh/skell-downloader", branch = "master" }
 tdk = { git = "https://github.com/abdnh/tdk", branch = "master" }
+nadeshiko-api-client = { git = "https://github.com/abdnh/nadeshiko-api-client", branch = "main" }
 
 [dependency-groups]
 dev = [
