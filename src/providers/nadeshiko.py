@@ -5,7 +5,8 @@ from typing import Any
 
 from ..db import Sentence, SentenceDB
 from ..exceptions import InContextError
-from ..vendor.nadeshiko_api_client import ApiClient, ApiException, Configuration, SearchApi, SentenceSearchRequest
+from ..vendor.nadeshiko_api_client.client import Client
+from ..vendor.nadeshiko_api_client.models import SentenceSearchRequest
 from .provider import ProviderConfig, SentenceProvider
 
 
@@ -27,9 +28,7 @@ class NadeshikoProvider(SentenceProvider[NadeshikoConfig]):
 
     def __init__(self, db: SentenceDB, config: dict[str, Any]):
         super().__init__(db, config)
-        configuration = Configuration()
-        configuration.api_key["apiKeyHeader"] = self.config.api_key
-        self.client = ApiClient(configuration)
+        self.client = Client(self.config.api_key)
 
     @property
     def supported_languages(self) -> list[str]:
@@ -39,16 +38,18 @@ class NadeshikoProvider(SentenceProvider[NadeshikoConfig]):
         sentences = super().fetch(word, language)
         if not self.config.api_key:
             raise NadeshikoApiKeyError()
-        api_instance = SearchApi(self.client)
-        context_request = SentenceSearchRequest(query=word)
         try:
-            api_response = api_instance.search_sentence(context_request)
-            for sentence in api_response.sentences:
-                # TODO: the `uuid` field can be used to construct a sentence-specific source (https://github.com/abdnh/anki-incontext/issues/32)
-                sentences.append(
-                    Sentence(text=sentence.segment_info.content_jp, word=word, language=language, provider=self.name)
-                )
-        except ApiException as exc:
+            response = self.client.search_sentence(SentenceSearchRequest(query=word, limit=999))
+            if response.sentences:
+                for sentence in response.sentences:
+                    # TODO: the `uuid` field can be used to construct a sentence-specific source (https://github.com/abdnh/anki-incontext/issues/32)
+                    if sentence.segment_info:
+                        sentences.append(
+                            Sentence(
+                                text=sentence.segment_info.content_jp, word=word, language=language, provider=self.name
+                            )
+                        )
+        except Exception as exc:
             raise InContextError(str(exc)) from exc
 
         return sentences

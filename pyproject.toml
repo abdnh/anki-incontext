@@ -110,8 +110,3 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "pycountry.*"
 ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-# Work around mypy issues with rewritten imports in nadeshiko-api-client
-module = "src.vendor.pydantic.types"
-follow_imports = "skip"
