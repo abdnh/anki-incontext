@@ -9,6 +9,11 @@ from ..vendor.nadeshiko_api_client import ApiClient, ApiException, Configuration
 from .provider import ProviderConfig, SentenceProvider
 
 
+class NadeshikoApiKeyError(InContextError):
+    def __init__(self) -> None:
+        super().__init__("Nadeshiko requires an API key. Configure it from Tools > InContext > Settings")
+
+
 @dataclass
 class NadeshikoConfig(ProviderConfig):
     api_key: str
@@ -32,6 +37,8 @@ class NadeshikoProvider(SentenceProvider[NadeshikoConfig]):
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
+        if not self.config.api_key:
+            raise NadeshikoApiKeyError()
         api_instance = SearchApi(self.client)
         context_request = SentenceSearchRequest(query=word)
         try:
