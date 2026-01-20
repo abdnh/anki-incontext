@@ -15,12 +15,13 @@ class Sentence:
     word: str
     language: str
     provider: str
+    source: str = ""
 
 
 class SentenceDB:
     # Schema upgrade code is adapted from https://github.com/ankitects/anki/blob/af8ae69837c0712b2c8be6b46a27191873d539c3/rslib/src/storage/sqlite.rs
     SCHEMA_STARTING_VERSION = 1
-    SCHEMA_MAX_VERSION = 1
+    SCHEMA_MAX_VERSION = 2
 
     def __init__(self, path: Path | None = None):
         self.con = sqlite3.connect(path or consts.dir / "user_files" / "sentences.db", check_same_thread=False)
@@ -50,8 +51,8 @@ class SentenceDB:
 
     def _open_or_create_db(self) -> None:
         with self.con:
-            create, _ = self._schema_version()
-            # upgrade = ver != self.SCHEMA_MAX_VERSION
+            create, version = self._schema_version()
+            upgrade = version != self.SCHEMA_MAX_VERSION
 
             if create:
                 self.con.executescript(
@@ -70,8 +71,15 @@ class SentenceDB:
                 INSERT INTO col(id, ver) VALUES (1, {self.SCHEMA_STARTING_VERSION});
                 """
                 )
-            # if create or upgrade:
-            #     self._upgrade_to_latest_schema(ver)
+            if create or upgrade:
+                self._upgrade_to_latest_schema(version)
+
+    def _upgrade_to_latest_schema(self, version: int) -> None:
+        if version < 2:
+            self.con.executescript("""
+                ALTER TABLE sentences ADD COLUMN source TEXT;
+                UPDATE col SET ver = 2;
+            """)
 
     def get_random_sentences(self, word: str, language: str, provider: str, limit: int | None = None) -> list[Sentence]:
         sentences = []
@@ -90,14 +98,15 @@ class SentenceDB:
     def add_sentences(self, sentences: list[Sentence]) -> None:
         with self.con:
             self.con.executemany(
-                """ INSERT OR REPLACE INTO sentences (text, word, language, provider)
-                VALUES (?, ?, ?, ?) """,
+                """ INSERT OR REPLACE INTO sentences (text, word, language, provider, source)
+                VALUES (?, ?, ?, ?, ?) """,
                 [
                     (
                         sentence.text,
                         sentence.word,
                         sentence.language,
                         sentence.provider,
+                        sentence.source,
                     )
                     for sentence in sentences
                 ],

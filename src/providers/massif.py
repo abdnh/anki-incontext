@@ -24,7 +24,9 @@ class MassifProvider(SentenceProvider):
             if not sentence_div:
                 continue
             text = sentence_div.get_text()
-            sentences.append(Sentence(text=text, word=word, language=language, provider=self.name))
+            source_el = sentence_li.select_one(".source_link")
+            source = str(source_el.get("href", "")) if source_el else ""
+            sentences.append(Sentence(text=text, word=word, language=language, provider=self.name, source=source))
         return sentences
 
     def get_source(self, word: str, language: str) -> str:

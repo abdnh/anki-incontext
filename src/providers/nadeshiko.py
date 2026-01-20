@@ -42,11 +42,19 @@ class NadeshikoProvider(SentenceProvider[NadeshikoConfig]):
             response = self.client.search_sentence(SentenceSearchRequest(query=word, limit=999))
             if response.sentences:
                 for sentence in response.sentences:
-                    # TODO: the `uuid` field can be used to construct a sentence-specific source (https://github.com/abdnh/anki-incontext/issues/32)
+                    source = (
+                        f"https://nadeshiko.co/search/sentence?uuid={sentence.segment_info.uuid}"
+                        if sentence.segment_info.uuid
+                        else ""
+                    )
                     if sentence.segment_info:
                         sentences.append(
                             Sentence(
-                                text=sentence.segment_info.content_jp, word=word, language=language, provider=self.name
+                                text=sentence.segment_info.content_jp,
+                                word=word,
+                                language=language,
+                                provider=self.name,
+                                source=source,
                             )
                         )
         except Exception as exc:

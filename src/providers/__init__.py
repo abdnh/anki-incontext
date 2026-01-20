@@ -97,10 +97,3 @@ def get_provider(name: str) -> SentenceProvider | None:
         if provider.name == name:
             return provider
     return None
-
-
-def get_sentence_source(sentence: Sentence) -> str:
-    provider = get_provider(sentence.provider)
-    if provider:
-        return provider.get_source(sentence.word, sentence.language)
-    return ""

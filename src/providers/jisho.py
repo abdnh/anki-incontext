@@ -20,13 +20,18 @@ class JishoProvider(SentenceProvider):
         page = 1
         while True:
             soup = get_soup(f"{self.search_url}?page={page}".format(url=self.url, word=word, page=page))
-            sentence_elements = soup.select(".japanese_sentence ")
+            sentence_elements = soup.select(".sentence")
             if not sentence_elements:
                 break
             for sentence_element in sentence_elements:
                 for el in sentence_element.select(".furigana"):
                     el.decompose()
-                sentences.append(Sentence(sentence_element.get_text(), word, language, self.name))
+                jp_el = sentence_element.select_one(".japanese_sentence")
+                source_el = sentence_element.select_one(".light-details_link")
+                source = str(source_el.get("href", "")) if source_el else ""
+                sentences.append(
+                    Sentence(text=jp_el.get_text(), word=word, language=language, provider=self.name, source=source)
+                )
             page += 1
         return sentences
 

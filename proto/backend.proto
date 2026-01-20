@@ -98,13 +98,13 @@ message GetSentencesRequest {
 }
 
 message GetSentencesResponse {
-  repeated Sentence sentences = 1;
+  repeated Sentence sentences = 2;
 }
 
 message Sentence {
   string text = 1;
   string provider = 2;
-  string url = 3;
+  string source = 3;
 }
 
 message SearchShortcut {

@@ -41,7 +41,6 @@ from ..providers import (
 from ..providers import (
     get_provider,
     get_providers,
-    get_sentence_source,
     get_sentences,
 )
 from ..providers import get_providers_for_language as get_providers_for_language_base
@@ -142,20 +141,22 @@ class BackendService(BackendServiceBase):
 
     @classmethod
     def get_sentences(cls, request: GetSentencesRequest) -> GetSentencesResponse:
-        return GetSentencesResponse(
-            sentences=[
+        sentences: list[Sentence] = []
+        for sentence in get_sentences(
+            word=request.word,
+            language=request.language,
+            providers=list(request.providers),
+        ):
+            provider = get_provider(sentence.provider)
+            sentences.append(
                 Sentence(
                     text=sentence.text,
-                    provider=get_provider(sentence.provider).human_name,
-                    url=get_sentence_source(sentence),
+                    provider=provider.human_name,
+                    source=sentence.source or provider.get_source(sentence.word, sentence.language),
                 )
-                for sentence in get_sentences(
-                    word=request.word,
-                    language=request.language,
-                    providers=list(request.providers),
-                )
-            ]
-        )
+            )
+
+        return GetSentencesResponse(sentences=sentences)
 
     @classmethod
     def get_settings(cls, request: Empty) -> GetSettingsResponse:

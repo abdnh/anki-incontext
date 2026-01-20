@@ -153,7 +153,7 @@
                 {#each sentences as sentence, i (i)}
                     <SentenceCard
                         text={sentence.text}
-                        url={sentence.url}
+                        url={sentence.source}
                         provider={sentence.provider}
                         alternativeColor={i % 2 === 0}
                     />
