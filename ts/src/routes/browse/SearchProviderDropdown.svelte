@@ -18,3 +18,9 @@
 </script>
 
 <Dropdown {label} {options} bind:selectedOptions multiple={true} {onSelected} />
+
+<style lang="scss">
+    :global(.menu) {
+        min-width: max-content;
+    }
+</style>
