@@ -3,20 +3,23 @@ default: zip
 set windows-shell := ["pwsh", "-c"]
 
 UV_RUN := "uv run --"
-
 BUILD_ARGS := "--qt all --exclude user_files/*.db --exclude user_files/**/*"
 
 # Package add-on for AnkiWeb
-ankiweb:
-	{{UV_RUN}} python -m ankiscripts.build --type ankiweb {{BUILD_ARGS}}
+ankiweb args=BUILD_ARGS:
+	{{UV_RUN}} python -m ankiscripts.build --type ankiweb --qt all --exclude user_files/**/* {{args}}
 
 # Package add-on for distribution outside of AnkiWeb
-zip:
-	{{UV_RUN}} python -m ankiscripts.build --type package --qt all {{BUILD_ARGS}}
+zip args=BUILD_ARGS:
+	{{UV_RUN}} python -m ankiscripts.build --type package --qt all --exclude user_files/**/* {{args}}
 
 # Install dependencies to src/vendor
 vendor:
 	{{UV_RUN}} python -m ankiscripts.vendor
+
+# Run protobuf generation
+proto:
+	{{UV_RUN}} python -m ankiscripts.protobuf
 
 # Format using Ruff
 ruff *files:
@@ -30,6 +33,10 @@ ruff-check *files:
 dprint *files:
 	dprint fmt --allow-no-files {{files}}
 
+# Check formatting using dprint
+dprint-check *files:
+	dprint check --allow-no-files {{files}}
+
 # Check type hints using mypy
 mypy *files:
 	{{UV_RUN}} mypy {{files}}
@@ -39,18 +46,18 @@ ts-check:
   {{ if path_exists("ts") == "true" { "cd ts && npm run check && npm run lint" } else { "" } }}
 
 # Check proto files for formatting issues
-proto-check *files:
+proto-check:
   {{ if path_exists("ts") == "true" { "cd ts && npm run check_proto" } else { "" } }}
 
 # Format proto files
-proto:
+proto-format:
   {{ if path_exists("ts") == "true" { "cd ts && npm run format_proto" } else { "" } }}
 
 # Fix formatting issues
-fix: ruff dprint proto
+fix: ruff dprint proto-format
 
 # Run mypy+formatting+ts+proto checks
-lint: mypy ruff-check ts-check proto-check
+lint: mypy ruff-check proto-check dprint-check ts-check
 
 # Run pytest
 pytest:
