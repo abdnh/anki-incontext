@@ -2,65 +2,9 @@
 
 An [Anki](https://apps.ankiweb.net/) add-on that fetches and displays example sentences in different languages from various sources.
 
-## Fill-in option
+## Usage
 
-You can add sentences to a chosen field in multiple notes using the browser's _Notes > InContext: Add sentences_ menu item.
-
-![Fill-in dialog](images/fill.png)
-
-## Template filter
-
-The add-on also supports displaying random example sentences for vocabulary each time a card is viewed.
-
-You just have to put a filter like this in your [card template](https://docs.ankiweb.net/templates/intro.html):
-
-```
-{{incontext:Front}}
-```
-
-Here, the add-on will show a random English example sentence containing the word in the `Front` field.
-
-You can specify the language using the `lang` option:
-
-```
-{{incontext lang=eng:Front}}
-```
-
-Sentences are fetched from multiple sources such as [Dictionary.com](https://www.dictionary.com/) (for English) and [sozluk.gov.tr](https://sozluk.gov.tr) (for Turkish).
-You can show sentences from only a certain source by using the `provider` option, like this:
-
-```
-{{incontext lang=eng provider=dictionary.com:Front}}
-```
-
-Go to _Tools > InContext > Help_ for a complete list of supported languages and providers with their template filter codes.
-
-If a provider is given but no language, the first supported language of the provider will be assumed.
-If both language and provider are not given, the default is English with all providers.
-
-More sites and languages will be added in the future. Contributions are welcome!
-
-## Importing Tatoeba databases
-
-Use _Tools > InContext > Download Tatoeba sentences_ to download sentences for your target language from [Tatoeba](https://tatoeba.org/).
-
-## Browsing sentences
-
-You can search for sentences using the screen under _Tools > InContext > Browse sentences_.
-
-![Browse screen](images/browse.png)
-
-You can also assign shortcuts to open the browse page for the selected word in the review screen from _Tools > InContext > Settings_.
-
-![Settings screen](images/settings.png)
-
-## Demo
-
-Download this deck for a demo of the add-on: https://drive.google.com/file/d/1Era5ksSa59xjB3ZbVQsdoTbQEigzh6Bi/view?usp=sharing
-
-## Download
-
-You can download the add-on from its page on AnkiWeb: https://ankiweb.net/shared/info/385420176
+See the [docs](https://www.abdnh.net/anki-incontext/) for usage.
 
 ## Changelog
 
