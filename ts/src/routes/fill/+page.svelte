@@ -100,6 +100,7 @@
                 <input
                     type="number"
                     class="input"
+                    min={0}
                     bind:value={selectedNumberOfSentences}
                 />
             </SelectControl>
