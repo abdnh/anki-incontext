@@ -35,7 +35,7 @@ nadeshiko-api-client = { git = "https://github.com/abdnh/nadeshiko-api-client", 
 
 [dependency-groups]
 dev = [
-    "ankiscripts[forms]",
+    "ankiscripts[forms,template]",
     "ankiutils",
     "aqt[qt]",
     "mypy>=1.15.0",
