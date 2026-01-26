@@ -29,60 +29,6 @@ wheels = [
 ]
 
 [[package]]
-name = "anki-incontext"
-source = { editable = "." }
-dependencies = [
-    { name = "ankiutils" },
-    { name = "nadeshiko-api-client" },
-    { name = "protobuf" },
-    { name = "pycountry" },
-    { name = "sentry-sdk" },
-    { name = "skell-downloader" },
-    { name = "tdk" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ankiscripts", extra = ["forms"] },
-    { name = "ankiutils" },
-    { name = "aqt", extra = ["qt"] },
-    { name = "mypy" },
-    { name = "prek" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-    { name = "sentry-sdk" },
-    { name = "types-protobuf" },
-    { name = "types-requests" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "ankiutils", git = "https://github.com/abdnh/ankiutils?branch=master" },
-    { name = "nadeshiko-api-client", git = "https://github.com/abdnh/nadeshiko-api-client?branch=main" },
-    { name = "protobuf" },
-    { name = "pycountry", specifier = ">=24.6.1" },
-    { name = "sentry-sdk", specifier = ">=2.35.0" },
-    { name = "skell-downloader", git = "https://github.com/abdnh/skell-downloader?branch=master" },
-    { name = "tdk", git = "https://github.com/abdnh/tdk?branch=master" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "ankiscripts", extras = ["forms"], git = "https://github.com/abdnh/ankiscripts?branch=master" },
-    { name = "ankiutils", git = "https://github.com/abdnh/ankiutils?branch=master" },
-    { name = "aqt", extras = ["qt"] },
-    { name = "mypy", specifier = ">=1.15.0" },
-    { name = "prek", specifier = ">=0.2.30" },
-    { name = "pytest", specifier = ">=8.3.5" },
-    { name = "pytest-cov", specifier = ">=6.1.1" },
-    { name = "ruff", specifier = ">=0.11.7" },
-    { name = "sentry-sdk", specifier = ">=2.35.0" },
-    { name = "types-protobuf" },
-    { name = "types-requests" },
-]
-
-[[package]]
 name = "anki-mac-helper"
 version = "0.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -498,6 +444,60 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/76/66/650a33bd90f786193e4de4b3ad86ea60b53c89b669a5c7be931fac31cdb0/importlib_metadata-8.7.0.tar.gz", hash = "sha256:d13b81ad223b890aa16c5471f2ac3056cf76c5f10f82d6f9292f0b415f389000", size = 56641, upload-time = "2025-04-27T15:29:01.736Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/20/b0/36bd937216ec521246249be3bf9855081de4c5e06a0c9b4219dbeda50373/importlib_metadata-8.7.0-py3-none-any.whl", hash = "sha256:e5dd1551894c77868a30651cef00984d50e1002d06942a7101d34870c5f02afd", size = 27656, upload-time = "2025-04-27T15:29:00.214Z" },
+]
+
+[[package]]
+name = "incontext"
+source = { editable = "." }
+dependencies = [
+    { name = "ankiutils" },
+    { name = "nadeshiko-api-client" },
+    { name = "protobuf" },
+    { name = "pycountry" },
+    { name = "sentry-sdk" },
+    { name = "skell-downloader" },
+    { name = "tdk" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "ankiscripts", extra = ["forms"] },
+    { name = "ankiutils" },
+    { name = "aqt", extra = ["qt"] },
+    { name = "mypy" },
+    { name = "prek" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+    { name = "sentry-sdk" },
+    { name = "types-protobuf" },
+    { name = "types-requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "ankiutils", git = "https://github.com/abdnh/ankiutils?branch=master" },
+    { name = "nadeshiko-api-client", git = "https://github.com/abdnh/nadeshiko-api-client?branch=main" },
+    { name = "protobuf" },
+    { name = "pycountry", specifier = ">=24.6.1" },
+    { name = "sentry-sdk", specifier = ">=2.35.0" },
+    { name = "skell-downloader", git = "https://github.com/abdnh/skell-downloader?branch=master" },
+    { name = "tdk", git = "https://github.com/abdnh/tdk?branch=master" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "ankiscripts", extras = ["forms"], git = "https://github.com/abdnh/ankiscripts?branch=master" },
+    { name = "ankiutils", git = "https://github.com/abdnh/ankiutils?branch=master" },
+    { name = "aqt", extras = ["qt"] },
+    { name = "mypy", specifier = ">=1.15.0" },
+    { name = "prek", specifier = ">=0.2.30" },
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-cov", specifier = ">=6.1.1" },
+    { name = "ruff", specifier = ">=0.11.7" },
+    { name = "sentry-sdk", specifier = ">=2.35.0" },
+    { name = "types-protobuf" },
+    { name = "types-requests" },
 ]
 
 [[package]]

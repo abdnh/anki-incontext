@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "anki_incontext"
+name = "incontext"
 authors = [{ name = "Abdo", email = "abdo@abdnh.net" }]
 readme = "README.md"
 requires-python = ">=3.9"
@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 [tool.setuptools]
-package-dir = { "anki_incontext" = "src" }
+package-dir = { "incontext" = "src" }
 
 [tool.uv.sources]
 ankiscripts = { git = "https://github.com/abdnh/ankiscripts", branch = "master" }
