@@ -1,0 +1,13 @@
+_commit: 0.0.3-15-gfa0dcd1
+_src_path: https://github.com/abdnh/anki-addon-template
+add_author_support_links: true
+ankiweb_id: '385420176'
+author: Abdo
+docs_page: https://abdnh.github.io/anki-incontext
+email: abdo@abdnh.com
+forums_page: forums.ankiweb.net/t/incontext-learn-vocabulary-in-context-with-random-sentences/24017
+github_page: https://github.com/abdnh/anki-incontext/
+max_point_version: 0
+min_point_version: 50
+package_name: incontext
+project_name: InContext
