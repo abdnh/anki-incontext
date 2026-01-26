@@ -5,7 +5,8 @@
     "ankiweb_id": "385420176",
     "min_point_version": 50,
     "support_channels": {
-        "github": "https://github.com/abdnh/anki-incontext/issues",
-        "forums": "https://forums.ankiweb.net/t/incontext-learn-vocabulary-in-context-with-random-sentences/24017"
-    }
+        "forums": "https://forums.ankiweb.net/t/incontext-learn-vocabulary-in-context-with-random-sentences/24017",
+        "github": "https://github.com/abdnh/anki-incontext/issues"
+    },
+    "docs_page": "https://abdnh.github.io/anki-incontext"
 }

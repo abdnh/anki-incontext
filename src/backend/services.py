@@ -10,6 +10,7 @@ from aqt import mw
 from aqt.main import AnkiQt
 
 from ..config import config
+from ..consts import consts
 from ..gui.operations import AddonQueryOp
 from ..keys import qt_key_to_js
 from ..log import logger
@@ -25,6 +26,7 @@ from ..proto.backend_pb2 import (
     GetSentencesRequest,
     GetSentencesResponse,
     GetSettingsResponse,
+    GetSupportLinksResponse,
     GetTatoebaLanguagesResponse,
     Language,
     Provider,
@@ -77,6 +79,13 @@ def get_provider_field() -> list[str]:
 
 class BackendService(BackendServiceBase):
     tatoeba_download_progress: TatoebaDownloadProgress | None = None
+
+    @classmethod
+    def get_support_links(cls, request: Empty) -> GetSupportLinksResponse:
+        github_page = consts.homepage
+        forums_page = consts.support_channels["forums"]
+        docs_page = consts.docs_page
+        return GetSupportLinksResponse(github_page=github_page, forums_page=forums_page, docs_page=docs_page)
 
     @classmethod
     def get_tatoeba_languages(cls, request: Empty) -> GetTatoebaLanguagesResponse:

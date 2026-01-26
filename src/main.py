@@ -5,8 +5,6 @@ from .patches import patch_certifi
 patch_certifi()
 
 # ruff: noqa: E402
-
-
 from . import browser, menu, session, shortcuts, template_filter, updates
 from .backend.server import init_server
 from .errors import setup_error_handler

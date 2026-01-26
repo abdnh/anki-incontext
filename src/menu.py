@@ -1,10 +1,20 @@
 from aqt import QMenu, mw
 from aqt.qt import QAction, qconnect
 
+from .errors import upload_logs_and_notify_user
 from .gui.browse import BrowseDialog
 from .gui.help import HelpDialog
+from .gui.languages import LanguagesDialog
 from .gui.settings import SettingsDialog
 from .gui.tatoeba import TatoebaDialog
+
+
+def on_help() -> None:
+    HelpDialog().show()
+
+
+def on_upload_logs() -> None:
+    upload_logs_and_notify_user(mw)
 
 
 def open_tatoeba_dialog() -> None:
@@ -19,8 +29,8 @@ def open_settings_dialog() -> None:
     SettingsDialog().show()
 
 
-def open_help_dialog() -> None:
-    HelpDialog().show()
+def open_languages_dialog() -> None:
+    LanguagesDialog().show()
 
 
 def init() -> None:
@@ -34,7 +44,9 @@ def init() -> None:
     settings_action = QAction("Settings", mw)
     qconnect(settings_action.triggered, open_settings_dialog)
     menu.addAction(settings_action)
-    help_action = QAction("Help", mw)
-    qconnect(help_action.triggered, open_help_dialog)
-    menu.addAction(help_action)
+    languages_action = QAction("Languages", mw)
+    qconnect(languages_action.triggered, open_languages_dialog)
+    menu.addAction(languages_action)
+    menu.addAction("Upload logs", on_upload_logs)
+    menu.addAction("Help", on_help)
     mw.form.menuTools.addMenu(menu)

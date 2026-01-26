@@ -4,6 +4,7 @@ package ankiaddon.backend;
 import "generic.proto";
 
 service BackendService {
+  rpc GetSupportLinks(generic.Empty) returns (GetSupportLinksResponse);
   rpc GetTatoebaLanguages(generic.Empty) returns (GetTatoebaLanguagesResponse);
   rpc DownloadTatoebaSentences(DownloadTatoebaSentencesRequest) returns (generic.Empty);
   rpc GetTatoebaDownloadProgress(generic.Empty) returns (TatoebaDownloadProgress);
@@ -16,6 +17,12 @@ service BackendService {
   rpc GetSettings(generic.Empty) returns (GetSettingsResponse);
   rpc SaveSettings(SaveSettingsRequest) returns (generic.Empty);
   rpc GetClipboardText(generic.Empty) returns (GetClipboardTextResponse);
+}
+
+message GetSupportLinksResponse {
+  string github_page = 1;
+  string forums_page = 2;
+  string docs_page = 3;
 }
 
 message GetTatoebaLanguagesResponse {

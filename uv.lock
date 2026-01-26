@@ -8,6 +8,15 @@ resolution-markers = [
 ]
 
 [[package]]
+name = "anki-addon-template"
+version = "0.0.0"
+source = { git = "https://github.com/abdnh/anki-addon-template?branch=main#1633a5be1893caca1a4fa97d88f18b48fe31765a" }
+dependencies = [
+    { name = "copier", version = "9.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "copier", version = "9.11.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+]
+
+[[package]]
 name = "anki"
 version = "25.9.2"
 source = { registry = "https://pypi.org/simple" }
@@ -26,15 +35,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c1/49/484a786ea0e1b3659de9478f2546368c5970da60a1cd403cec1fa2f81d65/anki-25.9.2-cp39-abi3-manylinux_2_36_aarch64.whl", hash = "sha256:a5705f472d8173317ce4fbec9ca26bd6ee6e5ca4f864f716e7b3cbdf8096a276", size = 10905312, upload-time = "2025-09-17T07:11:55.751Z" },
     { url = "https://files.pythonhosted.org/packages/22/1c/37fe0377fd5fbfe27b17db20679d76aeb1cef7be3ddfb22e24c0bb62cf96/anki-25.9.2-cp39-abi3-manylinux_2_36_x86_64.whl", hash = "sha256:8ddf94130e36a85e57955b9c7d083a9ab812319f7f427e75f51e32b734222b26", size = 11400639, upload-time = "2025-09-17T07:12:01.723Z" },
     { url = "https://files.pythonhosted.org/packages/29/4a/ec3f02075e957031c856717f8d524780c450700644f4826e9fcd81e4b6c3/anki-25.9.2-cp39-abi3-win_amd64.whl", hash = "sha256:0a7e70c7cfea844c8d06917025f735d4c6e3c2558eb70b1828993f4bce171219", size = 9989743, upload-time = "2025-09-17T07:12:07.061Z" },
-]
-
-[[package]]
-name = "anki-addon-template"
-version = "0.0.0"
-source = { git = "https://github.com/abdnh/anki-addon-template?branch=main#1633a5be1893caca1a4fa97d88f18b48fe31765a" }
-dependencies = [
-    { name = "copier", version = "9.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "copier", version = "9.11.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
 ]
 
 [[package]]
@@ -73,8 +73,8 @@ template = [
 
 [[package]]
 name = "ankiutils"
-version = "0.1.dev116+g7771082e7"
-source = { git = "https://github.com/abdnh/ankiutils?branch=master#7771082e7a944a7a47a9865cb70e8cd9464dd3dc" }
+version = "0.1.dev121+g1b16d3fd4"
+source = { git = "https://github.com/abdnh/ankiutils?branch=master#1b16d3fd42a6ecea253083a0485a2898edfd5274" }
 dependencies = [
     { name = "sentry-sdk" },
     { name = "structlog" },

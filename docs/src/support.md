@@ -3,7 +3,7 @@
 Please post any questions, bug reports, or feature requests in the [support page](https://forums.ankiweb.net/t/incontext-learn-vocabulary-in-context-with-random-sentences/24017) or the [issue tracker](https://github.com/abdnh/anki-incontext/issues).
 
 If you want priority support for your feature/help request, I'm available for hire.
-Get in touch via [email](mailto:abdo@abdnh.net) or the UpWork link below.
+Get in touch via [email](mailto:abdo@abdnh.com) or the Upwork link below.
 
 ## Support me
 

@@ -13,7 +13,7 @@ You can download the add-on using the [AnkiWeb](https://ankiweb.net/shared/info/
 More than 400+ languages are supported. Most of them only have Tatoeba as a supported provider at the moment, but a few languages such as English, Japanese and Turkish have additional providers.
 To contribute additional providers or suggest some resources, please submit an [issue](https://github.com/abdnh/anki-incontext/issues).
 
-Go to _Tools > InContext > Help_ for a complete list of supported languages and providers.
+Go to _Tools > InContext > Languages_ for a complete list of supported languages and providers.
 
 ## Usage
 

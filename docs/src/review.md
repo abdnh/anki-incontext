@@ -23,7 +23,7 @@ You can show sentences from only a certain provider using the `provider` option:
 {{incontext lang=eng provider=dictionary.com:Front}}
 ```
 
-Go to _Tools > InContext > Help_ for a complete list of supported languages and providers with their template filter codes.
+Go to _Tools > InContext > Languages_ for a complete list of supported languages and providers with their template filter codes.
 
 If a provider is given but no language, the first supported language of the provider will be assumed.
 If both language and provider are not given, the default is English with all providers.

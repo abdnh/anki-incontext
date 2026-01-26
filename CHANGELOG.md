@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add a help page under _Tools > InContext > Help_ listing all supported languages and providers.
+- Add a help page under _Tools > InContext > Languages_ listing all supported languages and providers.
 - Add support for [Nadeshiko](https://nadeshiko.co/). API key can be configured in the Settings page.
 
 ## [1.3.0] - 2026-01-11
