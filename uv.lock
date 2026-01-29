@@ -904,9 +904,10 @@ wheels = [
 [[package]]
 name = "nadeshiko-api-client"
 version = "0.0.0"
-source = { git = "https://github.com/abdnh/nadeshiko-api-client?branch=main#cf4ba51121903ee2a182ceebfca7060667edfc0e" }
+source = { git = "https://github.com/abdnh/nadeshiko-api-client?branch=main#dd4d1ab5369468b6d07034d59e231af497156dde" }
 dependencies = [
     { name = "dacite" },
+    { name = "requests" },
 ]
 
 [[package]]
