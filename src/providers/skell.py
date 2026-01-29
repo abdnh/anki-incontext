@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from ..db import Sentence
 from ..vendor.skell_downloader import SkellDownloader
+from .langs import langcode_to_name, search_language
 from .provider import SentenceProvider
 
 
@@ -10,15 +11,19 @@ class SkellProvider(SentenceProvider):
     human_name = "SkELL"
     url = "https://skell.sketchengine.eu"
 
-    # TODO: add all languages supported by Skell
     @property
     def supported_languages(self) -> list[str]:
-        return ["eng"]
+        langs = []
+        for lang in SkellDownloader.langs:
+            obj = search_language(lang)
+            if obj:
+                langs.append(obj.alpha_3)
+
+        return langs
 
     def fetch(self, word: str, language: str) -> list[Sentence]:
         sentences = super().fetch(word, language)
-        # FIXME: convert language codes to names before passing them to downloader
-        downloader = SkellDownloader(lang="English")
+        downloader = SkellDownloader(lang=langcode_to_name(language))
         for example in downloader.get_examples(word):
             sentences.append(Sentence(str(example), word, language, self.name))
         return sentences

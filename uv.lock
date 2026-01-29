@@ -1820,7 +1820,7 @@ wheels = [
 [[package]]
 name = "skell-downloader"
 version = "0.1.0"
-source = { git = "https://github.com/abdnh/skell-downloader?branch=master#357e2aca308709c6ff774e7a055e4857998afdf4" }
+source = { git = "https://github.com/abdnh/skell-downloader?branch=master#35b24ead1d0153bfe56bce661b8e64849dd37bca" }
 
 [[package]]
 name = "soupsieve"

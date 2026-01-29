@@ -447,5 +447,10 @@ def langcode_to_name(lang_code: str) -> str:
         return lang_code
 
 
+def search_language(language: str) -> pycountry.db.Country | None:
+    "Search for a language given its name or code"
+    return pycountry.languages.lookup(language)
+
+
 def get_all_languages() -> list[tuple[str, str]]:
     return [(code, langcode_to_name(code)) for code in ALL_LANGS]
