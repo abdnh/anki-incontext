@@ -56,7 +56,8 @@ def get_formatted_sentence(text: str, lang: str | None, providers: list[str] | N
         if not lang and provider_obj:
             lang = provider_obj.supported_languages[0]
         source = (
-            f'<br><br>Source: <a href="{provider_obj.get_source(text, lang)}">{provider_obj.human_name}</a>'
+            f'<br><br>Source: <a href="{sentence.source or provider_obj.get_source(text, lang)}">'
+            f"{provider_obj.human_name}</a>"
             if provider_obj
             else ""
         )
