@@ -6,7 +6,7 @@ It can be used to look up and browse sentences given a word, add sentences to a 
 
 ## Download
 
-You can download the add-on using the [AnkiWeb](https://ankiweb.net/shared/info/385420176) code `385420176` or from the [GitHub releases page](github.com/abdnh/anki-incontext/releases).
+You can download the add-on using the [AnkiWeb](https://ankiweb.net/shared/info/385420176) code `385420176` or from the [GitHub releases page](https://github.com/abdnh/anki-incontext/releases).
 
 ## Supported languages
 
