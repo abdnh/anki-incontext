@@ -3,7 +3,7 @@ default: zip
 set windows-shell := ["pwsh", "-c"]
 
 UV_RUN := "uv run --"
-BUILD_ARGS := "--qt all --exclude user_files/*.db --exclude user_files/**/*"
+BUILD_ARGS := "--qt all --exclude user_files/*.db --exclude user_files/**/* --build-restart-script"
 
 # Package add-on for AnkiWeb
 ankiweb args=BUILD_ARGS:
