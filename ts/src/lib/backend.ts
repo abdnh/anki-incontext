@@ -2,6 +2,7 @@ import { createProtoClient } from "ankiutils";
 
 import {
     BackendService,
+    type FetchError,
     type GetDefaultFillFieldsResponse,
     type GetLanguagesAndProvidersResponse,
     type GetLanguagesResponse,
@@ -20,6 +21,7 @@ import {
 export const client = createProtoClient(BackendService);
 
 export {
+    type FetchError,
     type GetDefaultFillFieldsResponse,
     type GetLanguagesAndProvidersResponse,
     type GetLanguagesResponse,

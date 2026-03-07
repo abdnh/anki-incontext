@@ -1,11 +1,12 @@
 <script lang="ts">
-    import type { Sentence } from "$lib";
+    import type { FetchError, Sentence } from "$lib";
     import { client, type GetLanguagesAndProvidersResponse } from "$lib";
     import Error from "$lib/Error.svelte";
     import type { ConnectError } from "@connectrpc/connect";
     import { promiseWithResolver, type SelectOption, Spinner } from "ankiutils";
     import { onMount } from "svelte";
     import type { PageProps } from "./$types";
+    import ProviderError from "./ProviderError.svelte";
     import SearchField from "./SearchField.svelte";
     import SearchLanguageSelector from "./SearchLanguageSelector.svelte";
     import SearchProviderDropdown from "./SearchProviderDropdown.svelte";
@@ -21,6 +22,7 @@
     let providers = $state<SelectOption[]>([]);
     let selectedProviders = $state<string[]>(data.providers ?? []);
     let sentences = $state<Sentence[] | null>([]);
+    let errors = $state<FetchError[] | null>([]);
     let loadingSentences = $state(false);
     let searchError = $state<string | null>(null);
     let ignoreNextClipboardUpdate = $state(false);
@@ -66,11 +68,12 @@
             sentences = response.sentences.length
                 ? response.sentences
                 : null;
-
+            errors = response.errors.length ? response.errors : null;
             searchError = null;
         } catch (error) {
             searchError = (error as ConnectError).rawMessage;
             sentences = null;
+            errors = null;
         }
         loadingSentences = false;
     }
@@ -138,7 +141,7 @@
                 />
             </div>
         </div>
-        <div class="flex justify-start items-center text-2xl gap-2">
+        <div class="flex justify-start items-center text-2xl gap-2 mb-2">
             <i class="bi bi-filter"></i>
             <SearchProviderDropdown
                 label="Providers"
@@ -146,6 +149,11 @@
                 bind:selectedOptions={selectedProviders}
             />
         </div>
+        {#if !loadingSentences && errors}
+            {#each errors as error (error.provider)}
+                <ProviderError {error} />
+            {/each}
+        {/if}
         {#if loadingSentences}
             <Spinner label="Loading sentences..." />
         {:else if sentences}

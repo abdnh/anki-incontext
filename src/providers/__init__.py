@@ -4,6 +4,8 @@ import random
 
 from ..config import config
 from ..db import Sentence, SentenceDB
+from ..exceptions import InContextError, InContextFetchError
+from ..log import logger
 from .dictionary_com import DictionaryProvider
 from .glosbe import GlosbeProvider
 from .jisho import JishoProvider
@@ -43,13 +45,13 @@ def get_sentences(
     language: str | None = None,
     providers: list[str] | None = None,
     limit: int | None = None,
-) -> list[Sentence]:
+) -> tuple[list[Sentence], list[InContextFetchError]]:
     word = word.strip()
     # Default to English if no language is given
     if not language:
         language = "eng"
     if providers and len(providers) == 0:
-        return []
+        return [], []
     language = get_language_info(language).alpha_3.lower()
     matched_providers: list[SentenceProvider] = []
     for provider_obj in PROVIDERS:
@@ -65,12 +67,17 @@ def get_sentences(
             matched_providers.append(provider_obj)
     random.shuffle(matched_providers)
     sentences: list[Sentence] = []
+    errors: list[InContextFetchError] = []
     while matched_providers and (not limit or len(sentences) < limit):
         chosen_provider = matched_providers.pop()
-        sentences.extend(chosen_provider.get_sentences(word, language, limit))
+        try:
+            sentences.extend(chosen_provider.get_sentences(word, language, limit))
+        except InContextError as exc:
+            logger.exception("Provider failed", name=chosen_provider.human_name, word=word, language=language)
+            errors.append(InContextFetchError(exc, chosen_provider.name))
     if sentences and limit and len(sentences) > limit:
         sentences = random.sample(sentences, limit)
-    return sentences
+    return sentences, errors
 
 
 def get_languages() -> list[tuple[str, str]]:

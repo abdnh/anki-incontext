@@ -104,8 +104,14 @@ message GetSentencesRequest {
   repeated string providers = 3;
 }
 
+message FetchError {
+  string error = 1;
+  string provider = 2;
+}
+
 message GetSentencesResponse {
-  repeated Sentence sentences = 2;
+  repeated Sentence sentences = 1;
+  repeated FetchError errors = 2;
 }
 
 message Sentence {

@@ -20,7 +20,6 @@ try:
 except ImportError:
     from aqt.previewer import Previewer  # type: ignore
 
-from .exceptions import InContextError
 from .gui.operations import run_task_in_background
 from .providers import get_provider, get_sentences
 
@@ -44,27 +43,27 @@ def get_active_card_context() -> CardContext:
 
 
 def get_formatted_sentence(text: str, lang: str | None, providers: list[str] | None = None) -> str:
-    try:
-        sentences = get_sentences(
-            word=text,
-            language=lang,
-            providers=providers,
-            limit=1,
-        )
-        sentence = sentences[0] if sentences else None
-        provider_obj = get_provider(sentence.provider) if sentence else None
-        if not lang and provider_obj:
-            lang = provider_obj.supported_languages[0]
-        source = (
-            f'<br><br>Source: <a href="{sentence.source or provider_obj.get_source(text, lang)}">'
-            f"{provider_obj.human_name}</a>"
-            if provider_obj
-            else ""
-        )
-        ret = f"{sentence.text if sentence else ''} {source}"
-    except InContextError as exc:
-        ret = f"<div style='color: red'>InContext error: {html.escape(str(exc))}</div>"
-    return ret
+    sentences, errors = get_sentences(
+        word=text,
+        language=lang,
+        providers=providers,
+        limit=1,
+    )
+    if not sentences and errors:
+        formatted_errors = "<br>".join(f"{error.provider}: {html.escape(str(error))}" for error in errors)
+        return f"<div style='color: red'>InContext error:<br>{formatted_errors}</div>"
+
+    sentence = sentences[0] if sentences else None
+    provider_obj = get_provider(sentence.provider) if sentence else None
+    if not lang and provider_obj:
+        lang = provider_obj.supported_languages[0]
+    source = (
+        f'<br><br>Source: <a href="{sentence.source or provider_obj.get_source(text, lang)}">'
+        f"{provider_obj.human_name}</a>"
+        if provider_obj
+        else ""
+    )
+    return f"{sentence.text if sentence else ''} {source}"
 
 
 incontext_id = 0

@@ -16,6 +16,7 @@ from ..keys import qt_key_to_js
 from ..log import logger
 from ..proto.backend_pb2 import (
     DownloadTatoebaSentencesRequest,
+    FetchError,
     GetDefaultFillFieldsRequest,
     GetDefaultFillFieldsResponse,
     GetLanguagesAndProvidersRequest,
@@ -32,8 +33,10 @@ from ..proto.backend_pb2 import (
     Provider,
     ProviderOptions,
     SearchShortcut,
-    Sentence,
     TatoebaDownloadProgress,
+)
+from ..proto.backend_pb2 import (
+    Sentence as SentenceProto,
 )
 from ..proto.generic_pb2 import Empty
 from ..proto.services import BackendServiceBase
@@ -150,22 +153,25 @@ class BackendService(BackendServiceBase):
 
     @classmethod
     def get_sentences(cls, request: GetSentencesRequest) -> GetSentencesResponse:
-        sentences: list[Sentence] = []
-        for sentence in get_sentences(
+        proto_sentences: list[SentenceProto] = []
+        proto_errors: list[FetchError] = []
+        sentences, errors = get_sentences(
             word=request.word,
             language=request.language,
             providers=list(request.providers),
-        ):
+        )
+        for sentence in sentences:
             provider = get_provider(sentence.provider)
-            sentences.append(
-                Sentence(
+            proto_sentences.append(
+                SentenceProto(
                     text=sentence.text,
                     provider=provider.human_name,
                     source=sentence.source or provider.get_source(sentence.word, sentence.language),
                 )
             )
-
-        return GetSentencesResponse(sentences=sentences)
+        for error in errors:
+            proto_errors.append(FetchError(error=str(error), provider=error.provider))
+        return GetSentencesResponse(sentences=proto_sentences, errors=proto_errors)
 
     @classmethod
     def get_settings(cls, request: Empty) -> GetSettingsResponse:
