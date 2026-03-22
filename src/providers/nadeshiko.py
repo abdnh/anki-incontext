@@ -6,7 +6,7 @@ from typing import Any
 from ..db import Sentence, SentenceDB
 from ..exceptions import InContextError
 from ..vendor.nadeshiko_api_client.client import Client
-from ..vendor.nadeshiko_api_client.models import SentenceSearchRequest
+from ..vendor.nadeshiko_api_client.models import SearchQuery, SearchRequest
 from .provider import ProviderConfig, SentenceProvider
 
 
@@ -39,24 +39,18 @@ class NadeshikoProvider(SentenceProvider[NadeshikoConfig]):
         if not self.config.api_key:
             raise NadeshikoApiKeyError()
         try:
-            response = self.client.search_sentence(SentenceSearchRequest(query=word, limit=999))
-            if response.sentences:
-                for sentence in response.sentences:
-                    source = (
-                        f"https://nadeshiko.co/search/sentence?uuid={sentence.segment_info.uuid}"
-                        if sentence.segment_info.uuid
-                        else ""
+            response = self.client.search(SearchRequest(query=SearchQuery(search=word), take=999))
+            for segment in response.segments:
+                source = f"https://nadeshiko.co/sentence/{segment.public_id}" if segment.public_id else ""
+                sentences.append(
+                    Sentence(
+                        text=segment.text,
+                        word=word,
+                        language=language,
+                        provider=self.name,
+                        source=source,
                     )
-                    if sentence.segment_info:
-                        sentences.append(
-                            Sentence(
-                                text=sentence.segment_info.content_jp,
-                                word=word,
-                                language=language,
-                                provider=self.name,
-                                source=source,
-                            )
-                        )
+                )
         except Exception as exc:
             raise InContextError(str(exc)) from exc
 
