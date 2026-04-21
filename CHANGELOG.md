@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.8] = 2026-04-21
+
+### Fixed
+
+- Fix Nadeshiko provider failing due to website changes to allowed maximum sentence count.
+
 ## [1.4.7] = 2026-03-22
 
 ### Fixed
@@ -229,6 +235,7 @@ Initial release to AnkiWeb
 
 Initial release
 
+[1.4.8]: https://github.com/abdnh/anki-incontext/compare/1.4.7...1.4.8
 [1.4.7]: https://github.com/abdnh/anki-incontext/compare/1.4.6...1.4.7
 [1.4.6]: https://github.com/abdnh/anki-incontext/compare/1.4.5...1.4.6
 [1.4.5]: https://github.com/abdnh/anki-incontext/compare/1.4.4...1.4.5
