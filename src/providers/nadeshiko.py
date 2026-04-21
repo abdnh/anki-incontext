@@ -39,7 +39,7 @@ class NadeshikoProvider(SentenceProvider[NadeshikoConfig]):
         if not self.config.api_key:
             raise NadeshikoApiKeyError()
         try:
-            response = self.client.search(SearchRequest(query=SearchQuery(search=word), take=999))
+            response = self.client.search(SearchRequest(query=SearchQuery(search=word), take=50))
             for segment in response.segments:
                 source = f"https://nadeshiko.co/sentence/{segment.public_id}" if segment.public_id else ""
                 sentences.append(
