@@ -1,7 +1,7 @@
-_commit: 0.0.3-22-g1633a5b
+_commit: 0.0.3-40-g6e93937
 _src_path: https://github.com/abdnh/anki-addon-template
 add_author_support_links: true
-ankiweb_id: "385420176"
+ankiweb_id: '385420176'
 author: Abdo
 docs_page: https://abdnh.github.io/anki-incontext
 email: abdo@abdnh.com
